@@ -4,7 +4,7 @@ import Books from './components/Books';
 import Login from './components/Login';
 import apiClient from './services/api';
 
-const App = () => {
+const AppTest = () => {
     const [loggedIn, setLoggedIn] = React.useState(
         sessionStorage.getItem('loggedIn') === 'true' || false
     );
@@ -52,4 +52,4 @@ const App = () => {
     );
 };
 
-export default App;
+export default AppTest;
