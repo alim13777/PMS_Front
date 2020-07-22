@@ -5,7 +5,7 @@ const Books = (props) => {
     const [books, setBooks] = React.useState([]);
     React.useEffect(() => {
         if (props.loggedIn) {
-            apiClient.get('/api/book')
+            apiClient.get('/api/papers')
                 .then(response => {
                     setBooks(response.data)
                 })
@@ -13,11 +13,11 @@ const Books = (props) => {
         }
     });
     const bookList = books.map((book) =>
-        <div key={book.id}
+        <div key={book.paperId}
              className="list-group-item"
         >
             <h5>{book.title}</h5>
-            <small>{book.author}</small>
+            <small>{book.topic}</small>
         </div>
     );
     if (props.loggedIn) {
