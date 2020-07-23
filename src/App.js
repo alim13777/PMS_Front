@@ -1,8 +1,66 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, NavLink } from 'react-router-dom';
+import apiClient from './services/api';
+import {makeStyles, ThemeProvider} from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { create } from 'jss';
+import rtl from 'jss-rtl';
+import { StylesProvider, jssPreset } from '@material-ui/core/styles';
+
+// Import pages:
+import Home from './pages/home';
 import Books from './components/Books';
 import Login from './components/Login';
-import apiClient from './services/api';
+// Import fonts
+import Vazir from './fonts/Vazir-FD-WOL.woff';
+// Import translations:
+import { setTranslations, setDefaultLanguage, useTranslation } from 'react-multi-lang'
+import fa from './langs/fa.json'
+import en from './langs/en.json'
+
+setTranslations({fa, en})
+setDefaultLanguage('fa')
+
+
+
+
+const fontVazir = {
+    fontFamily: 'Vazir',
+    fontStyle: 'normal',
+    fontDisplay: 'swap',
+    fontWeight: 400,
+    src: `
+    local('Vazir'),
+    local('Vazir-Regular'),
+    url(${Vazir}) format('woff2')
+  `,
+    // unicodeRange:
+    //     'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
+};
+
+const theme = createMuiTheme({
+    direction: 'rtl',
+    typography: {
+        fontFamily: 'Vazir, Arial',
+    },
+    overrides: {
+        MuiCssBaseline: {
+            '@global': {
+                '@font-face': [fontVazir],
+            },
+        },
+    },
+});
+
+// Configure JSS
+const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
+function RTL(props) {
+    return (
+        <StylesProvider jss={jss}>
+            {props.children}
+        </StylesProvider>
+    );
+}
 
 const App = () => {
     const [loggedIn, setLoggedIn] = React.useState(
@@ -14,40 +72,30 @@ const App = () => {
     };
     const logout = () => {
         apiClient.post('/logout').then(response => {
-            debugger;
             if (response.status === 204) {
                 setLoggedIn(false);
                 sessionStorage.setItem('loggedIn', false);
             }
         })
     };
-    const authLink = loggedIn
-        ? <button onClick={logout} className="nav-link btn btn-link">Logout</button>
-        : <NavLink to='/login' className="nav-link">Login</NavLink>;
+
     return (
         <Router>
-            {/*<nav className="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">*/}
-            {/*    <div class="collapse navbar-collapse" id="navbarSupportedContent">*/}
-            {/*        <ul className="navbar-nav">*/}
-            {/*            <li className="nav-item">*/}
-            {/*                <NavLink to='/' className="nav-link">Books</NavLink>*/}
-            {/*            </li>*/}
-            {/*            <li className="nav-item">*/}
-            {/*                {authLink}*/}
-            {/*            </li>*/}
-            {/*        </ul>*/}
-            {/*    </div>*/}
-            {/*</nav>*/}
-            <div className="container mt-5 pt-5">
-                <Switch>
-                    <Route path='/' exact render={props => (
-                        <Books {...props} loggedIn={loggedIn} />
-                    )} />
-                    <Route path='/login' render={props => (
-                        <Login {...props} login={login} />
-                    )} />
-                </Switch>
-            </div>
+            <ThemeProvider theme={theme}>
+                <RTL>
+                    <div className="container mt-5 pt-5">
+                        <Switch>
+                            <Route path='/' exact render={props => (
+                                <Home {...props}/>
+                                // <Books {...props} loggedIn={loggedIn} logout={logout} />
+                            )} />
+                            <Route path='/login' render={props => (
+                                <Login {...props} login={login}  />
+                            )} />
+                        </Switch>
+                    </div>
+                </RTL>
+            </ThemeProvider>
         </Router>
     );
 };

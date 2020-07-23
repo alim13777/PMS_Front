@@ -1,0 +1,16 @@
+{
+  "Header": {
+    "Company": "Mahjoo Pardaz",
+    "Home": "Home",
+    "Prices": "Prices",
+    "Login": "Login"
+  },
+  "Home": {
+    "Title": "Paper Management System",
+    "Subtitle": "Manage your researches and papers"
+  },
+  "Hello": "Hello {name}",
+  "About": {
+    "Title": "About US"
+  }
+}
