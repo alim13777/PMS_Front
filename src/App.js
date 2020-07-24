@@ -1,7 +1,7 @@
 import React from 'react';
-import {BrowserRouter as Router, Switch, Route, NavLink, Redirect} from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 import apiClient from './services/api';
-import {makeStyles, ThemeProvider} from '@material-ui/core/styles';
+import { ThemeProvider} from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
@@ -10,14 +10,13 @@ import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 // Import pages:
 import Home from './pages/home';
 import Dashboard from './pages/dashboard';
-import Books from './components/Books';
 // import Login from './components/Login';
 import Login from './pages/login';
 import SignUp from './pages/signUp';
 // Import fonts
 import Vazir from './fonts/Vazir-FD-WOL.woff';
 // Import translations:
-import { setTranslations, setDefaultLanguage, useTranslation } from 'react-multi-lang'
+import { setTranslations, setDefaultLanguage } from 'react-multi-lang'
 import fa from './langs/fa.json'
 import en from './langs/en.json'
 
@@ -97,7 +96,7 @@ const App = () => {
                             <Route path='/signUp' render={props => (
                                 (loggedIn)
                                     ? <Redirect to='/dashboard' />
-                                    : <SignUp {...props}  />
+                                    : <SignUp {...props} login={login} />
                             )} />
                             <Route path='/dashboard' render={(props)=>(
                                 (loggedIn)

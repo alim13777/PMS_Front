@@ -1,7 +1,7 @@
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import React from "react";
-import {getLanguage, setLanguage, useTranslation} from "react-multi-lang";
+import {getLanguage, useTranslation} from "react-multi-lang";
 
 function Copyright() {
     const t = useTranslation()

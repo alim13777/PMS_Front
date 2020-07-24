@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
-import {BrowserRouter as Router, NavLink, useHistory} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Container from "@material-ui/core/Container";
 import PropTypes from 'prop-types';
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
