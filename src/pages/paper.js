@@ -1,22 +1,21 @@
 import React from 'react';
 import Header from "../components/dashHeader";
-import Footer from "../components/dashFooter";
 import Container from "@material-ui/core/Container";
-import RecentPapers from "../components/layoutDash_recentPapers";
 import {useTranslation} from "react-multi-lang";
+import Footer from "../components/dashFooter";
 
-const Dashboard = (props) => {
+const PaperPage = (props) => {
     const t = useTranslation()
     return (
         <div className={"frame-dashboard"}>
             <Header {...props}/>
             <Container>
-                <h1>{t("Dashboard.Main.Title")}</h1>
-                <RecentPapers/>
+                <h1>{t('Dashboard.Paper.Title',{'new':t("Action.New"),'add':"",'edit':""})}</h1>
+
             </Container>
             <Footer/>
         </div>
     );
 }
 
-export default Dashboard;
+export default PaperPage;

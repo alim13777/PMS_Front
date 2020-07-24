@@ -13,12 +13,15 @@ import Dashboard from './pages/dashboard';
 // import Login from './components/Login';
 import Login from './pages/login';
 import SignUp from './pages/signUp';
+import Error from './pages/error';
+import PaperPage from "./pages/paper";
 // Import fonts
 import Vazir from './fonts/Vazir-FD-WOL.woff';
 // Import translations:
 import { setTranslations, setDefaultLanguage } from 'react-multi-lang'
 import fa from './langs/fa.json'
 import en from './langs/en.json'
+import './App.css';
 
 setTranslations({fa, en})
 setDefaultLanguage('fa')
@@ -96,13 +99,26 @@ const App = () => {
                             <Route path='/signUp' render={props => (
                                 (loggedIn)
                                     ? <Redirect to='/dashboard' />
-                                    : <SignUp {...props} login={login} />
+                                    : <SignUp {...props} />
                             )} />
-                            <Route path='/dashboard' render={(props)=>(
-                                (loggedIn)
-                                    ? <Dashboard {...props} loggedIn={loggedIn} logout={logout} />
-                                    : <Redirect to='/login' />
-                            )}/>
+                            <Route
+                                path="/dashboard"
+                                render={({ match: { url } }) => (
+                                    <>
+                                        <Route path={`${url}/`} exact render={(props)=>(
+                                            (loggedIn)
+                                                ? <Dashboard {...props} loggedIn={loggedIn} logout={logout} />
+                                                : <Redirect to='/login' />
+                                        )}/>
+                                        <Route path={`${url}/paper`} render={(props)=>(
+                                            (loggedIn)
+                                                ? <PaperPage {...props} loggedIn={loggedIn} logout={logout} />
+                                                : <Redirect to='/login' />
+                                        )}/>
+                                    </>
+                                )}
+                            />
+                            <Route component={Error}/>
                         </Switch>
                     </div>
                 </RTL>
