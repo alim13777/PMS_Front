@@ -32,5 +32,9 @@
       "Upgrade": "Upgrade account",
       "SignOut": "Sign out"
     }
+  },
+  "Copyright": {
+    "Title": "Copyright",
+    "Statement": "All rights reserved."
   }
 }

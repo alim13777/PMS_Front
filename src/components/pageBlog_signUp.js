@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Background from '../../images/signInSide.jpg';
-import Copyright from './layoutBlog_copyright'
+import Copyright from './copyright'
 
 const useStyles = makeStyles((theme) => ({
     root: {

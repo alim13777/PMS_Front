@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Background from '../images/signInSide.jpg';
-import Copyright from '../components/layoutBlog_copyright'
+import Copyright from '../components/copyright'
 import apiClient from "../services/api";
 import {Redirect} from "react-router-dom";
 
