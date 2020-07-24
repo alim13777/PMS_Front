@@ -9,8 +9,20 @@
     "Title": "Paper Management System",
     "Subtitle": "Manage your researches and papers"
   },
-  "Hello": "Hello {name}",
-  "About": {
-    "Title": "About US"
+  "Dashboard": {
+    "Main": {
+      "Title": "Dashboard"
+    }
+  },
+  "Login": {
+    "Title": "Login",
+    "Email": "Email",
+    "Password": "Password",
+    "LoginButton": "Sign in",
+    "Remember": "Remember me",
+    "SignUp": "Don't have an account? Sign Up",
+    "ResetPassword": "Forgot password?",
+    "AuthError": "Credentials not recognised. Please try again",
+    "UnknownError": "There was an error submitting your details."
   }
 }

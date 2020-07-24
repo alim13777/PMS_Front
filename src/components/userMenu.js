@@ -60,7 +60,6 @@ export default function MenuListComposition(props) {
         }
     }
 
-
     function ListItemLink(props) {
         return <ListItem button component="a" {...props} />;
     }
@@ -74,10 +73,6 @@ export default function MenuListComposition(props) {
 
         prevOpen.current = open;
     }, [open]);
-
-    const out = ()=>{
-        console.log("logout")
-    }
 
     return (
         <div className={classes.root}>

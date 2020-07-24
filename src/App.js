@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, NavLink } from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route, NavLink, Redirect} from 'react-router-dom';
 import apiClient from './services/api';
 import {makeStyles, ThemeProvider} from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -9,8 +9,10 @@ import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 
 // Import pages:
 import Home from './pages/home';
+import Dashboard from './pages/dashboard';
 import Books from './components/Books';
-import Login from './components/Login';
+// import Login from './components/Login';
+import Login from './pages/login';
 // Import fonts
 import Vazir from './fonts/Vazir-FD-WOL.woff';
 // Import translations:
@@ -86,12 +88,19 @@ const App = () => {
                     <div className="container mt-5 pt-5">
                         <Switch>
                             <Route path='/' exact render={props => (
-                                <Home {...props}/>
+                                <Home {...props} loggedIn={loggedIn} logout={logout} />
                                 // <Books {...props} loggedIn={loggedIn} logout={logout} />
                             )} />
                             <Route path='/login' render={props => (
-                                <Login {...props} login={login}  />
+                                (loggedIn)
+                                    ? <Redirect to='/dashboard' /> //<Dashboard {...props} loggedIn={loggedIn} logout={logout}/>
+                                    : <Login {...props} login={login}  />
                             )} />
+                            <Route path='/dashboard' render={(props)=>(
+                                (loggedIn)
+                                    ? <Dashboard {...props} loggedIn={loggedIn} logout={logout} />
+                                    : <Redirect to='/login' />
+                            )}/>
                         </Switch>
                     </div>
                 </RTL>

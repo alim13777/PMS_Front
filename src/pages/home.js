@@ -37,7 +37,7 @@ const Home = (props) => {
 
     return (
         <div className={classes.pageContainer}>
-            <Header />
+            <Header  {...props}/>
             <div className={classes.titleSection}>
                 <Container>
                     <h1>{t("Home.Title")}</h1>

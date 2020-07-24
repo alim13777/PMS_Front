@@ -13,8 +13,17 @@ import PageLogo from '@material-ui/icons/Person';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import Background from '../../images/signInSide.jpg';
-import Copyright from './layoutBlog_copyright'
+import Background from '../images/signInSide.jpg';
+import Copyright from '../components/layoutBlog_copyright'
+import apiClient from "../services/api";
+import {Redirect} from "react-router-dom";
+
+import Alert from '@material-ui/lab/Alert';
+import Collapse from "@material-ui/core/Collapse";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from '@material-ui/icons/Close';
+import {useTranslation} from "react-multi-lang";
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -45,10 +54,50 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    alerts: {
+        width: '100%',
+        '& > * + *': {
+            marginTop: theme.spacing(2),
+        },
+    },
 }));
 
-export default function SignInSide() {
+export default function Login(props) {
+    const t = useTranslation()
     const classes = useStyles();
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [toHome, setToHome] = React.useState(false);
+    const [authError, setAuthError] = React.useState(false);
+    const [unknownError, setUnknownError] = React.useState(false);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setAuthError(false);
+        setUnknownError(false);
+        apiClient.get('/sanctum/csrf-cookie')
+            .then(response => {
+                apiClient.post('/login', {
+                    email: email,
+                    password: password
+                }).then(response => {
+                    // debugger;
+                    if (response.status === 204) {
+                        props.login();
+                        setToHome(true);
+                    }
+                }).catch(error => {
+                    if (error.response && error.response.status === 422) {
+                        setAuthError(true);
+                    } else {
+                        setUnknownError(true);
+                        console.error(error);
+                    }
+                });
+            });
+    }
+    if (toHome === true) {
+        return (<Redirect to='/dashboard' />)
+    }
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -60,19 +109,21 @@ export default function SignInSide() {
                         <PageLogo />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        ورود به سامانه
+                        {t("Login.Title")}
                     </Typography>
-                    <form className={classes.form} noValidate onSubmit={alert("ssss")}>
+                    <form className={classes.form} noValidate onSubmit={handleSubmit}>
                         <TextField
+                            type="email"
                             variant="outlined"
                             margin="normal"
                             required
                             fullWidth
                             id="email"
-                            label="پست الکترونیک"
                             name="email"
+                            label={t("Login.Email")}
                             autoComplete="email"
                             autoFocus
+                            onChange={e => setEmail(e.target.value)}
                         />
                         <TextField
                             variant="outlined"
@@ -80,14 +131,15 @@ export default function SignInSide() {
                             required
                             fullWidth
                             name="password"
-                            label="کلمه عبور"
+                            label={t("Login.Password")}
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            onChange={e => setPassword(e.target.value)}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
-                            label="مرا به خاطر بسپار"
+                            label={t("Login.Remember")}
                         />
                         <Button
                             type="submit"
@@ -96,25 +148,33 @@ export default function SignInSide() {
                             color="primary"
                             className={classes.submit}
                         >
-                            ورود
+                            {t("Login.LoginButton")}
                         </Button>
                         <Grid container>
                             <Grid item xs>
                                 <Link href="#" variant="body2">
-                                    کلمه عبور خود را فراموش کرده اید؟
+                                    {t("Login.ResetPassword")}
                                 </Link>
                             </Grid>
                             <Grid item>
                                 <Link href="#/signUp" variant="body2">
-                                    {"ثبت نام"}
+                                    {t("Login.SignUp")}
                                 </Link>
                             </Grid>
                         </Grid>
-                        <Box mt={5}>
-                            <Copyright />
-                        </Box>
+
                     </form>
+
+                    <Box mt={3} className={classes.alerts}>
+                        {authError ? <Alert severity="error">{t("Login.AuthError")}</Alert> : null}
+                        {unknownError ? <Alert severity="error">{t("Login.UnknownError")}</Alert> : null}
+                    </Box>
                 </div>
+
+                <Box mt={3}>
+                    <Copyright />
+                </Box>
+
             </Grid>
         </Grid>
     );

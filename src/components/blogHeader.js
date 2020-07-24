@@ -106,7 +106,7 @@ export default function Header(props) {
             </Button>
         </NavLink>
 
-    const handleLang = (event) => {
+    const handleLang = () => {
         if(getLanguage()==='en'){
             setLanguage('fa')
             document.getElementsByTagName("body")[0].setAttribute("dir","rtl")
