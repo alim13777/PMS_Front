@@ -8,12 +8,24 @@
   },
   "Home": {
     "Title": "Paper Management System",
-    "Subtitle": "Manage your researches and papers"
+    "Subtitle": "Manage your researches and papers",
+    "SignUp": "Sign up now"
   },
   "Dashboard": {
     "Main": {
       "Title": "Dashboard"
+    },
+    "Paper": {
+      "Title": "{add}{edit}{new} Paper"
+    },
+    "PapersList": {
+      "Title": "Papers List"
     }
+  },
+  "Action": {
+    "Add": "Add",
+    "Edit": "Edit",
+    "New": "New"
   },
   "Login": {
     "Title": "Login",
@@ -25,6 +37,12 @@
     "ResetPassword": "Forgot password?",
     "AuthError": "Credentials not recognised. Please try again",
     "UnknownError": "There was an error submitting your details."
+  },
+  "SignUp": {
+    "Title": "Sign up",
+    "SignUpButton": "Sign up",
+    "RepeatPass": "Repeat Password",
+    "BackToLogin": "I have an account! Back to login"
   },
   "User": {
     "Menu": {

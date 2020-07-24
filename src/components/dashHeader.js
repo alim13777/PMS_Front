@@ -2,7 +2,6 @@ import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from "@material-ui/core/Container";
 
@@ -14,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
     appBar: {
         borderBottom: `1px solid ${theme.palette.divider}`,
     },
+    appMenu: {
+        borderBottom: `1px solid ${theme.palette.divider}`,
+    },
     toolbar: {
         flexWrap: 'wrap',
         padding: "0"
@@ -21,6 +23,20 @@ const useStyles = makeStyles((theme) => ({
     toolbarTitle: {
         flexGrow: 1,
     },
+    appMenuToolbar: {
+        minHeight: "45px",
+        padding: "0"
+    },
+    appMenuLink: {
+        margin: theme.spacing(1, 1.5),
+        color: "cadetblue",
+        '&:hover' :{
+            color: "black"
+        },
+        '&:first-child' :{
+            marginStart: "0"
+        }
+    }
 }));
 
 export default function Header(props) {
@@ -36,6 +52,21 @@ export default function Header(props) {
                             {t('Header.Company')}
                         </Link>
                         <UserMenu {...props} />
+                    </Toolbar>
+                </Container>
+            </AppBar>
+            <AppBar position="static" color="inherit" elevation={0} className={classes.appMenu}>
+                <Container>
+                    <Toolbar className={classes.appMenuToolbar}>
+                        <Link variant="button" color="textPrimary" underline={"none"} href="/dashboard" className={classes.appMenuLink}>
+                            {t('Dashboard.Main.Title')}
+                        </Link>
+                        <Link variant="button" color="textPrimary" underline={"none"} href="/dashboard/papersList" className={classes.appMenuLink}>
+                            {t('Dashboard.PapersList.Title')}
+                        </Link>
+                        <Link variant="button" color="textPrimary" underline={"none"} href="/dashboard/paper" className={classes.appMenuLink}>
+                            {t('Dashboard.Paper.Title',{'new':t("Action.New"),'add':"",'edit':""})}
+                        </Link>
                     </Toolbar>
                 </Container>
             </AppBar>

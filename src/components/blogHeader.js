@@ -35,19 +35,7 @@ const useStyles = makeStyles((theme) => ({
         textDecoration: "none"
     }
 }));
-//
-// function AppBarNavLink({label,to}) {
-//     const classes = useStyles();
-//     const history = useHistory();
-//     function handleClick() {
-//         history.push(to);
-//     }
-//     return (
-//         <Link variant="button" color="textPrimary" href="#" onClick={handleClick} className={classes.link}>
-//             {label}
-//         </Link>
-//     );
-// }
+
 
 function ElevationScroll(props) {
     const { children, window } = props;

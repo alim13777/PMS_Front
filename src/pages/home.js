@@ -6,6 +6,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import HeaderImage from "../images/signInSide.jpg";
 import {Link} from "react-router-dom";
 import Container from "@material-ui/core/Container";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(() => ({
     pageContainer: {
@@ -42,6 +43,9 @@ const Home = (props) => {
                 <Container>
                     <h1>{t("Home.Title")}</h1>
                     <h2>{t("Home.Subtitle")}</h2>
+                    <Button variant="outlined" color="primary" href="/signUp">
+                        {t("Home.SignUp")}
+                    </Button>
                 </Container>
             </div>
             <Container>

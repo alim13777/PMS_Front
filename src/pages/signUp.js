@@ -13,8 +13,9 @@ import PageLogo from '@material-ui/icons/Person';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import Background from '../../images/signInSide.jpg';
-import Copyright from './copyright'
+import Background from '../images/signInSide.jpg';
+import Copyright from '../components/copyright'
+import {useTranslation} from "react-multi-lang";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -48,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignInSide() {
+    const t = useTranslation()
     const classes = useStyles();
 
     return (
@@ -60,7 +62,7 @@ export default function SignInSide() {
                         <PageLogo />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        ثبت نام در سامانه
+                        {t("SignUp.Title")}
                     </Typography>
                     <form className={classes.form} noValidate>
                         <TextField
@@ -69,7 +71,7 @@ export default function SignInSide() {
                             required
                             fullWidth
                             id="email"
-                            label="پست الکترونیک"
+                            label={t("Login.Email")}
                             name="email"
                             autoComplete="email"
                             autoFocus
@@ -80,7 +82,7 @@ export default function SignInSide() {
                             required
                             fullWidth
                             name="password"
-                            label="کلمه عبور"
+                            label={t("Login.Password")}
                             type="password"
                             id="password"
                         />
@@ -90,7 +92,7 @@ export default function SignInSide() {
                             required
                             fullWidth
                             name="password"
-                            label="تکرار کلمه عبور"
+                            label={t("SignUp.RepeatPass")}
                             type="password"
                             id="passwordR"
                         />
@@ -101,19 +103,20 @@ export default function SignInSide() {
                             color="primary"
                             className={classes.submit}
                         >
-                            ثبت نام
+                            {t("SignUp.SignUpButton")}
                         </Button>
                         <Grid container justify={"flex-end"}>
                             <Grid item>
-                                <Link href="#/signIn" variant="body2">
-                                    ورود به سامانه
+                                <Link href="/login" variant="body2">
+                                    {t("SignUp.BackToLogin")}
                                 </Link>
                             </Grid>
                         </Grid>
-                        <Box mt={5}>
-                            <Copyright />
-                        </Box>
                     </form>
+
+                    <Box mt={1} p={5} pb={0}>
+                        <Copyright />
+                    </Box>
                 </div>
             </Grid>
         </Grid>

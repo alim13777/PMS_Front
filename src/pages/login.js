@@ -157,7 +157,7 @@ export default function Login(props) {
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link href="#/signUp" variant="body2">
+                                <Link href="/signUp" variant="body2">
                                     {t("Login.SignUp")}
                                 </Link>
                             </Grid>
@@ -169,12 +169,10 @@ export default function Login(props) {
                         {authError ? <Alert severity="error">{t("Login.AuthError")}</Alert> : null}
                         {unknownError ? <Alert severity="error">{t("Login.UnknownError")}</Alert> : null}
                     </Box>
+                    <Box mt={3} p={5} pb={0}>
+                        <Copyright />
+                    </Box>
                 </div>
-
-                <Box mt={3}>
-                    <Copyright />
-                </Box>
-
             </Grid>
         </Grid>
     );

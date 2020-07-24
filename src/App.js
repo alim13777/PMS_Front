@@ -13,6 +13,7 @@ import Dashboard from './pages/dashboard';
 import Books from './components/Books';
 // import Login from './components/Login';
 import Login from './pages/login';
+import SignUp from './pages/signUp';
 // Import fonts
 import Vazir from './fonts/Vazir-FD-WOL.woff';
 // Import translations:
@@ -22,9 +23,6 @@ import en from './langs/en.json'
 
 setTranslations({fa, en})
 setDefaultLanguage('fa')
-
-
-
 
 const fontVazir = {
     fontFamily: 'Vazir',
@@ -93,8 +91,13 @@ const App = () => {
                             )} />
                             <Route path='/login' render={props => (
                                 (loggedIn)
-                                    ? <Redirect to='/dashboard' /> //<Dashboard {...props} loggedIn={loggedIn} logout={logout}/>
+                                    ? <Redirect to='/dashboard' />
                                     : <Login {...props} login={login}  />
+                            )} />
+                            <Route path='/signUp' render={props => (
+                                (loggedIn)
+                                    ? <Redirect to='/dashboard' />
+                                    : <SignUp {...props}  />
                             )} />
                             <Route path='/dashboard' render={(props)=>(
                                 (loggedIn)
