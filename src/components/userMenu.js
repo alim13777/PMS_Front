@@ -20,6 +20,7 @@ import List from "@material-ui/core/List";
 import Box from "@material-ui/core/Box";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import {useTranslation} from "react-multi-lang";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MenuListComposition(props) {
+    const t = useTranslation()
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
@@ -111,19 +113,19 @@ export default function MenuListComposition(props) {
                                                 <ListItemIcon className={classes.userMenuIcon}>
                                                     <ProfileIcon />
                                                 </ListItemIcon>
-                                                <ListItemText primary="حساب کاربری" />
+                                                <ListItemText primary={t("User.Menu.Profile")} />
                                             </ListItemLink>
                                             <ListItemLink divider={true} href="#">
                                                 <ListItemIcon className={classes.userMenuIcon}>
                                                     <PromotionIcon />
                                                 </ListItemIcon>
-                                                <ListItemText primary="ارتقای حساب" />
+                                                <ListItemText primary={t("User.Menu.Upgrade")} />
                                             </ListItemLink>
                                             <ListItemLink href="#" onClick={props.logout}>
                                                 <ListItemIcon className={classes.userMenuIcon}>
                                                     <LogoutIcon />
                                                 </ListItemIcon>
-                                                <ListItemText primary="خروج" />
+                                                <ListItemText primary={t("User.Menu.SignOut")} />
                                             </ListItemLink>
                                         </List>
                                     </MenuList>

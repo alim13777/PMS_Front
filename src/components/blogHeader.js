@@ -126,18 +126,6 @@ export default function Header(props) {
                         <Typography variant="h6" color="inherit" noWrap className={classes.toolbarTitle}>
                             {t('Header.Company')}
                         </Typography>
-                        {/*<nav className="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">*/}
-                        {/*    <div className="collapse navbar-collapse" id="navbarSupportedContent">*/}
-                        {/*        <ul className="navbar-nav">*/}
-                        {/*            <li className="nav-item">*/}
-                        {/*                <NavLink to='/' className="nav-link">Books</NavLink>*/}
-                        {/*            </li>*/}
-                        {/*            <li className="nav-item">*/}
-                        {/*                {authLink}*/}
-                        {/*            </li>*/}
-                        {/*        </ul>*/}
-                        {/*    </div>*/}
-                        {/*</nav>*/}
                         <nav className={classes.toolbarMenu}>
                             <Link variant="button" color="textPrimary" href="/" className={classes.appBarLink}>
                                 {t('Header.Home')}&nbsp;
@@ -145,6 +133,11 @@ export default function Header(props) {
                             <Link variant="button" color="textPrimary"  className={classes.appBarLink}>
                                 {t('Header.Prices')}
                             </Link>
+                            {props.loggedIn
+                                ? <Link variant="button" color="textPrimary" href="/dashboard" className={classes.appBarLink}>
+                                    {t('Header.Dashboard')}
+                                  </Link>
+                                : null}
                         </nav>
                         <nav className={classes.toolbarLang}>
                             <Link variant={"button"} color={"textPrimary"} onClick={handleLang} href={"#"}>
