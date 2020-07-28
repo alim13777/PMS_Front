@@ -16,7 +16,16 @@
       "Title": "Dashboard"
     },
     "Paper": {
-      "Title": "{add}{edit}{new} Paper"
+      "Title": "{add}{edit}{new} Paper",
+      "PaperTitle": "Paper Title",
+      "PaperType": "Paper Type",
+      "Types": {
+        "domesticConf": "Domestic Conference",
+        "foreignConf": "Foreign  Conference",
+        "domesticJour": "domestic Journal",
+        "foreignJour": "Foreign Journal"
+      },
+      "PaperDescription": "Description"
     },
     "PapersList": {
       "Title": "Papers List"
@@ -49,7 +58,9 @@
       "Profile": "Profile",
       "Upgrade": "Upgrade account",
       "SignOut": "Sign out"
-    }
+    },
+    "Name": "First name",
+    "Surname": "Last name"
   },
   "Copyright": {
     "Title": "Copyright",

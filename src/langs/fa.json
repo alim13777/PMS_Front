@@ -16,7 +16,16 @@
       "Title": "داشبورد"
     },
     "Paper": {
-      "Title": "{add}{edit} مقاله {new}"
+      "Title": "{add}{edit} مقاله {new}",
+      "PaperTitle": "عنوان مقاله",
+      "PaperType": "نوع مقاله",
+      "Types": {
+        "domesticConf": "کنفرانس داخلی",
+        "foreignConf": "کنفرانس خارجی",
+        "domesticJour": "مجله داخلی",
+        "foreignJour": "مجله خارجی"
+      },
+      "PaperDescription": "توضیحات"
     },
     "PapersList": {
       "Title": "لیست مقالات"
@@ -49,7 +58,9 @@
       "Profile": "حساب کاربری",
       "Upgrade": "ارتقای حساب",
       "SignOut": "خروج"
-    }
+    },
+    "Name": "نام",
+    "Surname": "نام خانوادگی"
   },
   "Copyright": {
     "Title": "حق مالکیت",

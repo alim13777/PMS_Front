@@ -77,8 +77,8 @@ export default function Login(props) {
                     email: email,
                     password: password
                 }).then(response => {
-                    // debugger;
-                    if (response.status === 204) {
+                    debugger;
+                    if (response.status === 200) {
                         props.login();
                         setToHome(true);
                     }
@@ -109,30 +109,23 @@ export default function Login(props) {
                         {t("Login.Title")}
                     </Typography>
                     <form className={classes.form} noValidate onSubmit={handleSubmit}>
-                        <TextField
-                            type="email"
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            name="email"
-                            label={t("Login.Email")}
-                            autoComplete="email"
-                            autoFocus
-                            onChange={e => setEmail(e.target.value)}
+                        <TextField id="email"
+                                   type="email"
+                                   name="email"
+                                   autoComplete="email"
+                                   variant="outlined" margin="normal"
+                                   required fullWidth autoFocus
+                                   label={t("Login.Email")}
+                                   onChange={e => setEmail(e.target.value)}
                         />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label={t("Login.Password")}
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            onChange={e => setPassword(e.target.value)}
+                        <TextField id="password"
+                                   type="password"
+                                   name="password"
+                                   variant="outlined" margin="normal"
+                                   autoComplete="current-password"
+                                   required fullWidth
+                                   label={t("Login.Password")}
+                                   onChange={e => setPassword(e.target.value)}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}

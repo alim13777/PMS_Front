@@ -37,10 +37,6 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
         backgroundColor: theme.palette.secondary.main,
     },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-    },
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
@@ -62,38 +58,54 @@ export default function SignInSide(probs) {
                     <Typography component="h1" variant="h5">
                         {t("SignUp.Title")}
                     </Typography>
-                    <form className={classes.form} noValidate>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label={t("Login.Email")}
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label={t("Login.Password")}
-                            type="password"
-                            id="password"
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label={t("SignUp.RepeatPass")}
-                            type="password"
-                            id="passwordR"
-                        />
+                    <form className="w-100 mt-4" noValidate>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} >
+                                <TextField id="email"
+                                           name="email"
+                                           autoComplete="email"
+                                           variant="outlined" margin="none"
+                                           required fullWidth autoFocus
+                                           label={t("Login.Email")}
+                                />
+                            </Grid>
+                            <Grid item xs={6} >
+                                <TextField id="name"
+                                           type="text"
+                                           name="name"
+                                           variant="outlined" margin="none"
+                                           required fullWidth
+                                           label={t("User.Name")}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField id="name"
+                                           type="text"
+                                           name="name"
+                                           variant="outlined" margin="none"
+                                           required fullWidth
+                                           label={t("User.Surname")}
+                                />
+                            </Grid>
+                            <Grid item xs={6} >
+                                <TextField id="password"
+                                           type="password"
+                                           name="password"
+                                           variant="outlined" margin="none"
+                                           required fullWidth
+                                           label={t("Login.Password")}
+                                />
+                            </Grid>
+                            <Grid item xs={6} >
+                                <TextField id="passwordR"
+                                           type="password"
+                                           name="password"
+                                           variant="outlined" margin="none"
+                                           required fullWidth
+                                           label={t("SignUp.RepeatPass")}
+                                />
+                            </Grid>
+                        </Grid>
                         <Button
                             type="submit"
                             fullWidth
@@ -112,7 +124,7 @@ export default function SignInSide(probs) {
                         </Grid>
                     </form>
 
-                    <Box mt={1} p={5} pb={0}>
+                    <Box  mt={1} p={5} pb={0}>
                         <Copyright />
                     </Box>
                 </div>

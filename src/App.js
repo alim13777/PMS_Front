@@ -6,6 +6,9 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
+import 'bootstrap-v4-rtl/dist/css/bootstrap.css';
+import 'bootstrap-v4-rtl/dist/css/bootstrap-rtl.css';
+
 
 // Import pages:
 import Home from './pages/home';
@@ -52,6 +55,10 @@ const theme = createMuiTheme({
             },
         },
     },
+    'hr': {
+        borderWidth: "1px",
+
+    }
 });
 
 // Configure JSS
@@ -85,7 +92,7 @@ const App = () => {
         <Router>
             <ThemeProvider theme={theme}>
                 <RTL>
-                    <div className="container mt-5 pt-5">
+                    {/*<div className="container mt-5 pt-5">*/}
                         <Switch>
                             <Route path='/' exact render={props => (
                                 <Home {...props} loggedIn={loggedIn} logout={logout} />
@@ -120,7 +127,7 @@ const App = () => {
                             />
                             <Route component={Error}/>
                         </Switch>
-                    </div>
+                    {/*</div>*/}
                 </RTL>
             </ThemeProvider>
         </Router>
