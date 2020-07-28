@@ -28,6 +28,9 @@ const useStyles = makeStyles(() => ({
         '& h2': {
             color: "darkslateblue",
             margin: "0 50px"
+        },
+        '& a': {
+            margin: "20px 50px"
         }
     }
 }));
