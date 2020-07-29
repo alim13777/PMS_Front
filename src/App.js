@@ -75,18 +75,21 @@ const App = () => {
     const [loggedIn, setLoggedIn] = React.useState(
         sessionStorage.getItem('loggedIn') === 'true' || false
     );
-    const login = () => {
+    const login = (data) => {
         setLoggedIn(true);
         sessionStorage.setItem('loggedIn', true);
+        sessionStorage.setItem('user', JSON.stringify(data));
     };
     const logout = () => {
         apiClient.post('/logout').then(response => {
             if (response.status === 204) {
                 setLoggedIn(false);
                 sessionStorage.setItem('loggedIn', false);
+                sessionStorage.removeItem('user');
             }
         })
     };
+
 
     return (
         <Router>
@@ -101,7 +104,7 @@ const App = () => {
                             <Route path='/login' render={props => (
                                 (loggedIn)
                                     ? <Redirect to='/dashboard' />
-                                    : <Login {...props} login={login}  />
+                                    : <Login {...props} login={login}/>
                             )} />
                             <Route path='/signUp' render={props => (
                                 (loggedIn)
@@ -114,12 +117,12 @@ const App = () => {
                                     <>
                                         <Route path={`${url}/`} exact render={(props)=>(
                                             (loggedIn)
-                                                ? <Dashboard {...props} loggedIn={loggedIn} logout={logout} />
+                                                ? <Dashboard {...props} loggedIn={loggedIn} logout={logout}/>
                                                 : <Redirect to='/login' />
                                         )}/>
                                         <Route path={`${url}/paper`} render={(props)=>(
                                             (loggedIn)
-                                                ? <PaperPage {...props} loggedIn={loggedIn} logout={logout} />
+                                                ? <PaperPage {...props} loggedIn={loggedIn} logout={logout}/>
                                                 : <Redirect to='/login' />
                                         )}/>
                                     </>

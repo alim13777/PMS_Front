@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
         padding: "0",
     },
     username: {
-        marginLeft: "6px"
+        marginLeft: "6px",
+        textTransform: "capitalize"
     },
     userMenuIcon: {
         minWidth: "38px"
@@ -72,6 +73,11 @@ export default function MenuListComposition(props) {
         prevOpen.current = open;
     }, [open]);
 
+    function username (){
+        let user = JSON.parse(sessionStorage.getItem('user'));
+        return user.firstName + " " + user.lastName
+    }
+
     return (
         <div className={classes.root}>
             <div>
@@ -84,8 +90,9 @@ export default function MenuListComposition(props) {
                 >
                     <UserIcon/>
                     <Typography variant={"body1"} className={classes.username}>
-                        مجتبی فاضلی نیا
+                         {username()}
                     </Typography>
+                    {/*{console.log(props.user)}*/}
                 </Button>
                 {/*<IconButton*/}
                 {/*    ref={anchorRef}*/}

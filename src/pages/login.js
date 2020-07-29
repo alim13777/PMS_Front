@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Login(props) {
     const t = useTranslation()
     const classes = useStyles();
+    // const [user, setUser] = React.useState('');
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [toHome, setToHome] = React.useState(false);
@@ -77,9 +78,9 @@ export default function Login(props) {
                     email: email,
                     password: password
                 }).then(response => {
-                    debugger;
+                    console.log("response data:",response.data);
                     if (response.status === 200) {
-                        props.login();
+                        props.login(response.data);
                         setToHome(true);
                     }
                 }).catch(error => {
