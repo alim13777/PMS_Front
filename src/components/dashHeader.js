@@ -12,9 +12,11 @@ import Link from "@material-ui/core/Link";
 const useStyles = makeStyles((theme) => ({
     appBar: {
         borderBottom: `1px solid ${theme.palette.divider}`,
+
     },
     appMenu: {
         borderBottom: `1px solid ${theme.palette.divider}`,
+        zIndex: "0!important"
     },
     toolbar: {
         flexWrap: 'wrap',

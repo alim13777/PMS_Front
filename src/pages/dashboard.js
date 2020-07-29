@@ -11,7 +11,7 @@ const Dashboard = (props) => {
         <div className={"frame-dashboard"}>
             <Header {...props}/>
             <Container>
-                <h1>{t("Dashboard.Main.Title")}</h1>
+                <h1 className={"frame-dashboard-title"}>{t("Dashboard.Main.Title")}</h1>
                 <RecentPapers/>
             </Container>
             <Footer/>
