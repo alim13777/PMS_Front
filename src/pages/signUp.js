@@ -14,6 +14,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Background from '../images/signInSide.jpg';
 import Copyright from '../components/copyright'
 import {useTranslation} from "react-multi-lang";
+import apiClient from "../services/api";
+import {Redirect} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -45,6 +47,39 @@ const useStyles = makeStyles((theme) => ({
 export default function SignInSide(probs) {
     const t = useTranslation()
     const classes = useStyles();
+    const [firstName, setFirstName] = React.useState('');
+    const [lastName, setLastName] = React.useState('');
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [password2, setPassword2] = React.useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        apiClient.get('/sanctum/csrf-cookie')
+            .then(response => {
+                apiClient.post('/register', {
+                    "firstName":firstName,
+                    "lastName":lastName,
+                    "email":email,
+                    "password":password,
+                    "password_confirmation":password2,
+                    "account":"normal",
+                    "language":"fa"
+                }).then(response => {
+                    console.log("response data:",response.data);
+                    if (response.status === 200) {
+                        return (<Redirect to='/' />)
+                    }
+                }).catch(error => {
+                    // if (error.response && error.response.status === 422) {
+                    //     setAuthError(true);
+                    // } else {
+                    //     setUnknownError(true);
+                        console.error(error);
+                    // }
+                });
+            });
+    }
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -58,7 +93,7 @@ export default function SignInSide(probs) {
                     <Typography component="h1" variant="h5">
                         {t("SignUp.Title")}
                     </Typography>
-                    <form className="w-100 mt-4" noValidate>
+                    <form className="w-100 mt-4" noValidate onSubmit={handleSubmit}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} >
                                 <TextField id="email"
@@ -67,6 +102,7 @@ export default function SignInSide(probs) {
                                            variant="outlined" margin="none"
                                            required fullWidth autoFocus
                                            label={t("Login.Email")}
+                                           onChange={e => setEmail(e.target.value)}
                                 />
                             </Grid>
                             <Grid item xs={6} >
@@ -76,6 +112,7 @@ export default function SignInSide(probs) {
                                            variant="outlined" margin="none"
                                            required fullWidth
                                            label={t("User.Name")}
+                                           onChange={e => setFirstName(e.target.value)}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -85,6 +122,7 @@ export default function SignInSide(probs) {
                                            variant="outlined" margin="none"
                                            required fullWidth
                                            label={t("User.Surname")}
+                                           onChange={e => setLastName(e.target.value)}
                                 />
                             </Grid>
                             <Grid item xs={6} >
@@ -94,6 +132,7 @@ export default function SignInSide(probs) {
                                            variant="outlined" margin="none"
                                            required fullWidth
                                            label={t("Login.Password")}
+                                           onChange={e => setPassword(e.target.value)}
                                 />
                             </Grid>
                             <Grid item xs={6} >
@@ -103,6 +142,7 @@ export default function SignInSide(probs) {
                                            variant="outlined" margin="none"
                                            required fullWidth
                                            label={t("SignUp.RepeatPass")}
+                                           onChange={e => setPassword2(e.target.value)}
                                 />
                             </Grid>
                         </Grid>
