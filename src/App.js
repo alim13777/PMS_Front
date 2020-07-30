@@ -13,11 +13,11 @@ import 'bootstrap-v4-rtl/dist/css/bootstrap-rtl.css';
 // Import pages:
 import Home from './pages/home';
 import Dashboard from './pages/dashboard';
-// import Login from './components/Login';
 import Login from './pages/login';
 import SignUp from './pages/signUp';
 import Error from './pages/error';
 import PaperPage from "./pages/paper";
+import NewPaperPage from "./pages/newPaper";
 // Import fonts
 import Vazir from './fonts/Vazir-FD-WOL.woff';
 // Import translations:
@@ -132,6 +132,11 @@ const App = () => {
                                         <Route path={`${url}/paper`} render={(props)=>(
                                             (loggedIn)
                                                 ? <PaperPage {...props} loggedIn={loggedIn} logout={logout}/>
+                                                : <Redirect to='/login' />
+                                        )}/>
+                                        <Route path={`${url}/newPaper`} render={(props)=>(
+                                            (loggedIn)
+                                                ? <NewPaperPage {...props} loggedIn={loggedIn} logout={logout}/>
                                                 : <Redirect to='/login' />
                                         )}/>
                                     </>

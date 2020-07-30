@@ -17,6 +17,9 @@
     },
     "Paper": {
       "Title": "{add}{edit} مقاله {new}",
+      "TitleNew": "تعریف مقاله جدید",
+      "ShortTitleNew": "مقاله جدید",
+      "PaperCode": "کد مقاله",
       "PaperTitle": "عنوان مقاله",
       "PaperType": "نوع مقاله",
       "Types": {

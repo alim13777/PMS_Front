@@ -17,7 +17,10 @@
     },
     "Paper": {
       "Title": "{add}{edit}{new} Paper",
+      "TitleNew": "Add New Paper",
+      "ShortTitleNew": "New Paper",
       "PaperTitle": "Paper Title",
+      "PaperCode": "Paper Code",
       "PaperType": "Paper Type",
       "Types": {
         "domesticConf": "Domestic Conference",

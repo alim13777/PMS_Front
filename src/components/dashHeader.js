@@ -66,8 +66,8 @@ export default function Header(props) {
                         <Link variant="button" color="textPrimary" underline={"none"} href="/dashboard/papersList" className={classes.appMenuLink}>
                             {t('Dashboard.PapersList.Title')}
                         </Link>
-                        <Link variant="button" color="textPrimary" underline={"none"} href="/dashboard/paper" className={classes.appMenuLink}>
-                            {t('Dashboard.Paper.Title',{'new':t("Action.New"),'add':"",'edit':""})}
+                        <Link variant="button" color="textPrimary" underline={"none"} href="/dashboard/newPaper" className={classes.appMenuLink}>
+                            {t('Dashboard.Paper.ShortTitleNew')}
                         </Link>
                     </Toolbar>
                 </Container>
