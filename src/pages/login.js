@@ -63,8 +63,13 @@ export default function Login(props) {
     const t = useTranslation()
     const classes = useStyles();
     // const [user, setUser] = React.useState('');
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [email, setEmail] = React.useState(
+        localStorage.getItem('email')?localStorage.getItem('email') : ""
+    );
+    const [password, setPassword] = React.useState(
+        localStorage.getItem('password')?localStorage.getItem('password') : ""
+    );
+    const [rememberMe, setRememberMe] = React.useState(false);
     const [toHome, setToHome] = React.useState(false);
     const [authError, setAuthError] = React.useState(false);
     const [unknownError, setUnknownError] = React.useState(false);
@@ -82,6 +87,10 @@ export default function Login(props) {
                     if (response.status === 200) {
                         // console.log("json2:",JSON.stringify(response.data));
                         // props.setUser(JSON.stringify(response.data))
+                        if(rememberMe){
+                            localStorage.setItem("password",password)
+                            localStorage.setItem("email",email)
+                        }
                         props.login(response.data);
                         // setToHome(true);
                     }
@@ -119,6 +128,7 @@ export default function Login(props) {
                                    variant="outlined" margin="normal"
                                    required fullWidth autoFocus
                                    label={t("Login.Email")}
+                                   value={email}
                                    onChange={e => setEmail(e.target.value)}
                         />
                         <TextField id="password"
@@ -128,10 +138,11 @@ export default function Login(props) {
                                    autoComplete="current-password"
                                    required fullWidth
                                    label={t("Login.Password")}
+                                   value={password}
                                    onChange={e => setPassword(e.target.value)}
                         />
                         <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
+                            control={<Checkbox value="remember" color="primary" onChange={e => setRememberMe(e.target.checked )} />}
                             label={t("Login.Remember")}
                         />
                         <Button
