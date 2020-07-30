@@ -75,10 +75,19 @@ const App = () => {
     const [loggedIn, setLoggedIn] = React.useState(
         sessionStorage.getItem('loggedIn') === 'true' || false
     );
+    // const [user, setUser] = React.useState({});
     const login = (data) => {
+        // console.log("login...")
+        // console.log("data:",data)
+
+        // setUser(JSON.stringify(data));
+        sessionStorage.setItem('user', JSON.stringify(data));
+
+        // console.log("user:",user)
+        // console.log("stored user:",sessionStorage.getItem('user'))
+
         setLoggedIn(true);
         sessionStorage.setItem('loggedIn', true);
-        sessionStorage.setItem('user', JSON.stringify(data));
     };
     const logout = () => {
         apiClient.post('/logout').then(response => {

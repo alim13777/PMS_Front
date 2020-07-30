@@ -78,10 +78,12 @@ export default function Login(props) {
                     email: email,
                     password: password
                 }).then(response => {
-                    console.log("response data:",response.data);
+                    // console.log("response data:",response.data);
                     if (response.status === 200) {
+                        // console.log("json2:",JSON.stringify(response.data));
+                        // props.setUser(JSON.stringify(response.data))
                         props.login(response.data);
-                        setToHome(true);
+                        // setToHome(true);
                     }
                 }).catch(error => {
                     if (error.response && error.response.status === 422) {
@@ -93,9 +95,9 @@ export default function Login(props) {
                 });
             });
     }
-    if (toHome === true) {
-        return (<Redirect to='/dashboard' />)
-    }
+    // if (toHome === true) {
+    //     return (<Redirect to='/dashboard' />)
+    // }
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -109,7 +111,7 @@ export default function Login(props) {
                     <Typography component="h1" variant="h5">
                         {t("Login.Title")}
                     </Typography>
-                    <form className={classes.form} noValidate onSubmit={handleSubmit}>
+                    <form className={classes.form} noValidate onSubmit={handleSubmit} autoComplete="on">
                         <TextField id="email"
                                    type="email"
                                    name="email"
