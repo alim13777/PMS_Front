@@ -18,7 +18,7 @@ const Login = (props) => {
                     email: email,
                     password: password
                 }).then(response => {
-                    if (response.status === 204) {
+                    if (response.status === 200) {
                         props.login();
                         setToHome(true);
                     }

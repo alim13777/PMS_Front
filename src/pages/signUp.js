@@ -57,7 +57,7 @@ export default function SignInSide(probs) {
         e.preventDefault();
         apiClient.get('/sanctum/csrf-cookie')
             .then(response => {
-                apiClient.post('/register', {
+                apiClient.post('api/register', {
                     "firstName":firstName,
                     "lastName":lastName,
                     "email":email,
