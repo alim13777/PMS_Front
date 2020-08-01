@@ -114,6 +114,51 @@ const PaperPage = (props) => {
                                             // className={classes.formControl}
                                         />
                                     </Grid>
+
+
+                                    <Grid item xs={12}>
+
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormControl variant="outlined" fullWidth>
+                                            <InputLabel id="publisher-label">
+                                                {t("Dashboard.Paper.Publisher")}
+                                            </InputLabel>
+                                            <Select id="publisher"
+                                                    label={t("Dashboard.Paper.Publisher")}
+                                                    labelId="publisher-label"
+                                                    autoWidth
+                                                // value={age}
+                                                // onChange={handleChange}
+                                            >
+                                                <ListSubheader>{t("Dashboard.Paper.Publisher")}:</ListSubheader>
+                                                <MenuItem value=""></MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormControl variant="outlined" fullWidth>
+                                            <InputLabel id="paper-status-label">
+                                                {t("Dashboard.Paper.Status")}
+                                            </InputLabel>
+                                            <Select id="paper-status"
+                                                    label={t("Dashboard.Paper.Status")}
+                                                    labelId="paper-status-label"
+                                                    autoWidth
+                                                // value={age}
+                                                // onChange={handleChange}
+                                            >
+                                                <ListSubheader>{t("Dashboard.Paper.Status")}:</ListSubheader>
+                                                <MenuItem value=""></MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField id="paper-date"
+                                                   label={t("Dashboard.Paper.Date")}
+                                                   fullWidth variant="outlined"
+                                                   className={classes.formControl}/>
+                                    </Grid>
                                 </Grid>
 
                             </form>

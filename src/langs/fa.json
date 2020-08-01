@@ -28,7 +28,10 @@
         "domesticJour": "مجله داخلی",
         "foreignJour": "مجله خارجی"
       },
-      "PaperDescription": "توضیحات"
+      "PaperDescription": "توضیحات",
+      "Publisher": "مجله/کنفرانس",
+      "Status": "وضعیت",
+      "Date": "تاریخ"
     },
     "PapersList": {
       "Title": "لیست مقالات"

@@ -28,7 +28,10 @@
         "domesticJour": "domestic Journal",
         "foreignJour": "Foreign Journal"
       },
-      "PaperDescription": "Description"
+      "PaperDescription": "Description",
+      "Publisher": "Journal/Conference",
+      "Status": "Status",
+      "Date": "Date"
     },
     "PapersList": {
       "Title": "Papers List"

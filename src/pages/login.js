@@ -62,8 +62,14 @@ const useStyles = makeStyles((theme) => ({
 export default function Login(props) {
     const t = useTranslation()
     const classes = useStyles();
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    // const [user, setUser] = React.useState('');
+    const [email, setEmail] = React.useState(
+        localStorage.getItem('email')?localStorage.getItem('email') : ""
+    );
+    const [password, setPassword] = React.useState(
+        localStorage.getItem('password')?localStorage.getItem('password') : ""
+    );
+    const [rememberMe, setRememberMe] = React.useState(false);
     const [toHome, setToHome] = React.useState(false);
     const [authError, setAuthError] = React.useState(false);
     const [unknownError, setUnknownError] = React.useState(false);
@@ -77,10 +83,16 @@ export default function Login(props) {
                     email: email,
                     password: password
                 }).then(response => {
-                    // debugger;
-                    if (response.status === 204) {
-                        props.login();
-                        setToHome(true);
+                    // console.log("response data:",response.data);
+                    if (response.status === 200) {
+                        // console.log("json2:",JSON.stringify(response.data));
+                        // props.setUser(JSON.stringify(response.data))
+                        if(rememberMe){
+                            localStorage.setItem("password",password)
+                            localStorage.setItem("email",email)
+                        }
+                        props.login(response.data);
+                        // setToHome(true);
                     }
                 }).catch(error => {
                     if (error.response && error.response.status === 422) {
@@ -92,9 +104,9 @@ export default function Login(props) {
                 });
             });
     }
-    if (toHome === true) {
-        return (<Redirect to='/dashboard' />)
-    }
+    // if (toHome === true) {
+    //     return (<Redirect to='/dashboard' />)
+    // }
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -108,34 +120,29 @@ export default function Login(props) {
                     <Typography component="h1" variant="h5">
                         {t("Login.Title")}
                     </Typography>
-                    <form className={classes.form} noValidate onSubmit={handleSubmit}>
-                        <TextField
-                            type="email"
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            name="email"
-                            label={t("Login.Email")}
-                            autoComplete="email"
-                            autoFocus
-                            onChange={e => setEmail(e.target.value)}
+                    <form className={classes.form} noValidate onSubmit={handleSubmit} autoComplete="on">
+                        <TextField id="email"
+                                   type="email"
+                                   name="email"
+                                   autoComplete="email"
+                                   variant="outlined" margin="normal"
+                                   required fullWidth autoFocus
+                                   label={t("Login.Email")}
+                                   value={email}
+                                   onChange={e => setEmail(e.target.value)}
                         />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label={t("Login.Password")}
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            onChange={e => setPassword(e.target.value)}
+                        <TextField id="password"
+                                   type="password"
+                                   name="password"
+                                   variant="outlined" margin="normal"
+                                   autoComplete="current-password"
+                                   required fullWidth
+                                   label={t("Login.Password")}
+                                   value={password}
+                                   onChange={e => setPassword(e.target.value)}
                         />
                         <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
+                            control={<Checkbox value="remember" color="primary" onChange={e => setRememberMe(e.target.checked )} />}
                             label={t("Login.Remember")}
                         />
                         <Button
