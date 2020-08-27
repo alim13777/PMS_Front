@@ -13,11 +13,13 @@
     "bootstrap": "^4.5.0",
     "bootstrap-v4-rtl": "^4.4.1-2",
     "jss-rtl": "^0.3.0",
+    "material-table": "^1.68.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-modern-calendar-datepicker": "^3.1.6",
     "react-multi-lang": "^2.1.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "^3.4.3"
   },
   "scripts": {
     "start": "react-scripts start",

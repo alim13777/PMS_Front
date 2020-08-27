@@ -1,13 +1,11 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from "@material-ui/core/Container";
-import {useTranslation} from "react-multi-lang";
+import {useTranslation,getLanguage} from "react-multi-lang";
 import Header from "../components/dashHeader";
 import Footer from "../components/dashFooter";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
-import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -15,39 +13,68 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Grid from "@material-ui/core/Grid";
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import {Paper} from "@material-ui/core";
+import SearchAuthors from '../components/searchAuthors'
+import ManageAuthors from '../components/manageAuthors'
+import Box from "@material-ui/core/Box";
 
-const useStyles = makeStyles((theme) => ({
-    formControl: {
-        // marginBottom: theme.spacing(1),
-        // width: 300,
-    },
-    // selectEmpty: {
-    //     marginTop: theme.spacing(2),
-    // },
-}));
+import 'react-modern-calendar-datepicker/lib/DatePicker.css';
+import DatePicker from 'react-modern-calendar-datepicker';
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
+import {paperStatusList} from '../components/lexicon'
+
+const user = JSON.parse(sessionStorage.getItem('user'));
+
+function createAuthor(partyId, firstName, lastName, email) {
+    return { partyId, firstName, lastName, email };
 }
 
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 const PaperPage = (props) => {
-    const classes = useStyles();
     const t = useTranslation()
+    const [authors, setAuthors] = React.useState(
+        [createAuthor(user.partyId, user.firstName, user.lastName, user.email)]
+    );
+    const [paperLocalId, setPaperLocalId] = React.useState(null);
+    const [paperType, setPaperType] = React.useState(null);
+    const [paperTitle, setPaperTitle] = React.useState(null);
+    const [paperDesc, setPaperDesc] = React.useState(null);
+    const [paperStatus, setPaperStatus] = React.useState(null);
+    const [paperPublisher, setPaperPublisher] = React.useState(null);
+    const [date, setDate] = React.useState(null);
+
+    const addAuthors = (newAuthors) => {
+        newAuthors.map( r => {
+            let pos = authors.map(function(e) { return e.partyId; }).indexOf(r.partyId);
+            if(pos<0) authors.push(r)
+            return false
+        })
+        setAuthors(authors)
+    }
+
+    const renderDateInput = ({ ref }) => (
+        <TextField id="paper-date"
+                   value={date ? date.year+'/'+date.month+'/'+date.day : ''}
+                   ref={ref} // necessary
+                   label={t("Dashboard.Paper.Date")}
+                   fullWidth variant="outlined"/>
+    )
+
+    const postPaper = ()=> {
+        let packet = {
+            paper: {
+                title: paperTitle,
+                type: paperType,
+                description: paperDesc,
+                localId: paperLocalId
+            },
+            publisher: {
+                publisher: paperPublisher,
+                status: paperStatus,
+                date: date
+            },
+            authors: authors
+        }
+        console.log('packet:',packet)
+    }
 
     return (
         <div className={"frame-dashboard"}>
@@ -55,18 +82,6 @@ const PaperPage = (props) => {
             <Container>
                 <h1 className={"frame-dashboard-title"}>{t('Dashboard.Paper.TitleNew')}</h1>
                 <Card>
-                    {/*<CardContent>*/}
-                    {/*    */}
-                    {/*    /!*<Button variant="contained" color="primary">*!/*/}
-                    {/*    /!*    {t("Action.Add")}*!/*/}
-                    {/*    /!*</Button>*!/*/}
-
-                    {/*<CardActions>*/}
-                    {/*    <Button variant="contained" color="primary">*/}
-                    {/*        {t("Action.Add")}*/}
-                    {/*    </Button>*/}
-                    {/*</CardActions>*/}
-
                     <Grid container spacing={13} component={CardContent}>
                         <Grid item xs={12}>
                             <form noValidate autoComplete="off">
@@ -75,10 +90,12 @@ const PaperPage = (props) => {
                                         <TextField id="paper-code"
                                                    label={t("Dashboard.Paper.PaperCode")}
                                                    fullWidth variant="outlined"
-                                                   className={classes.formControl}/>
+                                                   value={paperLocalId}
+                                                   onChange={e => setPaperLocalId(e.target.value)}
+                                        />
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                                        <FormControl variant="outlined" fullWidth>
                                             <InputLabel id="paper-type-label">
                                                 {t("Dashboard.Paper.PaperType")}
                                             </InputLabel>
@@ -86,8 +103,8 @@ const PaperPage = (props) => {
                                                     label={t("Dashboard.Paper.PaperType")}
                                                     labelId="paper-type-label"
                                                     autoWidth
-                                                // value={age}
-                                                // onChange={handleChange}
+                                                    value={paperType}
+                                                    onChange={e => setPaperType(e.target.value)}
                                             >
                                                 <ListSubheader>{t("Dashboard.Paper.PaperType")}:</ListSubheader>
                                                 <MenuItem value="domesticJour">{t("Dashboard.Paper.Types.domesticJour")}</MenuItem>
@@ -103,22 +120,24 @@ const PaperPage = (props) => {
                                         <TextField id="paper-title"
                                                    label={t("Dashboard.Paper.PaperTitle")}
                                                    fullWidth variant="outlined"
-                                                   className={classes.formControl}/>
+                                                   value={paperTitle}
+                                                   onChange={e => setPaperTitle(e.target.value)}
+                                        />
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField id="paper-desc"
                                                    label={t("Dashboard.Paper.PaperDescription")}
                                                    multiline rows={3} fullWidth
                                                    variant="outlined"
-
-                                            // className={classes.formControl}
+                                                   value={paperDesc}
+                                                   onChange={e => setPaperDesc(e.target.value)}
                                         />
                                     </Grid>
-
 
                                     <Grid item xs={12}>
 
                                     </Grid>
+
                                     <Grid item xs={4}>
                                         <FormControl variant="outlined" fullWidth>
                                             <InputLabel id="publisher-label">
@@ -128,11 +147,11 @@ const PaperPage = (props) => {
                                                     label={t("Dashboard.Paper.Publisher")}
                                                     labelId="publisher-label"
                                                     autoWidth
-                                                // value={age}
-                                                // onChange={handleChange}
+                                                    value={paperPublisher}
+                                                    onChange={e => setPaperPublisher(e.target.value)}
                                             >
                                                 <ListSubheader>{t("Dashboard.Paper.Publisher")}:</ListSubheader>
-                                                <MenuItem value=""></MenuItem>
+                                                {/*<MenuItem value=""></MenuItem>*/}
                                             </Select>
                                         </FormControl>
                                     </Grid>
@@ -145,19 +164,39 @@ const PaperPage = (props) => {
                                                     label={t("Dashboard.Paper.Status")}
                                                     labelId="paper-status-label"
                                                     autoWidth
-                                                // value={age}
-                                                // onChange={handleChange}
+                                                    value={paperStatus}
+                                                    onChange={e=> setPaperStatus(e.target.value)}
                                             >
                                                 <ListSubheader>{t("Dashboard.Paper.Status")}:</ListSubheader>
-                                                <MenuItem value=""></MenuItem>
+                                                {paperStatusList.map( i => {
+                                                    return(
+                                                        <MenuItem value={i}>{t("Lexicons.paperStatus."+i)}</MenuItem>
+                                                    )
+                                                })}
                                             </Select>
                                         </FormControl>
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <TextField id="paper-date"
-                                                   label={t("Dashboard.Paper.Date")}
-                                                   fullWidth variant="outlined"
-                                                   className={classes.formControl}/>
+                                        <DatePicker
+                                            value={date}
+                                            onChange={setDate}
+                                            renderInput={renderDateInput}
+                                            shouldHighlightWeekends
+                                            locale={getLanguage()}
+                                            calendarClassName="responsive-calendar"
+                                            className="w-100"
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        {/*<Typography variant={"h6"}>{t("Dashboard.Paper.Authors")}</Typography>*/}
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <SearchAuthors addAuthors={addAuthors}/>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <ManageAuthors authors={authors} setAuthors={setAuthors}/>
                                     </Grid>
                                 </Grid>
 
@@ -167,45 +206,19 @@ const PaperPage = (props) => {
 
                         </Grid>
                         <Grid item xs={6}>
-                            <Card variant="outlined">
-                                <Table className={classes.table} aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Dessert (100g serving)</TableCell>
-                                            <TableCell align="right">Calories</TableCell>
-                                            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                                            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                                            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows.map((row) => (
-                                            <TableRow key={row.name}>
-                                                <TableCell component="th" scope="row">
-                                                    {row.name}
-                                                </TableCell>
-                                                <TableCell align="right">{row.calories}</TableCell>
-                                                <TableCell align="right">{row.fat}</TableCell>
-                                                <TableCell align="right">{row.carbs}</TableCell>
-                                                <TableCell align="right">{row.protein}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </Card>
+
                         </Grid>
                         <Grid item xs={12}>
                             <hr/>
-                            <Button variant="contained" color="primary">
-                                {t("Action.Add")}
-                            </Button>
+                            <Box className="d-flex flex-row-reverse">
+                                <Button type="button" variant="contained" color="primary" className="width-medium" onClick={postPaper}>
+                                    {t("Action.Add")}
+                                </Button>
+                            </Box>
                         </Grid>
 
                     </Grid>
-                    {/*</CardContent>*/}
                 </Card>
-
-
 
             </Container>
             <Footer/>

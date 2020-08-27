@@ -31,7 +31,11 @@
       "PaperDescription": "توضیحات",
       "Publisher": "مجله/کنفرانس",
       "Status": "وضعیت",
-      "Date": "تاریخ"
+      "Date": "تاریخ",
+      "Authors": "نویسندگان",
+      "AuthorsList": "اسامی نویسندگان مقاله",
+      "Search": "جستجو",
+      "SearchAuthors": "جستجو با نام یا ایمیل"
     },
     "PapersList": {
       "Title": "لیست مقالات"
@@ -40,7 +44,8 @@
   "Action": {
     "Add": "افزودن",
     "Edit": "ویرایش",
-    "New": "جدید"
+    "New": "جدید",
+    "Selected": "مورد انتخاب شده"
   },
   "Login": {
     "Title": "ورود به سامانه",
@@ -71,5 +76,24 @@
   "Copyright": {
     "Title": "حق مالکیت",
     "Statement": "تمامی حقوق این سامانه متعلق به گروه نرم افزاری {company} می باشد."
+  },
+  "Table": {
+    "labelRowsPerPage": "تعداد سطر در صفحه:",
+    "nextIconButtonText": "صفحه بعد",
+    "labelDisplayedRows": "({ from, to, count }) =>${from}-${to} از ${count !== -1 ? count :more than ${to}}"
+  },
+  "Lexicons": {
+    "paperStatus": {
+      "researching": "در حال پژوهش",
+      "writing": "در حال نوشتن",
+      "readySubmit": "آماده ارسال",
+      "submitting": "در حال ارسال",
+      "submitted": "ارسال شده",
+      "underReview": "تحت داوری",
+      "underEdit": "در حال ویرایش",
+      "rejected": "رد شده",
+      "accepted": "پذیرفته شده",
+      "canceled": "لغو شده"
+    }
   }
 }

@@ -9,7 +9,6 @@ import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 import 'bootstrap-v4-rtl/dist/css/bootstrap.css';
 import 'bootstrap-v4-rtl/dist/css/bootstrap-rtl.css';
 
-
 // Import pages:
 import Home from './pages/home';
 import Dashboard from './pages/dashboard';
@@ -25,6 +24,7 @@ import { setTranslations, setDefaultLanguage } from 'react-multi-lang'
 import fa from './langs/fa.json'
 import en from './langs/en.json'
 import './App.css';
+import {faIR} from "@material-ui/core/locale";
 
 setTranslations({fa, en})
 setDefaultLanguage('fa')
@@ -59,7 +59,7 @@ const theme = createMuiTheme({
         borderWidth: "1px",
 
     }
-});
+},faIR);
 
 // Configure JSS
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });

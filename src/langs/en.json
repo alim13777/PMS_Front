@@ -31,7 +31,11 @@
       "PaperDescription": "Description",
       "Publisher": "Journal/Conference",
       "Status": "Status",
-      "Date": "Date"
+      "Date": "Date",
+      "Authors": "Authors",
+      "AuthorsList": "Authors list",
+      "Search": "Search",
+      "SearchAuthors": "Search by name or email address"
     },
     "PapersList": {
       "Title": "Papers List"
@@ -40,7 +44,8 @@
   "Action": {
     "Add": "Add",
     "Edit": "Edit",
-    "New": "New"
+    "New": "New",
+    "Selected": "selected"
   },
   "Login": {
     "Title": "Login",
@@ -71,5 +76,24 @@
   "Copyright": {
     "Title": "Copyright",
     "Statement": "All rights reserved."
+  },
+  "Table": {
+    "labelRowsPerPage": "Rows per page:",
+    "nextIconButtonText": "Next page",
+    "labelDisplayedRows": "({ from, to, count }) =>${from}-${to} of ${count !== -1 ? count :more than ${to}}"
+  },
+  "Lexicons": {
+    "paperStatus": {
+      "researching": "Researching",
+      "writing": "Writing",
+      "readySubmit": "Ready to Submit",
+      "submitting": "Submitting",
+      "submitted": "Submitted",
+      "underReview": "Under Review",
+      "underEdit": "Under Edit",
+      "rejected": "Rejected",
+      "accepted": "Accepted",
+      "canceled": "Canceled"
+    }
   }
 }

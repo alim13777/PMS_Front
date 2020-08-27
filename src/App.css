@@ -11,6 +11,14 @@
   z-index: 0;
 }
 
+.width-medium{
+  width: 150px !important;
+}
+
+.hidden{
+  display: none;
+}
+
 h1, .h1 {
   font-size: 1.8rem;
 }
@@ -52,4 +60,13 @@ h1, .h1 {
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.DatePicker {
+  width: 100%;
+}
+.responsive-calendar {
+  /* by setting font-size, all the elements will correspond */
+  font-size: 9px !important; /* default to 10px */
 }
