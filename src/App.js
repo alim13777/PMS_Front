@@ -17,6 +17,7 @@ import SignUp from './pages/signUp';
 import Error from './pages/error';
 import PaperPage from "./pages/paper";
 import NewPaperPage from "./pages/newPaper";
+import PapersListPage from './pages/papersList'
 // Import fonts
 import Vazir from './fonts/Vazir-FD-WOL.woff';
 // Import translations:
@@ -137,6 +138,11 @@ const App = () => {
                                         <Route path={`${url}/newPaper`} render={(props)=>(
                                             (loggedIn)
                                                 ? <NewPaperPage {...props} loggedIn={loggedIn} logout={logout}/>
+                                                : <Redirect to='/login' />
+                                        )}/>
+                                        <Route path={`${url}/papersList`} render={(props)=>(
+                                            (loggedIn)
+                                                ? <PapersListPage {...props} loggedIn={loggedIn} logout={logout}/>
                                                 : <Redirect to='/login' />
                                         )}/>
                                     </>

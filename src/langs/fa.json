@@ -83,7 +83,7 @@
     "labelDisplayedRows": "({ from, to, count }) =>${from}-${to} از ${count !== -1 ? count :more than ${to}}"
   },
   "Lexicons": {
-    "paperStatus": {
+    "PaperStatus": {
       "researching": "در حال پژوهش",
       "writing": "در حال نوشتن",
       "readySubmit": "آماده ارسال",
@@ -94,6 +94,12 @@
       "rejected": "رد شده",
       "accepted": "پذیرفته شده",
       "canceled": "لغو شده"
+    },
+    "PaperType": {
+      "domesticConf": "کنفرانس داخلی",
+      "foreignConf": "کنفرانس خارجی",
+      "domesticJour": "مجله داخلی",
+      "foreignJour": "مجله خارجی"
     }
   }
 }

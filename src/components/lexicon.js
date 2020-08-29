@@ -11,3 +11,11 @@ const paperStatus = [
     "canceled"
 ]
 exports.paperStatusList = paperStatus;
+
+const paperTypes = [
+    "domesticConf",
+    "foreignConf",
+    "domesticJour",
+    "foreignJour"
+]
+exports.paperTypesList = paperTypes;

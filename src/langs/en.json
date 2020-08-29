@@ -83,7 +83,7 @@
     "labelDisplayedRows": "({ from, to, count }) =>${from}-${to} of ${count !== -1 ? count :more than ${to}}"
   },
   "Lexicons": {
-    "paperStatus": {
+    "PaperStatus": {
       "researching": "Researching",
       "writing": "Writing",
       "readySubmit": "Ready to Submit",
@@ -94,6 +94,12 @@
       "rejected": "Rejected",
       "accepted": "Accepted",
       "canceled": "Canceled"
+    },
+    "PaperType": {
+      "domesticConf": "Domestic Conference",
+      "foreignConf": "Foreign  Conference",
+      "domesticJour": "domestic Journal",
+      "foreignJour": "Foreign Journal"
     }
   }
 }
