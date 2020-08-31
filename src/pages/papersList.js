@@ -26,6 +26,7 @@ import Collapse from "@material-ui/core/Collapse";
 import apiClient from "../services/api";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Tooltip from "@material-ui/core/Tooltip";
+import {timestamp2Str} from "../services/tools";
 
 const user = JSON.parse(sessionStorage.getItem('user'));
 
@@ -41,13 +42,13 @@ const useRowStyles = makeStyles({
     }
 });
 
-function createData(id, title, type, status) {
-    return { id, title, type, status,
+function createData(id, title, type, history) {
+    return { id, title, type,
         code: id,
-        history: [
-            { date: '2020-01-05', customerId: '11091700', amount: 3 },
-            { date: '2020-01-02', customerId: 'Anonymous', amount: 1 },
-        ],
+        history//: [
+        //     { publisherId: '10001', publisherName: 'IEEE Industrial Electronic', status: 'underReview', date: 1318781876406 },
+        //     { publisherId: '10002', publisherName: 'IEEE Sensors', status: 'rejected', date: 1218741276400 },
+        // ],
     };
 }
 
@@ -194,6 +195,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+function StatusBadge({status}) {
+    const t = useTranslation()
+    return (
+        <span className={"badge badge-pill badge-normal "
+        + (status==='accepted'?"badge-success":"")
+        + (status==='rejected'?"badge-danger":"")
+        + (status==='underReview'?"badge-primary":"")
+        + (status==='submitted'?"badge-primary":"")
+        + (status==='underEdit'?"badge-warning":"")
+        + (status==='readySubmit'?"badge-warning":"")
+        + (status==='submitting'?"badge-warning":"")
+        + (status==='canceled'?"badge-secondary":"")
+        }>
+            {t('Lexicons.PaperStatus.'+status)}
+        </span>
+    )
+}
 
 function Row(props) {
     const t = useTranslation()
@@ -216,7 +234,12 @@ function Row(props) {
                     </Typography>
                 </TableCell>
                 <TableCell>{t('Lexicons.PaperType.'+row.type)}</TableCell>
-                <TableCell>{t('Lexicons.PaperStatus.'+row.status)}</TableCell>
+                <TableCell>
+                    <StatusBadge status={row.history[0].status}/>
+                    {/*<span className={"badge badge-pill badge-normal "}>*/}
+                    {/*    {t('Lexicons.PaperStatus.'+row.history[0].status)}*/}
+                    {/*</span>*/}
+                </TableCell>
                 <TableCell padding="none">
                     <Tooltip title={t("Action.Edit")}>
                         <IconButton aria-label="edit" >
@@ -229,29 +252,25 @@ function Row(props) {
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box margin={1}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                History
+                            <Typography variant="subtitle2" gutterBottom component="div">
+                                {t("Dashboard.Paper.History")}:
                             </Typography>
-                            <Table size="small" aria-label="purchases">
+                            <Table size="small" aria-label="history">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Date</TableCell>
-                                        <TableCell>Customer</TableCell>
-                                        <TableCell align="right">Amount</TableCell>
-                                        <TableCell align="right">Total price ($)</TableCell>
+                                        <TableCell>{t("Dashboard.Paper.Publisher")}</TableCell>
+                                        <TableCell>{t("Dashboard.Paper.Status")}</TableCell>
+                                        <TableCell>{t("Dashboard.Paper.Date")}</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {row.history.map((historyRow) => (
-                                        <TableRow key={historyRow.date}>
+                                        <TableRow key={historyRow.publisherId}>
                                             <TableCell component="th" scope="row">
-                                                {historyRow.date}
+                                                {historyRow.publisherName}
                                             </TableCell>
-                                            <TableCell>{historyRow.customerId}</TableCell>
-                                            <TableCell align="right">{historyRow.amount}</TableCell>
-                                            <TableCell align="right">
-                                                {Math.round(historyRow.amount * row.price * 100) / 100}
-                                            </TableCell>
+                                            <TableCell>{t("Lexicons.PaperStatus."+historyRow.status)}</TableCell>
+                                            <TableCell>{timestamp2Str(historyRow.date)}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
@@ -276,12 +295,27 @@ const PapersListPage = (props) => {
                         console.log("response:", response)
                         if (response.status === 200) {
                             return [
-                                createData('01', 'Wind turbine torque oscillation reduction using soft switching multiple model predictive control based on the gap metric and Kalman filter estimator', 'foreignJour', 'accepted'),
-                                createData('02', 'Wi-Fi RSS-based Indoor Localization Using Reduced Features Second Order Discriminant Function', 'foreignConf', 'accepted'),
-                                createData('06', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', 'underReview'),
-                                createData('03', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', 'underReview'),
-                                createData('04', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', 'underReview'),
-                                createData('05', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', 'underReview')
+                                createData('01', 'Wind turbine torque oscillation reduction using soft switching multiple model predictive control based on the gap metric and Kalman filter estimator', 'foreignJour', [
+                                    { publisherId: '10001', publisherName: 'IEEE Industrial Electronic', status: 'accepted', date: 1518741276400 },
+                                    { publisherId: '10002', publisherName: 'IEEE Sensors', status: 'rejected', date: 1418741276400 },
+                                    { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
+                                ]),
+                                createData('02', 'Wi-Fi RSS-based Indoor Localization Using Reduced Features Second Order Discriminant Function', 'foreignConf', [
+                                    { publisherId: '10002', publisherName: 'IEEE Sensors', status: 'readySubmit', date: 1418741276400 },
+                                    { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
+                                ]),
+                                createData('06', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
+                                    { publisherId: '10003', publisherName: 'Measurements', status: 'submitted', date: 1218741236400 },
+                                ]),
+                                createData('03', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
+                                    { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
+                                ]),
+                                createData('04', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
+                                    { publisherId: '10003', publisherName: 'Measurements', status: 'writing', date: 1218741236400 },
+                                ]),
+                                createData('05', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
+                                    { publisherId: '20003', publisherName: 'کنترل تربیت مدرس', status: 'canceled', date: 1218741236400 },
+                                ])
                             ]//response.data;
                         }
                     }).catch(error => {
@@ -292,10 +326,12 @@ const PapersListPage = (props) => {
     }, []);
 
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('lastName');
-    const [selected, setSelected] = React.useState([]);
+    const [orderBy, setOrderBy] = React.useState('code');
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [emptyRows, setEmptyRows] = React.useState(
+        rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage)
+    );
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -303,37 +339,10 @@ const PapersListPage = (props) => {
         setOrderBy(property);
     };
 
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.partyId);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
-    };
-
-    // const handleClick = (event, name) => {
-    //     const selectedIndex = selected.indexOf(name);
-    //     let newSelected = [];
-    //
-    //     if (selectedIndex === -1) {
-    //         newSelected = newSelected.concat(selected, name);
-    //     } else if (selectedIndex === 0) {
-    //         newSelected = newSelected.concat(selected.slice(1));
-    //     } else if (selectedIndex === selected.length - 1) {
-    //         newSelected = newSelected.concat(selected.slice(0, -1));
-    //     } else if (selectedIndex > 0) {
-    //         newSelected = newSelected.concat(
-    //             selected.slice(0, selectedIndex),
-    //             selected.slice(selectedIndex + 1),
-    //         );
-    //     }
-    //
-    //     setSelected(newSelected);
-    // };
-
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
+        setEmptyRows(rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage))
+
     };
 
     const handleChangeRowsPerPage = (event) => {
@@ -346,7 +355,7 @@ const PapersListPage = (props) => {
 
     // const isSelected = (name) => selected.indexOf(name) !== -1;
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    // const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
     return (
         <div className={"frame-dashboard"}>
@@ -367,12 +376,9 @@ const PapersListPage = (props) => {
                                     >
                                         <EnhancedTableHead
                                             classes={classes}
-                                            numSelected={selected.length}
                                             order={order}
                                             orderBy={orderBy}
-                                            onSelectAllClick={handleSelectAllClick}
                                             onRequestSort={handleRequestSort}
-                                            rowCount={rows.length}
                                         />
                                         <TableBody>
                                             {stableSort(rows, getComparator(order, orderBy))
@@ -447,10 +453,16 @@ const PapersListPage = (props) => {
 
                                                 );
                                                 })}
-                                            {emptyRows > 0 && (
-                                                <TableRow>
-                                                    <TableCell colSpan={6} />
-                                                </TableRow>
+                                            {emptyRows > 0 && ( ()=> {
+                                                    [...Array(emptyRows)].map((e,i) => {
+                                                        console.log('emptyRows',emptyRows)
+                                                        return(
+                                                            <TableRow>
+                                                                <TableCell key={i} colSpan={6}/>
+                                                            </TableRow>
+                                                        )
+                                                    })
+                                                }
                                             )}
                                         </TableBody>
                                     </Table>

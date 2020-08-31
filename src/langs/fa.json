@@ -35,7 +35,8 @@
       "Authors": "نویسندگان",
       "AuthorsList": "اسامی نویسندگان مقاله",
       "Search": "جستجو",
-      "SearchAuthors": "جستجو با نام یا ایمیل"
+      "SearchAuthors": "جستجو با نام یا ایمیل",
+      "History": "سوابق ارسال مقاله"
     },
     "PapersList": {
       "Title": "لیست مقالات"

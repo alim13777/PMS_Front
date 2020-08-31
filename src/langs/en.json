@@ -35,7 +35,8 @@
       "Authors": "Authors",
       "AuthorsList": "Authors list",
       "Search": "Search",
-      "SearchAuthors": "Search by name or email address"
+      "SearchAuthors": "Search by name or email address",
+      "History": "History"
     },
     "PapersList": {
       "Title": "Papers List"

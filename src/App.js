@@ -55,6 +55,11 @@ const theme = createMuiTheme({
                 '@font-face': [fontVazir],
             },
         },
+        MuiTableCell: {
+            head: {
+                fontWeight: 700
+            }
+        }
     },
     'hr': {
         borderWidth: "1px",
