@@ -21,7 +21,7 @@ export default function StickyFooter() {
 
     return (
         <Container component={"footer"} className={classes.footer}>
-            <Typography variant={"body2"} className={classes.footerContainer}>
+            <Typography variant={"body2"} className={classes.footerContainer} align="center">
                 <Copyright />
             </Typography >
         </Container>

@@ -16,7 +16,7 @@
       "Title": "Dashboard"
     },
     "Paper": {
-      "Title": "{add}{edit}{new} Paper",
+      "Title": "Edit Paper",
       "TitleNew": "Add New Paper",
       "ShortTitleNew": "New Paper",
       "PaperTitle": "Paper Title",
@@ -32,6 +32,7 @@
       "Publisher": "Journal/Conference",
       "Status": "Status",
       "Date": "Date",
+      "Info": "Paper Information",
       "Authors": "Authors",
       "AuthorsList": "Authors list",
       "Search": "Search",

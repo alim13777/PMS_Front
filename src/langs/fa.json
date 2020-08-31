@@ -16,7 +16,7 @@
       "Title": "داشبورد"
     },
     "Paper": {
-      "Title": "{add}{edit} مقاله {new}",
+      "Title": "ویرایش مقاله",
       "TitleNew": "تعریف مقاله جدید",
       "ShortTitleNew": "مقاله جدید",
       "PaperCode": "کد مقاله",
@@ -32,6 +32,7 @@
       "Publisher": "مجله/کنفرانس",
       "Status": "وضعیت",
       "Date": "تاریخ",
+      "Info": "اطلاعات مقاله",
       "Authors": "نویسندگان",
       "AuthorsList": "اسامی نویسندگان مقاله",
       "Search": "جستجو",
