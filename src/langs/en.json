@@ -47,7 +47,9 @@
     "Add": "Add",
     "Edit": "Edit",
     "New": "New",
-    "Selected": "selected"
+    "Selected": "selected",
+    "Cancel": "Cancel",
+    "Save": "Save"
   },
   "Login": {
     "Title": "Login",

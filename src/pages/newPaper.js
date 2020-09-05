@@ -21,6 +21,7 @@ import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import DatePicker from 'react-modern-calendar-datepicker';
 
 import {paperStatusList} from '../components/lexicon'
+import apiClient from "../services/api";
 
 const user = JSON.parse(sessionStorage.getItem('user'));
 
@@ -74,6 +75,18 @@ const PaperPage = (props) => {
             authors: authors
         }
         console.log('packet:',packet)
+        apiClient.get('/sanctum/csrf-cookie')
+            .then(response => {
+                apiClient.post('api/paper', packet)
+                    .then(response => {
+                        console.log("response data:",response.data);
+                        if (response.status === 200) {
+
+                        }
+                    }).catch(error => {
+                        console.error(error);
+                    });
+            });
     }
 
     return (

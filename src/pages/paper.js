@@ -5,9 +5,7 @@ import {getLanguage, useTranslation} from "react-multi-lang";
 import Header from "../components/dashHeader";
 import Footer from "../components/dashFooter";
 import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
-import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -15,22 +13,13 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Grid from "@material-ui/core/Grid";
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import {Paper} from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import TabPanel from "@material-ui/lab/TabPanel";
 import TabContext from "@material-ui/lab/TabContext";
-import TabList from "@material-ui/lab/TabList";
-import {paperStatusList} from "../components/lexicon";
-import DatePicker from "react-modern-calendar-datepicker";
 import SearchAuthors from "../components/searchAuthors";
 import ManageAuthors from "../components/manageAuthors";
+import PaperHistory from "../components/paperHistory";
 import Box from "@material-ui/core/Box";
 import apiClient from "../services/api";
 
@@ -55,49 +44,19 @@ function createData(partyId, firstName, lastName, email) {
 
 const PaperPage = (props) => {
     const classes = useStyles();
+    const [paper, setPaper] = React.useState(props.location.state.paper);
+    console.log("paper:", paper)
     const t = useTranslation()
     const [value, setValue] = React.useState("1");
-    const [authors, setAuthors] = React.useState(null);
-    const [paperLocalId, setPaperLocalId] = React.useState("");
-    const [paperType, setPaperType] = React.useState("");
-    const [paperTitle, setPaperTitle] = React.useState("");
-    const [paperDesc, setPaperDesc] = React.useState("");
+    const [authors, setAuthors] = React.useState(paper.authors);
+    const [paperLocalId, setPaperLocalId] = React.useState(paper.paper.localId);
+    const [paperType, setPaperType] = React.useState(paper.paper.type);
+    const [paperTitle, setPaperTitle] = React.useState(paper.paper.title);
+    const [paperDesc, setPaperDesc] = React.useState(paper.paper.description);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-
-    async function getPaper(){
-        const res2 = await apiClient.get('api/paper/party/' + props.location.state.paperId)
-        console.log("rec paper:", res2)
-        const res = {
-            id: props.location.state.paperId,
-            title: "Wind turbine torque oscillation reduction using soft switching multiple model predictive control based on the gap metric and Kalman filter estimator",
-            type: "foreignJour",
-            description: "",
-            localId: props.location.state.paperId,
-        }
-        setPaperTitle(res.title)
-        setPaperType(res.type)
-        setPaperDesc(res.description)
-        setPaperLocalId(res.localId)
-        setAuthors([
-            createData(1,'مجتبی', 'فاضلی نیا', 'mfazelinia@gmail.com')
-        ])
-    }
-    useEffect( () => {
-        async function fetchData() {
-            await apiClient.get('/sanctum/csrf-cookie')
-                .then(async () => {
-                    try{
-                        await getPaper()
-                    }catch (e) {
-                        console.log("error:", e)
-                    }
-                });
-        }
-        fetchData()
-    }, []);
 
     const addAuthors = (newAuthors) => {
         newAuthors.map( r => {
@@ -132,6 +91,16 @@ const PaperPage = (props) => {
             <Container>
                 <h1 className={"frame-dashboard-title"}>{t('Dashboard.Paper.Title')}</h1>
                 <Card>
+                    <Card variant={"outlined"} className="m-4 p-3 bg-info-light">
+                        <div className="row mb-2">
+                            <div className="col-lg-2 col-md-3 col-sm-12">{t("Dashboard.Paper.PaperCode")}:</div>
+                            <div className="col font-weight-bold">{paper.paper.localId}</div>
+                        </div>
+                        <div className="row">
+                            <div className="col-lg-2 col-md-3 col-sm-12">{t("Dashboard.Paper.PaperTitle")}:</div>
+                            <div className="col font-weight-bold">{paper.paper.title}</div>
+                        </div>
+                    </Card>
                     <TabContext value={value}>
                         <Tabs onChange={handleChange}
                               value={value}
@@ -139,10 +108,14 @@ const PaperPage = (props) => {
                               textColor="primary"
                               className="border-bottom"
                               aria-label="simple tabs example">
-                            <Tab label={t('Dashboard.Paper.Info')} value="1" />
-                            <Tab label={t('Dashboard.Paper.Authors')} value="2" />
+                            <Tab label={t('Dashboard.Paper.History')} value="1" />
+                            <Tab label={t('Dashboard.Paper.Info')} value="2" />
+                            <Tab label={t('Dashboard.Paper.Authors')} value="3" />
                         </Tabs >
                         <TabPanel value="1">
+                            <PaperHistory paper={props.location.state.paper}/>
+                        </TabPanel>
+                        <TabPanel value="2">
                             <form noValidate autoComplete="off">
                                 <Grid container spacing={2}>
                                     <Grid item xs={4}>
@@ -207,7 +180,7 @@ const PaperPage = (props) => {
                             </form>
                         </TabPanel>
 
-                        <TabPanel value="2">
+                        <TabPanel value="3">
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <SearchAuthors addAuthors={addAuthors}/>

@@ -40,13 +40,13 @@ const useRowStyles = makeStyles({
     }
 });
 
-function createData(id, title, type, history) {
-    return { id, title, type,
-        code: id,
-        history//: [
-        //     { publisherId: '10001', publisherName: 'IEEE Industrial Electronic', status: 'underReview', date: 1318781876406 },
-        //     { publisherId: '10002', publisherName: 'IEEE Sensors', status: 'rejected', date: 1218741276400 },
-        // ],
+function createData(paperId, title, type, publishers) {
+    return {
+        paper: {
+            paperId, title, type, description: "", keywords: "", localId: paperId
+        },
+        authors: [user],
+        publishers
     };
 }
 
@@ -94,8 +94,8 @@ function EnhancedTableHead(props) {
 
     const t = useTranslation()
     const headCells = [
-        { id: 'code', width: '10%', disablePadding: false, label: t("Dashboard.Paper.PaperCode") },
-        { id: 'title', width: '50%', disablePadding: false, label: t("Dashboard.Paper.PaperTitle") },
+        { id: 'localId', width: '15%', disablePadding: false, label: t("Dashboard.Paper.PaperCode") },
+        { id: 'title', width: '45%', disablePadding: false, label: t("Dashboard.Paper.PaperTitle") },
         { id: 'type', width: '15%', disablePadding: false, label: t("Dashboard.Paper.PaperType") },
         { id: 'status', width: '15%', disablePadding: false, label: t("Dashboard.Paper.Status") },
     ];
@@ -188,21 +188,21 @@ function Row(props) {
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell>
-                <TableCell scope="row">{row.code}</TableCell>
-                <TableCell align={detectLang(row.title)==getLanguage()?"left":"right"} dir={detectLang(row.title)=='en'?"ltr":"rtl"}>
+                <TableCell scope="row">{row.paper.localId}</TableCell>
+                <TableCell align={detectLang(row.paper.title)==getLanguage()?"left":"right"} dir={detectLang(row.paper.title)=='en'?"ltr":"rtl"}>
                     <Typography noWrap>
-                        {row.title}
+                        {row.paper.title}
                     </Typography>
                 </TableCell>
-                <TableCell>{t('Lexicons.PaperType.'+row.type)}</TableCell>
+                <TableCell>{t('Lexicons.PaperType.'+row.paper.type)}</TableCell>
                 <TableCell>
-                    <StatusBadge status={row.history[0].status}/>
+                    <StatusBadge status={row.publishers[0].status}/>
                 </TableCell>
                 <TableCell padding="none">
                     <Tooltip title={t("Action.Edit")}>
                         <Link to={{
                             pathname: "/dashboard/paper",
-                            state: {paperId: row.id}
+                            state: {paper: row}
                         }}>
                             <IconButton>
                                 <EditIcon/>
@@ -227,10 +227,10 @@ function Row(props) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {row.history.map((historyRow) => (
-                                        <TableRow key={historyRow.publisherId}>
+                                    {row.publishers.map((historyRow) => (
+                                        <TableRow key={historyRow.partyId}>
                                             <TableCell component="th" scope="row">
-                                                {historyRow.publisherName}
+                                                {historyRow.name}
                                             </TableCell>
                                             <TableCell>{t("Lexicons.PaperStatus."+historyRow.status)}</TableCell>
                                             <TableCell>{timestamp2Str(historyRow.date)}</TableCell>
@@ -292,25 +292,25 @@ const PapersListPage = (props) => {
         console.log("res:", res)
         return [
             createData('01', 'Wind turbine torque oscillation reduction using soft switching multiple model predictive control based on the gap metric and Kalman filter estimator', 'foreignJour', [
-                { publisherId: '10001', publisherName: 'IEEE Industrial Electronic', status: 'accepted', date: 1518741276400 },
-                { publisherId: '10002', publisherName: 'IEEE Sensors', status: 'rejected', date: 1418741276400 },
-                { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
+                { partyId: '10001', name: 'IEEE Industrial Electronic', status: 'accepted', date: 1518741276400 },
+                { partyId: '10002', name: 'IEEE Sensors', status: 'rejected', date: 1418741276400 },
+                { partyId: '10003', name: 'Measurements', status: 'rejected', date: 1218741236400 },
             ]),
             createData('02', 'Wi-Fi RSS-based Indoor Localization Using Reduced Features Second Order Discriminant Function', 'foreignConf', [
-                { publisherId: '10002', publisherName: 'IEEE Sensors', status: 'readySubmit', date: 1418741276400 },
-                { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
+                { partyId: '10002', name: 'IEEE Sensors', status: 'readySubmit', date: 1418741276400 },
+                { partyId: '10003', name: 'Measurements', status: 'rejected', date: 1218741236400 },
             ]),
             createData('06', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
-                { publisherId: '10003', publisherName: 'Measurements', status: 'submitted', date: 1218741236400 },
+                { partyId: '10003', name: 'Measurements', status: 'submitted', date: 1218741236400 },
             ]),
             createData('03', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
-                { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
+                { partyId: '10003', name: 'Measurements', status: 'rejected', date: 1218741236400 },
             ]),
             createData('04', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
-                { publisherId: '10003', publisherName: 'Measurements', status: 'writing', date: 1218741236400 },
+                { partyId: '10003', name: 'Measurements', status: 'writing', date: 1218741236400 },
             ]),
             createData('05', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
-                { publisherId: '20003', publisherName: 'کنترل تربیت مدرس', status: 'canceled', date: 1218741236400 },
+                { partyId: '20003', name: 'کنترل تربیت مدرس', status: 'canceled', date: 1218741236400 },
             ])
         ]//res.data;
     }
@@ -330,7 +330,7 @@ const PapersListPage = (props) => {
     }, []);
 
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('code');
+    const [orderBy, setOrderBy] = React.useState('localId');
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -375,7 +375,7 @@ const PapersListPage = (props) => {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row, index) => {
                                         return (
-                                            <Row key={row.id} row={row} />
+                                            <Row key={row.paper.paperId} row={row} />
                                     );
                                     })}
                                 {emptyRows > 0 && ( ()=> {
