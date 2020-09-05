@@ -46,7 +46,10 @@
   "Profile": {
     "Edit": "Edit profile",
     "ChangePass": "Change password",
-    "Upgrade" : "Upgrade account"
+    "Upgrade" : "Upgrade account",
+    "NewPass": "New Password",
+    "RepeatNewPass": "RepeatNew Password",
+    "OldPass": "Old Password"
   },
   "Action": {
     "Add": "Add",

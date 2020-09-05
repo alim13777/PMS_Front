@@ -32,6 +32,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 import DatePicker from "react-modern-calendar-datepicker";
 import DateField from "../components/datepicker";
 import {obj2Timestamp} from "../services/tools";
+import PassField from "../components/passwordField";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -163,6 +164,68 @@ export default function ProfilePage(props) {
         )
     }
 
+    const TabPanel_Pass = ()=> {
+        const [oldPass, setOldPass] = React.useState(null);
+        const [newPass, setNewPass] = React.useState(null);
+        const [newPass2, setNewPass2] = React.useState(null);
+        function putPassword() {
+            let packet = {
+                partyId: user.partyId,
+                oldPass: oldPass,
+                newPass: newPass,
+                repeatedNewPass: newPass2,
+            }
+            console.log('putPassword',packet)
+        }
+        return (
+            <TabPanel value="pass">
+                <Typography className="card-title" component={"h6"}>{t('Profile.ChangePass')}</Typography>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={6}>
+                        <PassField id="user-oldPass"
+                                   label={t("Profile.OldPass")}
+                                   value={oldPass}
+                                   onChange={e => setOldPass(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <PassField id="user-newPass"
+                                   label={t("Profile.NewPass")}
+                                   value={newPass}
+                                   onChange={e => setNewPass(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <PassField id="user-newPass2"
+                                   label={t("Profile.RepeatNewPass")}
+                                   value={newPass2}
+                                   onChange={e => setNewPass2(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12} className="pt-0">
+                        <hr/>
+                        <Box className="d-flex flex-row-reverse">
+                            <Button type="button" variant="contained" color="primary" className="width-medium" onClick={putPassword}>
+                                {t("Action.Edit")}
+                            </Button>
+                        </Box>
+                    </Grid>
+                </Grid>
+            </TabPanel>
+        )
+    }
+
+    const TabPanel_Upgrade = ()=> {
+        return (
+            <TabPanel value="upgrade">
+                tab1
+            </TabPanel>
+        )
+    }
+
     function putPerson() {
         let packet = {
             partyId: user.partyId,
@@ -208,12 +271,8 @@ export default function ProfilePage(props) {
                         <div className="col">
                             <Card>
                                 <TabPanel_Edit/>
-                                <TabPanel value="pass">
-                                    tab1
-                                </TabPanel>
-                                <TabPanel value="upgrade">
-                                    tab1
-                                </TabPanel>
+                                <TabPanel_Pass/>
+                                <TabPanel_Upgrade/>
                             </Card>
                         </div>
                     </div>
