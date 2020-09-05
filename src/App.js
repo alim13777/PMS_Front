@@ -17,7 +17,8 @@ import SignUp from './pages/signUp';
 import Error from './pages/error';
 import PaperPage from "./pages/paper";
 import NewPaperPage from "./pages/newPaper";
-import PapersListPage from './pages/papersList'
+import PapersListPage from './pages/papersList';
+import ProfilePage from "./pages/profile";
 // Import fonts
 import Vazir from './fonts/Vazir-FD-WOL.woff';
 // Import translations:
@@ -114,7 +115,6 @@ const App = () => {
                         <Switch>
                             <Route path='/' exact render={props => (
                                 <Home {...props} loggedIn={loggedIn} logout={logout} />
-                                // <Books {...props} loggedIn={loggedIn} logout={logout} />
                             )} />
                             <Route path='/login' render={props => (
                                 (loggedIn)
@@ -153,6 +153,11 @@ const App = () => {
                                     </>
                                 )}
                             />
+                            <Route path='/profile' render={props => (
+                                (loggedIn)
+                                    ? <ProfilePage {...props} loggedIn={loggedIn} logout={logout}/>
+                                    : <Redirect to='/login' />
+                            )} />
                             <Route component={Error}/>
                         </Switch>
                     {/*</div>*/}

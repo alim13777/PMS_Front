@@ -112,7 +112,7 @@ export default function MenuListComposition(props) {
                                 <ClickAwayListener onClickAway={handleClose}>
                                     <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown} className={classes.zeroPad}>
                                         <List component="nav" dense={true} aria-label="user menu">
-                                            <ListItemLink href="#">
+                                            <ListItemLink href="/profile">
                                                 <ListItemIcon className={classes.userMenuIcon}>
                                                     <ProfileIcon />
                                                 </ListItemIcon>

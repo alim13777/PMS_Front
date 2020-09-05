@@ -43,6 +43,11 @@
       "Title": "Papers List"
     }
   },
+  "Profile": {
+    "Edit": "Edit profile",
+    "ChangePass": "Change password",
+    "Upgrade" : "Upgrade account"
+  },
   "Action": {
     "Add": "Add",
     "Edit": "Edit",
@@ -75,7 +80,11 @@
       "SignOut": "Sign out"
     },
     "Name": "First name",
-    "Surname": "Last name"
+    "Surname": "Last name",
+    "Prefix": "Prefix",
+    "Gender": "Gender",
+    "BirthDate": "Birth date",
+    "Degree": "Education degree"
   },
   "Copyright": {
     "Title": "Copyright",
@@ -104,6 +113,27 @@
       "foreignConf": "Foreign  Conference",
       "domesticJour": "domestic Journal",
       "foreignJour": "Foreign Journal"
+    },
+    "Prefix": {
+      "Prof": "Prof",
+      "Dr": "Dr",
+      "Mr": "Mr",
+      "Ms": "Ms",
+      "Mrs": "Mrs",
+      "Miss": "Miss"
+    },
+    "Gender": {
+      "male": "Male",
+      "female": "Female"
+    },
+    "EduDegree": {
+      "bc_stu": "BC student",
+      "bc": "BC",
+      "master_stu": "Master student",
+      "master": "Master",
+      "phd_stu": "PhD student",
+      "phd": "PhD",
+      "postDoc": "Post doc"
     }
   }
 }

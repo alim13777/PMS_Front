@@ -6,7 +6,9 @@
 .frame-dashboard-title{
   margin: 30px 0 20px 0;
 }
-
+.card-title{
+  margin-bottom: 2rem !important;
+}
 .MuiAppBar-root{
   z-index: 0;
 }
