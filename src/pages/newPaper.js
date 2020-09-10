@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Container from "@material-ui/core/Container";
 import {useTranslation,getLanguage} from "react-multi-lang";
 import Header from "../components/dashHeader";
@@ -20,8 +20,18 @@ import Box from "@material-ui/core/Box";
 import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import DatePicker from 'react-modern-calendar-datepicker';
 
-import {paperStatusList} from '../components/lexicon'
+import {paperTypesList, paperStatusList} from '../components/lexicon'
 import apiClient from "../services/api";
+import {timestamp2Obj} from "../services/tools";
+import DateField from "../components/datepicker";
+import SelectField from "../components/select";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
+Number.prototype.pad = function(size) {
+    let s = String(this);
+    while (s.length < (size || 3)) {s = "0" + s;}
+    return s;
+}
 
 const user = JSON.parse(sessionStorage.getItem('user'));
 
@@ -34,13 +44,49 @@ const PaperPage = (props) => {
     const [authors, setAuthors] = React.useState(
         [createAuthor(user.partyId, user.firstName, user.lastName, user.email)]
     );
-    const [paperLocalId, setPaperLocalId] = React.useState(null);
-    const [paperType, setPaperType] = React.useState(null);
-    const [paperTitle, setPaperTitle] = React.useState(null);
-    const [paperDesc, setPaperDesc] = React.useState(null);
-    const [paperStatus, setPaperStatus] = React.useState(null);
-    const [paperPublisher, setPaperPublisher] = React.useState(null);
-    const [date, setDate] = React.useState(null);
+    const [paperLocalId, setPaperLocalId] = React.useState('');
+    const [paperType, setPaperType] = React.useState('');
+    const [paperTitle, setPaperTitle] = React.useState('');
+    const [paperDesc, setPaperDesc] = React.useState('');
+    const [paperKeywords, setPaperKeywords] = React.useState('');
+    const [paperStatus, setPaperStatus] = React.useState('');
+    const [paperPublisher, setPaperPublisher] = React.useState('');
+    const [date, setDate] = React.useState(timestamp2Obj(null,getLanguage()));
+    const [pubs, setPubs] = React.useState({isReady:false,data:[]});
+
+    const statusSelectOptions = paperStatusList.map( item=>{
+        return {
+            value: item,
+            label: t("Lexicons.PaperStatus."+item)
+        }
+    })
+    const typeSelectOptions = paperTypesList.map( item=>{
+        return {
+            value: item,
+            label: t("Lexicons.PaperType."+item)
+        }
+    })
+
+    useEffect(()=>{
+        apiClient.get('api/paper/party' ).then((res)=>{
+            const num = res.data.length + 1;
+            setPaperLocalId("P"+num.pad())
+        }).catch((err)=>{
+            console.warn("get party papers err:",err)
+        })
+        const sampleData = [
+            {partyId:2, name:"IEEE"}
+        ]
+        setPubs({
+            isReady: true,
+            data: sampleData.map(item=>{
+                return {
+                    value: item.partyId,
+                    label: item.name
+                }
+            })
+        })
+    },[])
 
     const addAuthors = (newAuthors) => {
         newAuthors.map( r => {
@@ -51,13 +97,6 @@ const PaperPage = (props) => {
         setAuthors(authors)
     }
 
-    const renderDateInput = ({ ref }) => (
-        <TextField id="paper-date"
-                   value={date ? date.year+'/'+date.month+'/'+date.day : ''}
-                   ref={ref} // necessary
-                   label={t("Dashboard.Paper.Date")}
-                   fullWidth variant="outlined"/>
-    )
 
     const postPaper = ()=> {
         let packet = {
@@ -65,18 +104,25 @@ const PaperPage = (props) => {
                 title: paperTitle,
                 type: paperType,
                 description: paperDesc,
-                localId: paperLocalId
+                localId: paperLocalId,
+                keywords: paperKeywords
             },
             publisher: {
-                publisher: paperPublisher,
+                partyId: paperPublisher,
                 status: paperStatus,
                 date: date
             },
-            authors: authors
+            authors: authors.map(i=> {
+                return {
+                    partyId: i.partyId,
+                    role: "coAuthor"
+                }
+            })
         }
-        console.log('packet:',packet)
-        apiClient.get('/sanctum/csrf-cookie')
-            .then(response => {
+        console.log("post paper:",packet)
+
+        // apiClient.get('/sanctum/csrf-cookie')
+        //     .then(response => {
                 apiClient.post('api/paper', packet)
                     .then(response => {
                         console.log("response data:",response.data);
@@ -86,7 +132,7 @@ const PaperPage = (props) => {
                     }).catch(error => {
                         console.error(error);
                     });
-            });
+            // });
     }
 
     return (
@@ -102,37 +148,26 @@ const PaperPage = (props) => {
                                     <Grid item xs={4}>
                                         <TextField id="paper-code"
                                                    label={t("Dashboard.Paper.PaperCode")}
-                                                   fullWidth variant="outlined"
+                                                   fullWidth variant="outlined" required
                                                    value={paperLocalId}
                                                    onChange={e => setPaperLocalId(e.target.value)}
                                         />
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <FormControl variant="outlined" fullWidth>
-                                            <InputLabel id="paper-type-label">
-                                                {t("Dashboard.Paper.PaperType")}
-                                            </InputLabel>
-                                            <Select id="paper-type"
-                                                    label={t("Dashboard.Paper.PaperType")}
-                                                    labelId="paper-type-label"
-                                                    autoWidth
-                                                    value={paperType}
-                                                    onChange={e => setPaperType(e.target.value)}
-                                            >
-                                                <ListSubheader>{t("Dashboard.Paper.PaperType")}:</ListSubheader>
-                                                <MenuItem value="domesticJour">{t("Dashboard.Paper.Types.domesticJour")}</MenuItem>
-                                                <MenuItem value="domesticConf">{t("Dashboard.Paper.Types.domesticConf")}</MenuItem>
-                                                <MenuItem value="foreignJour">{t("Dashboard.Paper.Types.foreignJour")}</MenuItem>
-                                                <MenuItem value="foreignConf">{t("Dashboard.Paper.Types.foreignConf")}</MenuItem>
-                                            </Select>
-                                        </FormControl>
+                                        <SelectField id="paper-type"
+                                                     label={t("Dashboard.Paper.PaperType")}
+                                                     variant="outlined" required
+                                                     options={typeSelectOptions}
+                                                     value={paperType}
+                                                     onChange={e => setPaperType(e.target.value)}
+                                        />
                                     </Grid>
                                     <Grid item xs={4}>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField id="paper-title"
                                                    label={t("Dashboard.Paper.PaperTitle")}
-                                                   fullWidth variant="outlined"
+                                                   fullWidth variant="outlined" required
                                                    value={paperTitle}
                                                    onChange={e => setPaperTitle(e.target.value)}
                                         />
@@ -146,58 +181,44 @@ const PaperPage = (props) => {
                                                    onChange={e => setPaperDesc(e.target.value)}
                                         />
                                     </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField id="paper-keywords"
+                                                   label={t("Dashboard.Paper.PaperKeywords")}
+                                                   fullWidth variant="outlined"
+                                                   value={paperKeywords}
+                                                   onChange={e => setPaperKeywords(e.target.value)}
+                                        />
+                                    </Grid>
 
                                     <Grid item xs={12}>
 
                                     </Grid>
 
                                     <Grid item xs={4}>
-                                        <FormControl variant="outlined" fullWidth>
-                                            <InputLabel id="publisher-label">
-                                                {t("Dashboard.Paper.Publisher")}
-                                            </InputLabel>
-                                            <Select id="publisher"
-                                                    label={t("Dashboard.Paper.Publisher")}
-                                                    labelId="publisher-label"
-                                                    autoWidth
-                                                    value={paperPublisher}
-                                                    onChange={e => setPaperPublisher(e.target.value)}
-                                            >
-                                                <ListSubheader>{t("Dashboard.Paper.Publisher")}:</ListSubheader>
-                                                {/*<MenuItem value=""></MenuItem>*/}
-                                            </Select>
-                                        </FormControl>
+                                        <SelectField id="publisher"
+                                                     label={t("Dashboard.Paper.Publisher")}
+                                                     variant="outlined" required
+                                                     options={pubs.data}
+                                                     loaded={pubs.isReady}
+                                                     value={paperPublisher}
+                                                     onChange={e=> setPaperPublisher(e.target.value)}
+                                        />
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <FormControl variant="outlined" fullWidth>
-                                            <InputLabel id="paper-status-label">
-                                                {t("Dashboard.Paper.Status")}
-                                            </InputLabel>
-                                            <Select id="paper-status"
-                                                    label={t("Dashboard.Paper.Status")}
-                                                    labelId="paper-status-label"
-                                                    autoWidth
-                                                    value={paperStatus}
-                                                    onChange={e=> setPaperStatus(e.target.value)}
-                                            >
-                                                <ListSubheader>{t("Dashboard.Paper.Status")}:</ListSubheader>
-                                                {paperStatusList.map( i => {
-                                                    return(
-                                                        <MenuItem value={i}>{t("Lexicons.paperStatus."+i)}</MenuItem>
-                                                    )
-                                                })}
-                                            </Select>
-                                        </FormControl>
+                                        <SelectField id="user-status"
+                                                     label={t("Dashboard.Paper.Status")}
+                                                     variant="outlined" required
+                                                     options={statusSelectOptions}
+                                                     value={paperStatus}
+                                                     onChange={e=> setPaperStatus(e.target.value)}
+                                        />
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <DatePicker
-                                            value={date}
-                                            onChange={setDate}
-                                            renderInput={renderDateInput}
-                                            shouldHighlightWeekends
-                                            locale={getLanguage()}
-                                            calendarClassName="responsive-calendar"
-                                            className="w-100"
+                                        <DateField id="paper-date"
+                                                   label={t("Dashboard.Paper.Date")}
+                                                   variant="outlined" required
+                                                   value={date}
+                                                   onChange={setDate}
                                         />
                                     </Grid>
 

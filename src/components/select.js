@@ -4,13 +4,18 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import React from "react";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 export default function SelectField(props){
-    const {variant, id, label, options, value, onChange} = props;
+    const {variant, id, label, options, value, onChange, required, loaded} = props;
+    // React.useEffect(() => {
+    //     console.log("component updated",options,loaded);
+    // });
     return (
         <FormControl
             variant={variant?variant:null}
+            required={required?required:null}
             fullWidth
         >
             <InputLabel id={id+"-label"}>
@@ -24,11 +29,14 @@ export default function SelectField(props){
                 onChange={onChange}
             >
                 <ListSubheader>{label}:</ListSubheader>
-                {options.map( i => {
-                    return(
-                        <MenuItem value={i.value}>{i.label}</MenuItem>
-                    )
-                })}
+                {loaded || typeof loaded==='undefined'
+                    ?options.map( i => {
+                        return(
+                            <MenuItem value={i.value}>{i.label}</MenuItem>
+                        )
+                    })
+                    :<CircularProgress className="mx-3" size="2rem"/>
+                }
             </Select>
         </FormControl>
     )

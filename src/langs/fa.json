@@ -21,6 +21,7 @@
       "ShortTitleNew": "مقاله جدید",
       "PaperCode": "شناسه مقاله",
       "PaperTitle": "عنوان مقاله",
+      "PaperKeywords": "کلید واژگان",
       "PaperType": "نوع مقاله",
       "Types": {
         "domesticConf": "کنفرانس داخلی",

@@ -20,6 +20,7 @@
       "TitleNew": "Add New Paper",
       "ShortTitleNew": "New Paper",
       "PaperTitle": "Paper Title",
+      "PaperKeywords": "Paper Keywords",
       "PaperCode": "Paper Code",
       "PaperType": "Paper Type",
       "Types": {

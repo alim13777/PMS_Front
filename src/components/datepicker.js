@@ -5,7 +5,7 @@ import DatePicker from "react-modern-calendar-datepicker";
 
 
 export default function DateField(props){
-    const {variant, id, label, value, onChange} = props;
+    const {variant, id, label, value, onChange, required} = props;
 
     const renderDateInput = ({ ref }) => (
         <TextField id={id}
@@ -14,6 +14,7 @@ export default function DateField(props){
                    label={label}
                    fullWidth
                    variant={variant?variant:null}
+                   required={required?required:null}
         />
     )
 
