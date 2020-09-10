@@ -13,7 +13,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TablePagination from "@material-ui/core/TablePagination";
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import TableHead from '@material-ui/core/TableHead';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Typography from '@material-ui/core/Typography';
@@ -189,7 +189,7 @@ function Row(props) {
                     </IconButton>
                 </TableCell>
                 <TableCell scope="row">{row.paper.localId}</TableCell>
-                <TableCell align={detectLang(row.paper.title)==getLanguage()?"left":"right"} dir={detectLang(row.paper.title)=='en'?"ltr":"rtl"}>
+                <TableCell align={detectLang(row.paper.title)===getLanguage()?"left":"right"} dir={detectLang(row.paper.title)==='en'?"ltr":"rtl"}>
                     <Typography noWrap>
                         {row.paper.title}
                     </Typography>
@@ -288,7 +288,7 @@ const PapersListPage = (props) => {
     //     setRows(papers);
     // }, []);
     async function getPapers(){
-        const res = await apiClient.get('api/paper/' + user.partyId)
+        const res = await apiClient.get('api/paper/party' )//+ user.partyId
         console.log("res:", res)
         return [
             createData('01', 'Wind turbine torque oscillation reduction using soft switching multiple model predictive control based on the gap metric and Kalman filter estimator', 'foreignJour', [
@@ -317,14 +317,15 @@ const PapersListPage = (props) => {
 
     useEffect(() => {
         async function fetchData() {
-            await apiClient.get('/sanctum/csrf-cookie')
-                .then(async () => {
-                    try{
-                        setRows(await getPapers())
-                    }catch (e) {
-                        console.log("error:", e)
-                    }
-                });
+            setRows(await getPapers())
+            // await apiClient.get('/sanctum/csrf-cookie')
+            //     .then(async () => {
+            //         try{
+            //             setRows(await getPapers())
+            //         }catch (e) {
+            //             console.log("error:", e)
+            //         }
+            //     });
         }
         fetchData()
     }, []);

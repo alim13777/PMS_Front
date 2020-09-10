@@ -33,7 +33,7 @@ const prefix = (locale)=>{
         "Mr",
         "Ms"
     ]
-    if(locale!='fa'){
+    if(locale!=='fa'){
         list.push("Mrs")
         list.push("Miss")
     }
