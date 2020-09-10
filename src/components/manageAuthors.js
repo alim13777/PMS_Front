@@ -555,7 +555,7 @@ class Table2 extends React.Component {
                                 <TableHeaders />
                                 <TableBody>
                                     {
-                                        rows.map(row => <TableRow row={row} delRow={this.delRow}/>)
+                                        rows.map(row => <TableRow key={row.partyId} row={row} delRow={this.delRow}/>)
                                     }
                                 </TableBody>
                             </Table>
@@ -597,14 +597,14 @@ const TableHeaders = ({ headers }) => {
     return (
         <TableHead>
             <tr>
-                {headCells.map(header => <TableCell>{header.label}</TableCell>)}
+                {headCells.map(header => <TableCell key={header.id}>{header.label}</TableCell>)}
             </tr>
         </TableHead>
     )
 }
 
 const TableRow = ({ row, delRow }) =>
-    <tr data-partyId={row.partyId}>
+    <tr>
         <TableCell>{row.lastName}</TableCell>
         <TableCell>{row.firstName}</TableCell>
         <TableCell align="right">{row.email}</TableCell>

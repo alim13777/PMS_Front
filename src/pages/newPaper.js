@@ -140,118 +140,109 @@ const PaperPage = (props) => {
             <Header {...props}/>
             <Container>
                 <h1 className={"frame-dashboard-title"}>{t('Dashboard.Paper.TitleNew')}</h1>
-                <Card>
-                    <Grid container spacing={13} component={CardContent}>
-                        <Grid item xs={12}>
-                            <form noValidate autoComplete="off">
-                                <Grid container spacing={2}>
-                                    <Grid item xs={4}>
-                                        <TextField id="paper-code"
-                                                   label={t("Dashboard.Paper.PaperCode")}
-                                                   fullWidth variant="outlined" required
-                                                   value={paperLocalId}
-                                                   onChange={e => setPaperLocalId(e.target.value)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <SelectField id="paper-type"
-                                                     label={t("Dashboard.Paper.PaperType")}
-                                                     variant="outlined" required
-                                                     options={typeSelectOptions}
-                                                     value={paperType}
-                                                     onChange={e => setPaperType(e.target.value)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField id="paper-title"
-                                                   label={t("Dashboard.Paper.PaperTitle")}
-                                                   fullWidth variant="outlined" required
-                                                   value={paperTitle}
-                                                   onChange={e => setPaperTitle(e.target.value)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField id="paper-desc"
-                                                   label={t("Dashboard.Paper.PaperDescription")}
-                                                   multiline rows={3} fullWidth
-                                                   variant="outlined"
-                                                   value={paperDesc}
-                                                   onChange={e => setPaperDesc(e.target.value)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField id="paper-keywords"
-                                                   label={t("Dashboard.Paper.PaperKeywords")}
-                                                   fullWidth variant="outlined"
-                                                   value={paperKeywords}
-                                                   onChange={e => setPaperKeywords(e.target.value)}
-                                        />
-                                    </Grid>
+                <Card className="p-4">
 
-                                    <Grid item xs={12}>
+                    <form noValidate autoComplete="off">
+                        <Grid container spacing={2}>
+                            <Grid item xs={4}>
+                                <TextField id="paper-code"
+                                           label={t("Dashboard.Paper.PaperCode")}
+                                           fullWidth variant="outlined" required
+                                           value={paperLocalId}
+                                           onChange={e => setPaperLocalId(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <SelectField id="paper-type"
+                                             label={t("Dashboard.Paper.PaperType")}
+                                             variant="outlined" required
+                                             options={typeSelectOptions}
+                                             value={paperType}
+                                             onChange={e => setPaperType(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField id="paper-title"
+                                           label={t("Dashboard.Paper.PaperTitle")}
+                                           fullWidth variant="outlined" required
+                                           value={paperTitle}
+                                           onChange={e => setPaperTitle(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField id="paper-desc"
+                                           label={t("Dashboard.Paper.PaperDescription")}
+                                           multiline rows={3} fullWidth
+                                           variant="outlined"
+                                           value={paperDesc}
+                                           onChange={e => setPaperDesc(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField id="paper-keywords"
+                                           label={t("Dashboard.Paper.PaperKeywords")}
+                                           fullWidth variant="outlined"
+                                           value={paperKeywords}
+                                           onChange={e => setPaperKeywords(e.target.value)}
+                                />
+                            </Grid>
 
-                                    </Grid>
+                            <Grid item xs={12}>
 
-                                    <Grid item xs={4}>
-                                        <SelectField id="publisher"
-                                                     label={t("Dashboard.Paper.Publisher")}
-                                                     variant="outlined" required
-                                                     options={pubs.data}
-                                                     loaded={pubs.isReady}
-                                                     value={paperPublisher}
-                                                     onChange={e=> setPaperPublisher(e.target.value)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <SelectField id="user-status"
-                                                     label={t("Dashboard.Paper.Status")}
-                                                     variant="outlined" required
-                                                     options={statusSelectOptions}
-                                                     value={paperStatus}
-                                                     onChange={e=> setPaperStatus(e.target.value)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <DateField id="paper-date"
-                                                   label={t("Dashboard.Paper.Date")}
-                                                   variant="outlined" required
-                                                   value={date}
-                                                   onChange={setDate}
-                                        />
-                                    </Grid>
+                            </Grid>
 
-                                    <Grid item xs={12}>
-                                        {/*<Typography variant={"h6"}>{t("Dashboard.Paper.Authors")}</Typography>*/}
-                                    </Grid>
+                            <Grid item xs={4}>
+                                <SelectField id="publisher"
+                                             label={t("Dashboard.Paper.Publisher")}
+                                             variant="outlined" required
+                                             options={pubs.data}
+                                             loaded={pubs.isReady.toString()}
+                                             value={paperPublisher}
+                                             onChange={e=> setPaperPublisher(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <SelectField id="user-status"
+                                             label={t("Dashboard.Paper.Status")}
+                                             variant="outlined" required
+                                             options={statusSelectOptions}
+                                             value={paperStatus}
+                                             onChange={e=> setPaperStatus(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <DateField id="paper-date"
+                                           label={t("Dashboard.Paper.Date")}
+                                           variant="outlined" required
+                                           value={date}
+                                           onChange={setDate}
+                                />
+                            </Grid>
 
-                                    <Grid item xs={6}>
-                                        <SearchAuthors addAuthors={addAuthors}/>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <ManageAuthors authors={authors} setAuthors={setAuthors}/>
-                                    </Grid>
-                                </Grid>
+                            <Grid item xs={12}>
+                                {/*<Typography variant={"h6"}>{t("Dashboard.Paper.Authors")}</Typography>*/}
+                            </Grid>
 
-                            </form>
-                        </Grid>
-                        <Grid item xs={6}>
-
-                        </Grid>
-                        <Grid item xs={6}>
-
-                        </Grid>
-                        <Grid item xs={12}>
-                            <hr/>
-                            <Box className="d-flex flex-row-reverse">
-                                <Button type="button" variant="contained" color="primary" className="width-medium" onClick={postPaper}>
-                                    {t("Action.Add")}
-                                </Button>
-                            </Box>
+                            <Grid item xs={6}>
+                                <SearchAuthors addAuthors={addAuthors}/>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <ManageAuthors authors={authors} setAuthors={setAuthors}/>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <hr/>
+                                <Box className="d-flex flex-row-reverse">
+                                    <Button type="button" variant="contained" color="primary" className="width-medium" onClick={postPaper}>
+                                        {t("Action.Add")}
+                                    </Button>
+                                </Box>
+                            </Grid>
                         </Grid>
 
-                    </Grid>
+                    </form>
+
                 </Card>
 
             </Container>

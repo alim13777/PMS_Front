@@ -12,17 +12,11 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
 import AddIcon from '@material-ui/icons/Add';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import Card from "@material-ui/core/Card";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from '@material-ui/icons/Search';
 import {useTranslation} from "react-multi-lang";
@@ -101,6 +95,7 @@ function EnhancedTableHead(props) {
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
                         inputProps={{ 'aria-label': 'select all desserts' }}
+                        color={"primary"}
                     />
                 </TableCell>
                 {headCells.map((headCell) => (
@@ -147,8 +142,8 @@ const useToolbarStyles = makeStyles((theme) => ({
     highlight:
         theme.palette.type === 'light'
             ? {
-                color: theme.palette.secondary.main,
-                backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+                color: theme.palette.info.main,
+                backgroundColor: lighten(theme.palette.info.light, 0.85),
             }
             : {
                 color: theme.palette.text.primary,
@@ -192,7 +187,7 @@ const EnhancedTableToolbar = (props) => {
         <Toolbar
             className={clsx(classes.root, {
                 [classes.highlight]: numSelected > 0,
-                [classes.searchbar]: numSelected == 0,
+                [classes.searchbar]: numSelected === 0,
             })}
         >
             {numSelected > 0 ? (
@@ -207,8 +202,8 @@ const EnhancedTableToolbar = (props) => {
             )}
 
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete" onClick={(event)=>addAuthor(event,selectedData,props.addAuthors)}>
+                <Tooltip title={t("Action.Add")}>
+                    <IconButton aria-label="add" onClick={(event)=>addAuthor(event,selectedData,props.addAuthors)}>
                         <AddIcon />
                     </IconButton>
                 </Tooltip>
@@ -238,6 +233,9 @@ const useStyles = makeStyles((theme) => ({
     table: {
         //minWidth: 750,
     },
+    selected: {
+        backgroundColor: lighten(theme.palette.info.light, 0.85),
+    },
     visuallyHidden: {
         border: 0,
         clip: 'rect(0 0 0 0)',
@@ -249,11 +247,11 @@ const useStyles = makeStyles((theme) => ({
         top: 20,
         width: 1,
     },
+
 }));
 
 export default function EnhancedTable(props) {
     const classes = useStyles();
-    const t = useTranslation()
 
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('lastName');
@@ -346,9 +344,10 @@ export default function EnhancedTable(props) {
                                             tabIndex={-1}
                                             key={row.partyId}
                                             selected={isItemSelected}
+                                            classes={{selected:classes.selected}}
                                         >
                                             <TableCell padding="checkbox">
-                                                <Checkbox
+                                                <Checkbox color={"primary"}
                                                     checked={isItemSelected}
                                                     inputProps={{ 'aria-labelledby': labelId }}
                                                 />
