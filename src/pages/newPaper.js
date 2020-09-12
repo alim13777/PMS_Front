@@ -22,7 +22,7 @@ import DatePicker from 'react-modern-calendar-datepicker';
 
 import {paperTypesList, paperStatusList} from '../components/lexicon'
 import apiClient from "../services/api";
-import {timestamp2Obj} from "../services/tools";
+import {obj2Timestamp, timestamp2Obj} from "../services/tools";
 import DateField from "../components/datepicker";
 import SelectField from "../components/select";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -110,7 +110,7 @@ const PaperPage = (props) => {
             publisher: {
                 partyId: paperPublisher,
                 status: paperStatus,
-                date: date
+                date: obj2Timestamp(date)
             },
             authors: authors.map(i=> {
                 return {
