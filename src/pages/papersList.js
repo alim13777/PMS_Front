@@ -23,7 +23,7 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import Collapse from "@material-ui/core/Collapse";
 import apiClient from "../services/api";
 import Tooltip from "@material-ui/core/Tooltip";
-import {timestamp2Str} from "../services/tools";
+import {detectLang, timestamp2Str} from "../services/tools";
 import {Link} from "react-router-dom";
 
 const user = JSON.parse(sessionStorage.getItem('user'));
@@ -78,13 +78,7 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-function detectLang(text) {
-    if (/^[a-zA-Z]+$/.test(text[0])) {
-        return "en";
-    } else {
-        return "fa";
-    }
-}
+
 
 function EnhancedTableHead(props) {
     const { classes, order, orderBy, onRequestSort } = props;

@@ -2,7 +2,7 @@ import React from 'react';
 import Header from "../components/dashHeader";
 import Footer from "../components/dashFooter";
 import Container from "@material-ui/core/Container";
-import RecentPapers from "../components/layoutDash_recentPapers";
+import RecentPapers from "../components/recentPapers";
 import {useTranslation} from "react-multi-lang";
 
 const Dashboard = (props) => {

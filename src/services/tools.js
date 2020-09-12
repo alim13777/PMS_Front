@@ -22,8 +22,17 @@ const obj2Timestamp = function (obj) {
     }
 }
 
+const detectLang = function (text) {
+    if (/^[a-zA-Z]+$/.test(text[0])) {
+        return "en";
+    } else {
+        return "fa";
+    }
+}
+
 export {
     timestamp2Str,
     timestamp2Obj,
-    obj2Timestamp
+    obj2Timestamp,
+    detectLang
 }

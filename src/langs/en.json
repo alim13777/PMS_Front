@@ -19,6 +19,9 @@
       "Title": "Edit Paper",
       "TitleNew": "Add New Paper",
       "ShortTitleNew": "New Paper",
+      "RecentPapers": "Recent Papers",
+      "FullPaperListLink": "Show full list of papers",
+      "NoPaper": "There is no paper!",
       "PaperTitle": "Paper Title",
       "PaperKeywords": "Paper Keywords",
       "PaperCode": "Paper Code",
@@ -58,7 +61,8 @@
     "New": "New",
     "Selected": "selected",
     "Cancel": "Cancel",
-    "Save": "Save"
+    "Save": "Save",
+    "LoadingData": "Loading data..."
   },
   "Login": {
     "Title": "Login",

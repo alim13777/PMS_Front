@@ -19,6 +19,9 @@
       "Title": "ویرایش مقاله",
       "TitleNew": "تعریف مقاله جدید",
       "ShortTitleNew": "مقاله جدید",
+      "RecentPapers": "مقالات اخیر",
+      "FullPaperListLink": "مشاهده لیست تمام مقالات",
+      "NoPaper": "هنوز مقاله ای تعریف نشده است!",
       "PaperCode": "شناسه مقاله",
       "PaperTitle": "عنوان مقاله",
       "PaperKeywords": "کلید واژگان",
@@ -58,7 +61,8 @@
     "New": "جدید",
     "Selected": "مورد انتخاب شده",
     "Cancel": "انصراف",
-    "Save": "ذخیره"
+    "Save": "ذخیره",
+    "LoadingData": "در حال دریافت داده ها..."
   },
   "Login": {
     "Title": "ورود به سامانه",
