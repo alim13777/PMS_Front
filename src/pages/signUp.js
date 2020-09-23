@@ -117,9 +117,9 @@ export default function SignInSide(probs) {
                             />
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField //id="name"
+                            <TextField id="lastName"
                                 type="text"
-                                //name="name"
+                                name="lastName"
                                 variant="outlined" margin="none"
                                 required fullWidth
                                 label={t("User.Surname")}
@@ -151,7 +151,7 @@ export default function SignInSide(probs) {
                     <ButtonAdv type="submit" variant="contained" color="primary"
                         fullWidth className={classes.submit}
                         disabled={loading}
-                        loading={loading}
+                        loading={loading.toString()}
                     >
                         {t("SignUp.SignUpButton")}
                     </ButtonAdv>

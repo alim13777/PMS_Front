@@ -1,6 +1,6 @@
 import Header from "../components/dashHeader";
 import Container from "@material-ui/core/Container";
-import RecentPapers from "../components/layoutDash_recentPapers";
+import RecentPapers from "../components/recentPapers";
 import Footer from "../components/dashFooter";
 import React from "react";
 import Card from "@material-ui/core/Card";
@@ -221,7 +221,8 @@ export default function ProfilePage(props) {
     const TabPanel_Upgrade = ()=> {
         return (
             <TabPanel value="upgrade">
-                tab1
+                <Typography className="card-title" component={"h6"}>{t('Profile.Upgrade')}</Typography>
+
             </TabPanel>
         )
     }

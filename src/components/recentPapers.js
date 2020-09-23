@@ -13,6 +13,7 @@ import {getLanguage, useTranslation} from "react-multi-lang";
 import apiClient from "../services/api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {detectLang, timestamp2Str} from "../services/tools";
+import {lighten, makeStyles} from "@material-ui/core/styles";
 
 function createData(paperId, title, type, publishers) {
     return {
@@ -23,11 +24,43 @@ function createData(paperId, title, type, publishers) {
     };
 }
 
+const rowStatusStyles = makeStyles((theme) => ({
+    success: {
+        backgroundColor: lighten(theme.palette.success.main, 0.9),
+    },
+    danger: {
+        backgroundColor: lighten(theme.palette.error.main, 0.9),
+    },
+    warning: {
+        backgroundColor: lighten(theme.palette.warning.main, 0.9),
+    },
+    primary: {
+        backgroundColor: lighten(theme.palette.info.main, 0.9),
+    },
+    secondary: {
+        backgroundColor: lighten(theme.palette.grey.A200, 0.9),
+        "& td":{
+            color: "gray"
+        }
+    },
+    other: {
+    }
+}));
+
 function DataRow(props) {
     const { row } = props;
     const t = useTranslation()
+    const status = row.publishers[0].status;
+    const classes = rowStatusStyles();
+    const classStatus =
+        (status==='accepted') ? 'success' :
+            (status==='rejected') ? 'danger' :
+                (status==='underReview'||status==='submitted') ? 'primary' :
+                    (status==='underEdit'||status==='readySubmit'||status==='submitting') ? 'warning' :
+                        (status==='canceled') ? 'secondary' :
+                            'other'
     return (
-        <TableRow>
+        <TableRow className={classes[classStatus]}>
             <TableCell component="th" scope="row">{row.paper.localId}</TableCell>
             <TableCell align={detectLang(row.paper.title)===getLanguage()?"left":"right"} dir={detectLang(row.paper.title)==='en'?"ltr":"rtl"}>
                 <Typography noWrap>
@@ -35,7 +68,7 @@ function DataRow(props) {
                 </Typography>
             </TableCell>
             <TableCell>{t('Lexicons.PaperType.'+row.paper.type)}</TableCell>
-            <TableCell>{row.publishers[0].status}</TableCell>
+            <TableCell>{t('Lexicons.PaperStatus.'+status)}</TableCell>
             <TableCell>{timestamp2Str(row.publishers[0].date)}</TableCell>
         </TableRow>
 
@@ -125,7 +158,7 @@ export default function RecentPaperTable() {
                     { partyId: '20003', name: 'کنترل تربیت مدرس', status: 'canceled', date: 1218741236400 },
                 ])
             ]
-            setRows(data.slice(0,5))
+            setRows(data.slice(0,15))
         }).catch((err)=>{
             console.log("get papers error",err)
             setLoadFlag(true)

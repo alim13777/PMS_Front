@@ -1,7 +1,7 @@
 import React from 'react';
 import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 import apiClient from './services/api';
-import { ThemeProvider} from '@material-ui/core/styles';
+import {lighten, ThemeProvider} from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
@@ -27,6 +27,11 @@ import fa from './langs/fa.json'
 import en from './langs/en.json'
 import './App.css';
 import {faIR} from "@material-ui/core/locale";
+import VerifyRegister from "./pages/verifyRegister";
+import {Palette} from "@material-ui/icons";
+import {colors} from "@material-ui/core";
+import createPalette from "@material-ui/core/styles/createPalette";
+import {SnackbarProvider} from "notistack";
 
 setTranslations({fa, en})
 setDefaultLanguage('fa')
@@ -68,6 +73,21 @@ const theme = createMuiTheme({
     }
 },faIR);
 
+theme.overrides = {
+    ...theme.overrides,
+    MuiTableRow: {
+        root:{
+            "&$selected": {
+                backgroundColor: lighten(theme.palette.info.light, 0.85),
+            },
+            "&$selected:hover": {
+                backgroundColor: lighten(theme.palette.info.light, 0.65),
+            },
+        }
+
+    }
+}
+
 // Configure JSS
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 function RTL(props) {
@@ -106,11 +126,17 @@ const App = () => {
         })
     };
 
+    const verifyEmail = ()=> {
+        console.log("verifying...")
+        return <Redirect to='/login' />
+    }
 
     return (
         <Router>
             <ThemeProvider theme={theme}>
                 <RTL>
+                    <SnackbarProvider maxSnack={3}>
+
                     {/*<div className="container mt-5 pt-5">*/}
                         <Switch>
                             <Route path='/' exact render={props => (
@@ -121,11 +147,26 @@ const App = () => {
                                     ? <Redirect to='/dashboard' />
                                     : <Login {...props} login={login}/>
                             )} />
-                            <Route path='/signUp' render={props => (
-                                (loggedIn)
-                                    ? <Redirect to='/dashboard' />
-                                    : <SignUp {...props} />
-                            )} />
+                            {/*<Route path='/signUp' render={props => (*/}
+                            {/*    (loggedIn)*/}
+                            {/*        ? <Redirect to='/dashboard' />*/}
+                            {/*        : <SignUp {...props} />*/}
+                            {/*)} />*/}
+                            <Route
+                                path="/signUp"
+                                render={({ match: { url } }) => (
+                                    <>
+                                        <Route path={`${url}/`} exact render={(props)=>(
+                                            (loggedIn)
+                                                ? <Redirect to='/dashboard' />
+                                                : <SignUp {...props} />
+                                        )}/>
+                                        <Route path={`${url}/verify`} render={(props)=>(
+                                            <VerifyRegister/>
+                                        )}/>
+                                    </>
+                                )}
+                            />
                             <Route
                                 path="/dashboard"
                                 render={({ match: { url } }) => (
@@ -161,6 +202,7 @@ const App = () => {
                             <Route component={Error}/>
                         </Switch>
                     {/*</div>*/}
+                    </SnackbarProvider>
                 </RTL>
             </ThemeProvider>
         </Router>

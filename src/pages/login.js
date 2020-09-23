@@ -12,12 +12,9 @@ import Grid from '@material-ui/core/Grid';
 import PageLogo from '@material-ui/icons/Person';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-
 import Background from '../images/signInSide.jpg';
 import Copyright from '../components/copyright'
 import apiClient from "../services/api";
-import {Redirect} from "react-router-dom";
-
 import Alert from '@material-ui/lab/Alert';
 import {useTranslation} from "react-multi-lang";
 
@@ -70,7 +67,7 @@ export default function Login(props) {
         localStorage.getItem('password')?localStorage.getItem('password') : ""
     );
     const [rememberMe, setRememberMe] = React.useState(false);
-    const [toHome, setToHome] = React.useState(false);
+    // const [toHome, setToHome] = React.useState(false);
     const [authError, setAuthError] = React.useState(false);
     const [unknownError, setUnknownError] = React.useState(false);
     const handleSubmit = (e) => {

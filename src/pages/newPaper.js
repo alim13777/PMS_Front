@@ -1,31 +1,26 @@
-import React, {useEffect} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import Container from "@material-ui/core/Container";
 import {useTranslation,getLanguage} from "react-multi-lang";
 import Header from "../components/dashHeader";
 import Footer from "../components/dashFooter";
 import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import Grid from "@material-ui/core/Grid";
 import SearchAuthors from '../components/searchAuthors'
 import ManageAuthors from '../components/manageAuthors'
 import Box from "@material-ui/core/Box";
-
-import 'react-modern-calendar-datepicker/lib/DatePicker.css';
-import DatePicker from 'react-modern-calendar-datepicker';
-
 import {paperTypesList, paperStatusList} from '../components/lexicon'
 import apiClient from "../services/api";
 import {obj2Timestamp, timestamp2Obj} from "../services/tools";
 import DateField from "../components/datepicker";
 import SelectField from "../components/select";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import ButtonAdv from "../components/buttonAdv";
+import {Link} from "react-router-dom";
+import { useSnackbar } from 'notistack';
+import CloseIcon from "@material-ui/icons/Close";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
 
 Number.prototype.pad = function(size) {
     let s = String(this);
@@ -41,6 +36,10 @@ function createAuthor(partyId, firstName, lastName, email) {
 
 const PaperPage = (props) => {
     const t = useTranslation()
+    const { enqueueSnackbar,closeSnackbar } = useSnackbar();
+    const [loading, setLoading] = React.useState(false);
+    // const [open, setOpen] = React.useState(false);
+
     const [authors, setAuthors] = React.useState(
         [createAuthor(user.partyId, user.firstName, user.lastName, user.email)]
     );
@@ -74,8 +73,21 @@ const PaperPage = (props) => {
         }).catch((err)=>{
             console.warn("get party papers err:",err)
         })
+        apiClient.get('api/party/journal' ).then((res)=>{
+            console.log("journal",res)
+        }).catch((err)=>{
+            console.warn("journal err..",err)
+        })
+        apiClient.get('api/party/person?firstName=م' ).then((res)=>{
+            console.log("person",res)
+        }).catch((err)=>{
+            console.warn("person err..",err)
+        })
         const sampleData = [
-            {partyId:2, name:"IEEE"}
+            {partyId:2001, name:"2001"},
+            {partyId:2002, name:"2002"},
+            {partyId:2003, name:"2003"},
+            {partyId:2004, name:"2004"}
         ]
         setPubs({
             isReady: true,
@@ -97,8 +109,15 @@ const PaperPage = (props) => {
         setAuthors(authors)
     }
 
+    // const handleClose = (event, reason) => {
+    //     if (reason === 'clickaway') {
+    //         return;
+    //     }
+    //     setOpen(false);
+    // };
 
     const postPaper = ()=> {
+        setLoading(true)
         let packet = {
             paper: {
                 title: paperTitle,
@@ -121,18 +140,66 @@ const PaperPage = (props) => {
         }
         console.log("post paper:",packet)
 
-        // apiClient.get('/sanctum/csrf-cookie')
-        //     .then(response => {
-                apiClient.post('api/paper', packet)
-                    .then(response => {
-                        console.log("response data:",response.data);
-                        if (response.status === 200) {
+        // setTimeout(() => {
+        //     setLoading(false);
+        //     const action = key => (
+        //         <Fragment>
+        //             <Link to={{
+        //                 pathname: "/dashboard/paper",
+        //                 state: {paper: 1}
+        //             }}>
+        //                 <Typography variant={"body2"} color={"textSecondary"}>{t("Dashboard.Paper.ShowPaperLink")}</Typography>
+        //             </Link>
+        //             <IconButton color={"inherit"} onClick={() => { closeSnackbar(key) }}>
+        //                 <CloseIcon/>
+        //             </IconButton>
+        //         </Fragment>
+        //     );
+        //     enqueueSnackbar(t("Dashboard.Paper.SuccessAddPaper"), {
+        //         variant: 'success',
+        //         anchorOrigin: {
+        //             vertical: 'bottom',
+        //             horizontal: 'center',
+        //         },
+        //         autoHideDuration: 6000,
+        //         action
+        //     })
+        //     // setOpen(true);
+        // }, 2000);
 
-                        }
-                    }).catch(error => {
-                        console.error(error);
-                    });
-            // });
+        apiClient.post('api/paper', packet)
+            .then(response => {
+                console.log("response:",response);
+                setLoading(false)
+                if (response.status === 200) {
+                    const action = key => (
+                        <Fragment>
+                            <Link to={{
+                                pathname: "/dashboard/paper",
+                                state: {paper: 1}
+                            }}>
+                                <Typography variant={"body2"} color={"textSecondary"}>{t("Dashboard.Paper.ShowPaperLink")}</Typography>
+                            </Link>
+                            <IconButton color={"inherit"} onClick={() => { closeSnackbar(key) }}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </Fragment>
+                    );
+                    enqueueSnackbar(t("Dashboard.Paper.SuccessAddPaper"), {
+                        variant: 'success',
+                        anchorOrigin: {
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        },
+                        autoHideDuration: 6000,
+                        action
+                    })
+                }
+            }).catch(error => {
+                console.error(error);
+                setLoading(false)
+            });
+
     }
 
     return (
@@ -234,9 +301,9 @@ const PaperPage = (props) => {
                             <Grid item xs={12}>
                                 <hr/>
                                 <Box className="d-flex flex-row-reverse">
-                                    <Button type="button" variant="contained" color="primary" className="width-medium" onClick={postPaper}>
+                                    <ButtonAdv type="button" variant="contained" color="primary" className="width-medium" loading={loading.toString()} onClick={postPaper}>
                                         {t("Action.Add")}
-                                    </Button>
+                                    </ButtonAdv>
                                 </Box>
                             </Grid>
                         </Grid>
