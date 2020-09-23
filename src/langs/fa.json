@@ -41,7 +41,9 @@
       "AuthorsList": "اسامی نویسندگان مقاله",
       "Search": "جستجو",
       "SearchAuthors": "جستجو با نام یا ایمیل",
-      "History": "سوابق ارسال مقاله"
+      "History": "سوابق ارسال مقاله",
+      "SuccessAddPaper": "تعریف مقاله با موفقیت انجام شد.",
+      "ShowPaperLink": "مشاهده مقاله"
     },
     "PapersList": {
       "Title": "لیست مقالات"
@@ -79,7 +81,8 @@
     "Title": "ثبت نام در سامانه",
     "SignUpButton": "ثبت نام",
     "RepeatPass": "تکرار کلمه عبور",
-    "BackToLogin": "قبلا ثبت نام کرده ام!"
+    "BackToLogin": "قبلا ثبت نام کرده ام!",
+    "SuccessSignUp": "حساب کاربری با موفقیت ایجاد شد."
   },
   "User": {
     "Menu": {

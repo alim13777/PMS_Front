@@ -41,7 +41,9 @@
       "AuthorsList": "Authors list",
       "Search": "Search",
       "SearchAuthors": "Search by name or email address",
-      "History": "History"
+      "History": "History",
+      "SuccessAddPaper": "New paper added successfully.",
+      "ShowPaperLink": "Show paper"
     },
     "PapersList": {
       "Title": "Papers List"
@@ -79,7 +81,8 @@
     "Title": "Sign up",
     "SignUpButton": "Sign up",
     "RepeatPass": "Repeat Password",
-    "BackToLogin": "I have an account! Back to login"
+    "BackToLogin": "I have an account! Back to login",
+    "SuccessSignUp": "Account created successfully."
   },
   "User": {
     "Menu": {

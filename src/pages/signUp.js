@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -16,6 +16,13 @@ import Copyright from '../components/copyright'
 import {useTranslation} from "react-multi-lang";
 import apiClient from "../services/api";
 import {Redirect} from "react-router-dom";
+import ButtonAdv from "../components/buttonAdv";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+import {useSnackbar} from "notistack";
+import Alert from "@material-ui/lab/Alert";
+import SignInFrame from "../components/signInSideFrame";
+import {getLanguage} from "react-multi-lang/lib";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -42,133 +49,246 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    link2Login: {
+        margin: "16px 34px 8px 0"
+    }
 }));
 
 export default function SignInSide(probs) {
     const t = useTranslation()
     const classes = useStyles();
+    // const { enqueueSnackbar,closeSnackbar } = useSnackbar();
     const [firstName, setFirstName] = React.useState('');
     const [lastName, setLastName] = React.useState('');
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [password2, setPassword2] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [success, setSuccess] = React.useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        apiClient.get('/sanctum/csrf-cookie')
-            .then(response => {
-                apiClient.post('api/register', {
-                    "firstName":firstName,
-                    "lastName":lastName,
-                    "email":email,
-                    "password":password,
-                    "password_confirmation":password2,
-                    "account":"normal",
-                    "language":"fa"
-                }).then(response => {
-                    console.log("response data:",response.data);
-                    if (response.status === 200) {
-                        return (<Redirect to='/' />)
-                    }
-                }).catch(error => {
-                    // if (error.response && error.response.status === 422) {
-                    //     setAuthError(true);
-                    // } else {
-                    //     setUnknownError(true);
-                        console.error(error);
-                    // }
-                });
-            });
+        setLoading(true)
+        const packet = {
+            "firstName": firstName,
+            "lastName": lastName,
+            "email": email,
+            "password": password,
+            "password_confirmation": password2,
+            "account": "free",
+            "language": getLanguage()
+        };
+        apiClient.post('api/register', packet
+        ).then(res => {
+            console.log("response:",res);
+            setLoading(false)
+            if (res.status === 200) {
+                setSuccess(true)
+            }
+        }).catch(err => {
+            console.error(err);
+            setLoading(false)
+        });
     }
 
     return (
-        <Grid container component="main" className={classes.root}>
-            <CssBaseline />
-            <Grid item xs={false} sm={4} md={7} className={classes.image} />
-            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-                <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        <PageLogo />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        {t("SignUp.Title")}
-                    </Typography>
-                    <form className="w-100 mt-4" noValidate onSubmit={handleSubmit}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} >
-                                <TextField id="email"
-                                           name="email"
-                                           autoComplete="email"
-                                           variant="outlined" margin="none"
-                                           required fullWidth autoFocus
-                                           label={t("Login.Email")}
-                                           onChange={e => setEmail(e.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={6} >
-                                <TextField id="name"
-                                           type="text"
-                                           name="name"
-                                           variant="outlined" margin="none"
-                                           required fullWidth
-                                           label={t("User.Name")}
-                                           onChange={e => setFirstName(e.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField id="name"
-                                           type="text"
-                                           name="name"
-                                           variant="outlined" margin="none"
-                                           required fullWidth
-                                           label={t("User.Surname")}
-                                           onChange={e => setLastName(e.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={6} >
-                                <TextField id="password"
-                                           type="password"
-                                           name="password"
-                                           variant="outlined" margin="none"
-                                           required fullWidth
-                                           label={t("Login.Password")}
-                                           onChange={e => setPassword(e.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={6} >
-                                <TextField id="passwordR"
-                                           type="password"
-                                           name="password"
-                                           variant="outlined" margin="none"
-                                           required fullWidth
-                                           label={t("SignUp.RepeatPass")}
-                                           onChange={e => setPassword2(e.target.value)}
-                                />
-                            </Grid>
+        <SignInFrame title={t("SignUp.Title")}>
+            {!success?
+                <form className="w-100" noValidate onSubmit={handleSubmit}>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} >
+                            <TextField id="email"
+                                       name="email"
+                                       autoComplete="email"
+                                       variant="outlined" margin="none"
+                                       required fullWidth autoFocus
+                                       label={t("Login.Email")}
+                                       onChange={e => setEmail(e.target.value)}
+                            />
                         </Grid>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
-                            {t("SignUp.SignUpButton")}
-                        </Button>
-                        <Grid container justify={"flex-end"}>
-                            <Grid item>
-                                <Link href="/login" variant="body2">
-                                    {t("SignUp.BackToLogin")}
-                                </Link>
-                            </Grid>
+                        <Grid item xs={6} >
+                            <TextField id="name"
+                                       type="text"
+                                       name="name"
+                                       variant="outlined" margin="none"
+                                       required fullWidth
+                                       label={t("User.Name")}
+                                       onChange={e => setFirstName(e.target.value)}
+                            />
                         </Grid>
-                    </form>
+                        <Grid item xs={6}>
+                            <TextField //id="name"
+                                type="text"
+                                //name="name"
+                                variant="outlined" margin="none"
+                                required fullWidth
+                                label={t("User.Surname")}
+                                onChange={e => setLastName(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item xs={6} >
+                            <TextField id="password"
+                                       type="password"
+                                       name="password"
+                                       variant="outlined" margin="none"
+                                       required fullWidth
+                                       label={t("Login.Password")}
+                                       onChange={e => setPassword(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item xs={6} >
+                            <TextField id="passwordR"
+                                       type="password"
+                                       name="password"
+                                       variant="outlined" margin="none"
+                                       required fullWidth
+                                       label={t("SignUp.RepeatPass")}
+                                       onChange={e => setPassword2(e.target.value)}
+                            />
+                        </Grid>
+                    </Grid>
 
-                    <Box  mt={1} p={5} pb={0}>
-                        <Copyright />
-                    </Box>
-                </div>
-            </Grid>
-        </Grid>
+                    <ButtonAdv type="submit" variant="contained" color="primary"
+                        fullWidth className={classes.submit}
+                        disabled={loading}
+                        loading={loading}
+                    >
+                        {t("SignUp.SignUpButton")}
+                    </ButtonAdv>
+
+                    <Grid container justify={"flex-end"}>
+                        <Grid item>
+                            <Link href="/login" variant="body2">
+                                {t("SignUp.BackToLogin")}
+                            </Link>
+                        </Grid>
+                    </Grid>
+                </form>
+                :null
+            }
+
+            <Box className="w-100">
+                {success ?
+                    <Alert severity="success" classes={{message:"w-100"}}>{t("SignUp.SuccessSignUp")}<br/>
+                        {/*<Typography align={"center"} className={classes.link2Login}><Link href={"/login"}>{t("Login.Title")}</Link></Typography>*/}
+                        <Typography align={"center"} className={classes.link2Login}><Button href={"/login"} variant={"outlined"} color={"inherit"}>{t("Login.Title")}</Button></Typography>
+                    </Alert> : null
+                }
+                {/*{unknownError ? <Alert severity="error">{t("Login.UnknownError")}</Alert> : null}*/}
+            </Box>
+        </SignInFrame>
+
+        // <Grid container component="main" className={classes.root}>
+        //     <CssBaseline />
+        //     <Grid item xs={false} sm={4} md={7} className={classes.image} />
+        //     <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        //         <div className={classes.paper}>
+        //             <Avatar className={classes.avatar}>
+        //                 <PageLogo />
+        //             </Avatar>
+        //             <Typography component="h1" variant="h5">
+        //                 {t("SignUp.Title")}
+        //             </Typography>
+        //             {!success?
+        //                 <form className="w-100 mt-4" noValidate onSubmit={handleSubmit}>
+        //                     <Grid container spacing={3}>
+        //                         <Grid item xs={12} >
+        //                             <TextField id="email"
+        //                                        name="email"
+        //                                        autoComplete="email"
+        //                                        variant="outlined" margin="none"
+        //                                        required fullWidth autoFocus
+        //                                        label={t("Login.Email")}
+        //                                        onChange={e => setEmail(e.target.value)}
+        //                             />
+        //                         </Grid>
+        //                         <Grid item xs={6} >
+        //                             <TextField id="name"
+        //                                        type="text"
+        //                                        name="name"
+        //                                        variant="outlined" margin="none"
+        //                                        required fullWidth
+        //                                        label={t("User.Name")}
+        //                                        onChange={e => setFirstName(e.target.value)}
+        //                             />
+        //                         </Grid>
+        //                         <Grid item xs={6}>
+        //                             <TextField //id="name"
+        //                                 type="text"
+        //                                 //name="name"
+        //                                 variant="outlined" margin="none"
+        //                                 required fullWidth
+        //                                 label={t("User.Surname")}
+        //                                 onChange={e => setLastName(e.target.value)}
+        //                             />
+        //                         </Grid>
+        //                         <Grid item xs={6} >
+        //                             <TextField id="password"
+        //                                        type="password"
+        //                                        name="password"
+        //                                        variant="outlined" margin="none"
+        //                                        required fullWidth
+        //                                        label={t("Login.Password")}
+        //                                        onChange={e => setPassword(e.target.value)}
+        //                             />
+        //                         </Grid>
+        //                         <Grid item xs={6} >
+        //                             <TextField id="passwordR"
+        //                                        type="password"
+        //                                        name="password"
+        //                                        variant="outlined" margin="none"
+        //                                        required fullWidth
+        //                                        label={t("SignUp.RepeatPass")}
+        //                                        onChange={e => setPassword2(e.target.value)}
+        //                             />
+        //                         </Grid>
+        //                     </Grid>
+        //                     {/*<Button*/}
+        //                     {/*    type="submit"*/}
+        //                     {/*    fullWidth*/}
+        //                     {/*    variant="contained"*/}
+        //                     {/*    color="primary"*/}
+        //                     {/*    className={classes.submit}*/}
+        //                     {/*    disabled={loading}*/}
+        //                     {/*>*/}
+        //                     {/*    {t("SignUp.SignUpButton")}*/}
+        //                     {/*</Button>*/}
+        //                     <ButtonAdv
+        //                         type="submit"
+        //                         fullWidth
+        //                         variant="contained"
+        //                         color="primary"
+        //                         className={classes.submit}
+        //                         disabled={loading}
+        //                         loading={loading}
+        //                     >
+        //                         {t("SignUp.SignUpButton")}
+        //                     </ButtonAdv>
+        //
+        //                     <Grid container justify={"flex-end"}>
+        //                         <Grid item>
+        //                             <Link href="/login" variant="body2">
+        //                                 {t("SignUp.BackToLogin")}
+        //                             </Link>
+        //                         </Grid>
+        //                     </Grid>
+        //                 </form>
+        //             :null}
+        //
+        //
+        //             <Box className="w-100 mt-4">
+        //                 {success ?
+        //                     <Alert severity="success" classes={{message:"w-100"}}>{t("SignUp.SuccessSignUp")}<br/>
+        //                         <Typography align={"center"} className={classes.link2Login}><Link href={"/login"}>{t("Login.Title")}</Link></Typography>
+        //                     </Alert> : null
+        //                 }
+        //                 {/*{unknownError ? <Alert severity="error">{t("Login.UnknownError")}</Alert> : null}*/}
+        //             </Box>
+        //             <Box className={"text-center"} mt={1} p={5} pb={0}>
+        //                 <Copyright />
+        //             </Box>
+        //         </div>
+        //     </Grid>
+        // </Grid>
     );
 }
