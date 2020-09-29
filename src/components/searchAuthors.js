@@ -20,16 +20,14 @@ import Card from "@material-ui/core/Card";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from '@material-ui/icons/Search';
 import {useTranslation} from "react-multi-lang";
+import apiClient from "../services/api";
 
 
 function createData(partyId, firstName, lastName, email) {
     return { partyId, firstName, lastName, email };
 }
 
-const rows = [
-    createData(2,'Alireza', 'Garivani', 'alim11@gmail.com'),
-    createData(1,'مجتبی', 'فاضلی نیا', 'mfazelinia@gmail.com')
-];
+
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -137,7 +135,7 @@ EnhancedTableHead.propTypes = {
 const useToolbarStyles = makeStyles((theme) => ({
     root: {
         paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(1),
+        paddingRight: '0',
     },
     highlight:
         theme.palette.type === 'light'
@@ -167,60 +165,9 @@ const useToolbarStyles = makeStyles((theme) => ({
 //     new Table().addRow(["u2", 'test2', 'test', 'test', 'test']);
 // };
 
-const addAuthor = (event,selectedData,addAuthors) => {
-    console.log("ssssss",rows)
-    console.log(selectedData)
-    let newAuthors = rows.filter( i => selectedData.includes( i.partyId ) );
-    console.log("newAuthors",newAuthors)
-    addAuthors(newAuthors)
-    // document.getElementById("btnAddAuthorIntoList").setAttribute("data", JSON.stringify(newAuthors))
-    document.getElementById("btnAddAuthorIntoList").click()
 
-}
 
-const EnhancedTableToolbar = (props) => {
-    const classes = useToolbarStyles();
-    const { numSelected, selectedData } = props;
-    const t = useTranslation()
 
-    return (
-        <Toolbar
-            className={clsx(classes.root, {
-                [classes.highlight]: numSelected > 0,
-                [classes.searchbar]: numSelected === 0,
-            })}
-        >
-            {numSelected > 0 ? (
-                <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-                    {numSelected} {t("Action.Selected")}
-                </Typography>
-            ) : (
-                <InputBase
-                    fullWidth
-                    placeholder={t("Dashboard.Paper.SearchAuthors")}
-                />
-            )}
-
-            {numSelected > 0 ? (
-                <Tooltip title={t("Action.Add")}>
-                    <IconButton aria-label="add" onClick={(event)=>addAuthor(event,selectedData,props.addAuthors)}>
-                        <AddIcon />
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title={t("Dashboard.Paper.Search")}>
-                    <IconButton aria-label="search author">
-                        <SearchIcon />
-                    </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
-    );
-};
-
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-};
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -253,11 +200,82 @@ const useStyles = makeStyles((theme) => ({
 export default function EnhancedTable(props) {
     const classes = useStyles();
 
+    // const rows = [
+    //     createData(2,'Alireza', 'Garivani', 'alim11@gmail.com'),
+    //     createData(1,'مجتبی', 'فاضلی نیا', 'mfazelinia@gmail.com')
+    // ];
+    const [rows, setRows] = React.useState([]);
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('lastName');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const addAuthor = (event,selectedData,addAuthors) => {
+        console.log("ssssss",rows)
+        console.log(selectedData)
+        let newAuthors = rows.filter( i => selectedData.includes( i.partyId ) );
+        console.log("newAuthors",newAuthors)
+        addAuthors(newAuthors)
+        // document.getElementById("btnAddAuthorIntoList").setAttribute("data", JSON.stringify(newAuthors))
+        document.getElementById("btnAddAuthorIntoList").click()
+
+    }
+
+    const [keyword, setKeyword] = React.useState('');
+    const searchPerson = ()=>{
+        apiClient.get('api/party/person?keyword='+keyword ).then((res)=>{
+            console.log("search results:",res)
+            setRows(res.data)
+        }).catch((err)=>{
+            console.warn("search person err..",err)
+        })
+    }
+
+    const EnhancedTableToolbar = (props) => {
+        const classes = useToolbarStyles();
+        const { numSelected, selectedData } = props;
+        const t = useTranslation()
+
+        return (
+            <Toolbar
+                className={clsx(classes.root, {
+                    [classes.highlight]: numSelected > 0,
+                    [classes.searchbar]: numSelected === 0,
+                })}
+            >
+                {numSelected > 0 ? (
+                    <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+                        {numSelected} {t("Action.Selected")}
+                    </Typography>
+                ) : (
+                    <InputBase
+                        fullWidth
+                        placeholder={t("Dashboard.Paper.SearchAuthors")}
+                        value={keyword}
+                        onChange={(e)=>{setKeyword(e.target.value)}}
+                    />
+                )}
+
+                {numSelected > 0 ? (
+                    <Tooltip title={t("Action.Add")}>
+                        <IconButton aria-label="add" onClick={(event)=>addAuthor(event,selectedData,props.addAuthors)}>
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                ) : (
+                    <Tooltip title={t("Dashboard.Paper.Search")}>
+                        <IconButton aria-label="search author" onClick={searchPerson}>
+                            <SearchIcon />
+                        </IconButton>
+                    </Tooltip>
+                )}
+            </Toolbar>
+        );
+    };
+    EnhancedTableToolbar.propTypes = {
+        numSelected: PropTypes.number.isRequired,
+    };
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
