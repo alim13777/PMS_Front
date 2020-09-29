@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from "@material-ui/core/Container";
-import {getLanguage, useTranslation} from "react-multi-lang";
+import {useTranslation} from "react-multi-lang";
 import Header from "../components/dashHeader";
 import Footer from "../components/dashFooter";
 import Card from "@material-ui/core/Card";
@@ -21,9 +21,8 @@ import SearchAuthors from "../components/searchAuthors";
 import ManageAuthors from "../components/manageAuthors";
 import PaperHistory from "../components/paperHistory";
 import Box from "@material-ui/core/Box";
-import apiClient from "../services/api";
 
-const user = JSON.parse(sessionStorage.getItem('user'));
+// const user = JSON.parse(sessionStorage.getItem('user'));
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -38,12 +37,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function createData(partyId, firstName, lastName, email) {
-    return { partyId, firstName, lastName, email };
-}
+// function createData(partyId, firstName, lastName, email) {
+//     return { partyId, firstName, lastName, email };
+// }
 
 const PaperPage = (props) => {
-    const classes = useStyles();
+    // const classes = useStyles();
     const [paper, setPaper] = React.useState(props.location.state.paper);
     console.log("paper:", paper)
     const t = useTranslation()

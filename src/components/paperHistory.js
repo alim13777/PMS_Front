@@ -21,7 +21,6 @@ import {paperStatusList} from '../components/lexicon'
 import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import DatePicker from 'react-modern-calendar-datepicker';
 import TableFooter from "@material-ui/core/TableFooter";
-import InputLabel from "@material-ui/core/InputLabel";
 import ListSubheader from "@material-ui/core/ListSubheader";
 
 

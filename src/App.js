@@ -28,9 +28,6 @@ import en from './langs/en.json'
 import './App.css';
 import {faIR} from "@material-ui/core/locale";
 import VerifyRegister from "./pages/verifyRegister";
-import {Palette} from "@material-ui/icons";
-import {colors} from "@material-ui/core";
-import createPalette from "@material-ui/core/styles/createPalette";
 import {SnackbarProvider} from "notistack";
 
 setTranslations({fa, en})
