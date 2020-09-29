@@ -74,7 +74,15 @@ const PaperPage = (props) => {
             console.warn("get party papers err:",err)
         })
         apiClient.get('api/party/journal' ).then((res)=>{
-            console.log("journal",res)
+            setPubs({
+                isReady: true,
+                data: res.data.map(item=>{
+                    return {
+                        value: item.partyId,
+                        label: item.name
+                    }
+                })
+            })
         }).catch((err)=>{
             console.warn("journal err..",err)
         })
@@ -83,21 +91,7 @@ const PaperPage = (props) => {
         }).catch((err)=>{
             console.warn("person err..",err)
         })
-        const sampleData = [
-            {partyId:2001, name:"2001"},
-            {partyId:2002, name:"2002"},
-            {partyId:2003, name:"2003"},
-            {partyId:2004, name:"2004"}
-        ]
-        setPubs({
-            isReady: true,
-            data: sampleData.map(item=>{
-                return {
-                    value: item.partyId,
-                    label: item.name
-                }
-            })
-        })
+
     },[])
 
     const addAuthors = (newAuthors) => {
