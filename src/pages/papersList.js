@@ -234,7 +234,6 @@ const PapersListPage = (props) => {
     const [rows, setRows] = React.useState([]);
     async function getPapers(){
         const res = await apiClient.get('api/paper/party' )//+ user.partyId
-        console.log("res:", res)
         return res.data
     }
 
