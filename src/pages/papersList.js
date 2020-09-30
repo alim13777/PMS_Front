@@ -184,7 +184,7 @@ function Row(props) {
                     <Tooltip title={t("Action.Edit")}>
                         <Link to={{
                             pathname: "/dashboard/paper",
-                            state: {paper: row}
+                            state: {paperId: row.paper.paperId}
                         }}>
                             <IconButton>
                                 <EditIcon/>

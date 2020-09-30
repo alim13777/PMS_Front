@@ -196,7 +196,7 @@ function Row(props) {
 }
 
 export default function EnhancedTable(props) {
-    const { paper } = props;
+    const { publisher } = props;
     const t = useTranslation()
 
     return (
@@ -211,7 +211,7 @@ export default function EnhancedTable(props) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {paper.publishers.map((historyRow) => (
+                    {publisher.map((historyRow) => (
                         <Row row={historyRow}/>
                     ))}
                 </TableBody>

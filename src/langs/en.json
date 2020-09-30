@@ -43,7 +43,8 @@
       "SearchAuthors": "Search by name or email address",
       "History": "History",
       "SuccessAddPaper": "New paper added successfully.",
-      "ShowPaperLink": "Show paper"
+      "ShowPaperLink": "Show paper",
+      "SuccessEditPaper": "Paper edited successfully."
     },
     "PapersList": {
       "Title": "Papers List"
