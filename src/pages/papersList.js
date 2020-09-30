@@ -40,18 +40,6 @@ const useRowStyles = makeStyles({
     }
 });
 
-function createData(paperId, title, type, publishers) {
-    return {
-        paper: {
-            paperId, title, type, description: "", keywords: "", localId: paperId
-        },
-        authors: [user],
-        publishers
-    };
-}
-
-
-
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -190,7 +178,7 @@ function Row(props) {
                 </TableCell>
                 <TableCell>{t('Lexicons.PaperType.'+row.paper.type)}</TableCell>
                 <TableCell>
-                    <StatusBadge status={row.publishers[0].status}/>
+                    <StatusBadge status={row.publisher[0].status}/>
                 </TableCell>
                 <TableCell padding="none">
                     <Tooltip title={t("Action.Edit")}>
@@ -221,7 +209,7 @@ function Row(props) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {row.publishers.map((historyRow) => (
+                                    {row.publisher.map((historyRow) => (
                                         <TableRow key={historyRow.partyId}>
                                             <TableCell component="th" scope="row">
                                                 {historyRow.name}
@@ -244,82 +232,15 @@ const PapersListPage = (props) => {
     const classes = useStyles();
     const t = useTranslation()
     const [rows, setRows] = React.useState([]);
-    // useEffect(async () => {
-    //     const papers = await apiClient.get('/sanctum/csrf-cookie')
-    //         .then(async response => {
-    //             return await apiClient.get('api/paper/' + user.partyId)
-    //                 .then(response => {
-    //                     console.log("response:", response)
-    //                     if (response.status === 200) {
-    //                         return [
-    //                             createData('01', 'Wind turbine torque oscillation reduction using soft switching multiple model predictive control based on the gap metric and Kalman filter estimator', 'foreignJour', [
-    //                                 { publisherId: '10001', publisherName: 'IEEE Industrial Electronic', status: 'accepted', date: 1518741276400 },
-    //                                 { publisherId: '10002', publisherName: 'IEEE Sensors', status: 'rejected', date: 1418741276400 },
-    //                                 { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
-    //                             ]),
-    //                             createData('02', 'Wi-Fi RSS-based Indoor Localization Using Reduced Features Second Order Discriminant Function', 'foreignConf', [
-    //                                 { publisherId: '10002', publisherName: 'IEEE Sensors', status: 'readySubmit', date: 1418741276400 },
-    //                                 { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
-    //                             ]),
-    //                             createData('06', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
-    //                                 { publisherId: '10003', publisherName: 'Measurements', status: 'submitted', date: 1218741236400 },
-    //                             ]),
-    //                             createData('03', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
-    //                                 { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
-    //                             ]),
-    //                             createData('04', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
-    //                                 { publisherId: '10003', publisherName: 'Measurements', status: 'writing', date: 1218741236400 },
-    //                             ]),
-    //                             createData('05', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
-    //                                 { publisherId: '20003', publisherName: 'کنترل تربیت مدرس', status: 'canceled', date: 1218741236400 },
-    //                             ])
-    //                         ]//response.data;
-    //                     }
-    //                 }).catch(error => {
-    //                     console.log("error:", error)
-    //                 });
-    //         });
-    //     setRows(papers);
-    // }, []);
     async function getPapers(){
         const res = await apiClient.get('api/paper/party' )//+ user.partyId
         console.log("res:", res)
-        return [
-            createData('01', 'Wind turbine torque oscillation reduction using soft switching multiple model predictive control based on the gap metric and Kalman filter estimator', 'foreignJour', [
-                { partyId: '10001', name: 'IEEE Industrial Electronic', status: 'accepted', date: 1518741276400 },
-                { partyId: '10002', name: 'IEEE Sensors', status: 'rejected', date: 1418741276400 },
-                { partyId: '10003', name: 'Measurements', status: 'rejected', date: 1218741236400 },
-            ]),
-            createData('02', 'Wi-Fi RSS-based Indoor Localization Using Reduced Features Second Order Discriminant Function', 'foreignConf', [
-                { partyId: '10002', name: 'IEEE Sensors', status: 'readySubmit', date: 1418741276400 },
-                { partyId: '10003', name: 'Measurements', status: 'rejected', date: 1218741236400 },
-            ]),
-            createData('06', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
-                { partyId: '10003', name: 'Measurements', status: 'submitted', date: 1218741236400 },
-            ]),
-            createData('03', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
-                { partyId: '10003', name: 'Measurements', status: 'rejected', date: 1218741236400 },
-            ]),
-            createData('04', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
-                { partyId: '10003', name: 'Measurements', status: 'writing', date: 1218741236400 },
-            ]),
-            createData('05', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
-                { partyId: '20003', name: 'کنترل تربیت مدرس', status: 'canceled', date: 1218741236400 },
-            ])
-        ]//res.data;
+        return res.data
     }
 
     useEffect(() => {
         async function fetchData() {
             setRows(await getPapers())
-            // await apiClient.get('/sanctum/csrf-cookie')
-            //     .then(async () => {
-            //         try{
-            //             setRows(await getPapers())
-            //         }catch (e) {
-            //             console.log("error:", e)
-            //         }
-            //     });
         }
         fetchData()
     }, []);
