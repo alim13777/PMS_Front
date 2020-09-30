@@ -86,12 +86,6 @@ const PaperPage = (props) => {
         }).catch((err)=>{
             console.warn("journal err..",err)
         })
-        apiClient.get('api/party/person?firstName=م' ).then((res)=>{
-            console.log("person",res)
-        }).catch((err)=>{
-            console.warn("person err..",err)
-        })
-
     },[])
 
     const addAuthors = (newAuthors) => {
