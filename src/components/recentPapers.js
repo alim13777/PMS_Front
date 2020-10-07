@@ -8,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Link from "@material-ui/core/Link";
+import {Link} from "react-router-dom";
 import {getLanguage, useTranslation} from "react-multi-lang";
 import apiClient from "../services/api";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -138,7 +138,7 @@ export default function RecentPaperTable() {
                 {t("Dashboard.Paper.RecentPapers")}
             </Typography>
             <Table size="small" style={{tableLayout:"fixed"}}>
-                <caption><Link href="/dashboard/papersList">{t("Dashboard.Paper.FullPaperListLink")}</Link></caption>
+                <caption><Link to="/dashboard/papersList">{t("Dashboard.Paper.FullPaperListLink")}</Link></caption>
                 <TableHeader classname={(!loadFlag || (loadFlag && rows.length===0))?"text-secondary":""}/>
                 <TableBody>
                     {loadFlag?
