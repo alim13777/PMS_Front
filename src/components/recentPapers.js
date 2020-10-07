@@ -17,7 +17,7 @@ import {lighten, makeStyles} from "@material-ui/core/styles";
 
 const rowStatusStyles = makeStyles((theme) => ({
     success: {
-        backgroundColor: lighten(theme.palette.success.main, 0.9),
+        backgroundColor: lighten(theme.palette.success.main, 0.75),
     },
     danger: {
         backgroundColor: lighten(theme.palette.error.main, 0.9),
@@ -26,7 +26,7 @@ const rowStatusStyles = makeStyles((theme) => ({
         backgroundColor: lighten(theme.palette.warning.main, 0.9),
     },
     primary: {
-        backgroundColor: lighten(theme.palette.info.main, 0.9),
+        backgroundColor: lighten(theme.palette.info.main, 0.8),
     },
     secondary: {
         backgroundColor: lighten(theme.palette.grey.A200, 0.9),

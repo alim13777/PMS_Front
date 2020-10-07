@@ -13,7 +13,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TablePagination from "@material-ui/core/TablePagination";
-import { makeStyles } from '@material-ui/core/styles';
+import {lighten, makeStyles} from '@material-ui/core/styles';
 import TableHead from '@material-ui/core/TableHead';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Typography from '@material-ui/core/Typography';
@@ -138,33 +138,64 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function StatusBadge({status}) {
-    const t = useTranslation()
-    return (
-        <span className={"badge badge-pill badge-normal "
-        + (status==='accepted'?"badge-success":"")
-        + (status==='rejected'?"badge-danger":"")
-        + (status==='underReview'?"badge-primary":"")
-        + (status==='submitted'?"badge-primary":"")
-        + (status==='underEdit'?"badge-warning":"")
-        + (status==='readySubmit'?"badge-warning":"")
-        + (status==='submitting'?"badge-warning":"")
-        + (status==='canceled'?"badge-secondary":"")
-        }>
-            {t('Lexicons.PaperStatus.'+status)}
-        </span>
-    )
-}
+// function StatusBadge({status}) {
+//     const t = useTranslation()
+//     return (
+//         <span className={"badge badge-pill badge-normal "
+//         + (status==='accepted'?"badge-success":"")
+//         + (status==='rejected'?"badge-danger":"")
+//         + (status==='underReview'?"badge-primary":"")
+//         + (status==='submitted'?"badge-primary":"")
+//         + (status==='underEdit'?"badge-warning":"")
+//         + (status==='readySubmit'?"badge-warning":"")
+//         + (status==='submitting'?"badge-warning":"")
+//         + (status==='canceled'?"badge-secondary":"")
+//         }>
+//             {t('Lexicons.PaperStatus.'+status)}
+//         </span>
+//     )
+// }
+
+const rowStatusStyles = makeStyles((theme) => ({
+    success: {
+        backgroundColor: lighten(theme.palette.success.main, 0.75),
+    },
+    danger: {
+        backgroundColor: lighten(theme.palette.error.main, 0.9),
+    },
+    warning: {
+        backgroundColor: lighten(theme.palette.warning.main, 0.9),
+    },
+    primary: {
+        backgroundColor: lighten(theme.palette.info.main, 0.8),
+    },
+    secondary: {
+        backgroundColor: lighten(theme.palette.grey.A200, 0.9),
+        "& td":{
+            color: "gray"
+        }
+    },
+    other: {
+    }
+}));
 
 function Row(props) {
     const t = useTranslation()
     const { row } = props;
     const [open, setOpen] = React.useState(false);
+    const status = row.publisher[0].status;
     const classes = useRowStyles();
-
+    const statusClasses = rowStatusStyles();
+    const classStatus =
+        (status==='accepted') ? 'success' :
+            (status==='rejected') ? 'danger' :
+                (status==='underReview'||status==='submitted') ? 'primary' :
+                    (status==='underEdit'||status==='readySubmit'||status==='submitting') ? 'warning' :
+                        (status==='canceled') ? 'secondary' :
+                            'other'
     return (
         <React.Fragment>
-            <TableRow className={classes.root}>
+            <TableRow className={[classes.root, statusClasses[classStatus]].join(' ')}>
                 <TableCell>
                     <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -178,7 +209,8 @@ function Row(props) {
                 </TableCell>
                 <TableCell>{t('Lexicons.PaperType.'+row.paper.type)}</TableCell>
                 <TableCell>
-                    <StatusBadge status={row.publisher[0].status}/>
+                    {/*<StatusBadge status={row.publisher[0].status}/>*/}
+                    {t('Lexicons.PaperStatus.'+status)}
                 </TableCell>
                 <TableCell padding="none">
                     <Tooltip title={t("Action.Edit")}>
@@ -193,7 +225,7 @@ function Row(props) {
                     </Tooltip>
                 </TableCell>
             </TableRow>
-            <TableRow>
+            <TableRow className={statusClasses[classStatus]}>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box margin={1}>
