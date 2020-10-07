@@ -58,6 +58,9 @@ const theme = createMuiTheme({
             },
         },
         MuiTableCell: {
+            root:{
+                textAlign: "start"
+            },
             head: {
                 fontWeight: 700
             }
