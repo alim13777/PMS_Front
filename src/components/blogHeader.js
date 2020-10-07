@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
+import {Link} from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { NavLink } from 'react-router-dom';
 import Container from "@material-ui/core/Container";
@@ -31,8 +31,14 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1, 3),
     },
     appBarLink: {
-        margin: theme.spacing(1, 1.5),
-        textDecoration: "none"
+        margin: theme.spacing(0, 1.5),
+        padding: theme.spacing(0.1, 0),
+        color: "cadetblue",
+        '&:hover' :{
+            color: "black",
+            borderBottom:"1px solid black"
+        },
+        textDecoration: "none!important"
     }
 }));
 
@@ -115,20 +121,20 @@ export default function Header(props) {
                             {t('Header.Company')}
                         </Typography>
                         <nav className={classes.toolbarMenu}>
-                            <Link variant="button" color="textPrimary" href="/" className={classes.appBarLink}>
+                            <Link to="/" className={classes.appBarLink}>
                                 {t('Header.Home')}&nbsp;
                             </Link>
-                            <Link variant="button" color="textPrimary"  className={classes.appBarLink}>
+                            <Link to="/" disabled className={classes.appBarLink}>
                                 {t('Header.Prices')}
                             </Link>
                             {props.loggedIn
-                                ? <Link variant="button" color="textPrimary" href="/dashboard" className={classes.appBarLink}>
+                                ? <Link variant="button" color="textPrimary" to="/dashboard" className={classes.appBarLink}>
                                     {t('Header.Dashboard')}
                                   </Link>
                                 : null}
                         </nav>
                         <nav className={classes.toolbarLang}>
-                            <Link variant={"button"} color={"textPrimary"} onClick={handleLang} href={"#"}>
+                            <Link onClick={handleLang} href={"#"} className={classes.appBarLink}>
                                 {getLanguage()==='en'?"فا":"En"}
                             </Link>
                         </nav>

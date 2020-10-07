@@ -52,9 +52,10 @@ const Home = (props) => {
                 </Container>
             </div>
             <Container>
-                <h1>Home</h1>
-                <p>Home page body content</p>
-                <Link to={"dashboard"} underline={"hover"}>دموی داشبورد</Link>
+                {/*<h1>Home</h1>*/}
+                {/*<p>Home page body content</p>*/}
+                {/*<Link to="dashboard" underline={"hover"}>دموی داشبورد</Link>*/}
+                <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
             </Container>
             <Footer/>
         </div>

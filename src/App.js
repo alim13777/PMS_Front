@@ -30,8 +30,7 @@ import {faIR} from "@material-ui/core/locale";
 import VerifyRegister from "./pages/verifyRegister";
 import {SnackbarProvider} from "notistack";
 
-setTranslations({fa, en})
-setDefaultLanguage('fa')
+
 
 const fontVazir = {
     fontFamily: 'Vazir',
@@ -96,6 +95,9 @@ function RTL(props) {
 }
 
 const App = () => {
+    setTranslations({fa, en})
+    setDefaultLanguage('fa')
+
     const [loggedIn, setLoggedIn] = React.useState(
         sessionStorage.getItem('loggedIn') === 'true' || false
     );

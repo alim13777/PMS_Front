@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
         padding: "0",
     },
     username: {
-        marginLeft: "6px",
+        marginInlineStart: "6px",
         textTransform: "capitalize"
     },
     userMenuIcon: {
