@@ -64,6 +64,7 @@ const PaperPage = (props) => {
     const [paperTitle, setPaperTitle] = React.useState('');
     const [paperDesc, setPaperDesc] = React.useState('');
     const [paperKeys, setPaperKeys] = React.useState('');
+    const [pubs, setPubs] = React.useState({isReady:false,data:[]});
 
     useEffect(()=>{
         apiClient.get('api/paper/'+paperId).then((res)=>{
@@ -84,6 +85,19 @@ const PaperPage = (props) => {
         }).catch((err)=>{
             console.log("get paper error",err)
             // setLoadFlag(true)
+        })
+        apiClient.get('api/party/journal' ).then((res)=>{
+            setPubs({
+                isReady: true,
+                data: res.data.map(item=>{
+                    return {
+                        value: item.partyId,
+                        label: item.name
+                    }
+                })
+            })
+        }).catch((err)=>{
+            console.warn("journal err..",err)
         })
     },[])
 
@@ -173,7 +187,7 @@ const PaperPage = (props) => {
                             <Tab label={t('Dashboard.Paper.Authors')} value="3" />
                         </Tabs >
                         <TabPanel value="1">
-                            <PaperHistory publisher={publishers}/>
+                            <PaperHistory publisher={publishers} pubs={pubs} paperId={paperId}/>
                         </TabPanel>
                         <TabPanel value="2">
                             <form noValidate autoComplete="off">

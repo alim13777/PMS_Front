@@ -1,5 +1,5 @@
 import {getLanguage, useTranslation} from "react-multi-lang";
-import React from "react";
+import React, {Fragment, useEffect} from "react";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import IconButton from "@material-ui/core/IconButton";
@@ -11,7 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
-import {timestamp2Str, timestamp2Obj} from "../services/tools";
+import {timestamp2Str, timestamp2Obj, obj2Timestamp} from "../services/tools";
 import Card from "@material-ui/core/Card";
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
@@ -22,97 +22,14 @@ import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import DatePicker from 'react-modern-calendar-datepicker';
 import TableFooter from "@material-ui/core/TableFooter";
 import ListSubheader from "@material-ui/core/ListSubheader";
+import apiClient from "../services/api";
+import SelectField from "./select";
+import {useSnackbar} from "notistack";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
-function TableNewRow() {
-    const t = useTranslation()
-    const [newRow, setNewRow] = React.useState(false);
-    const [publisher, setPublisher] = React.useState(null);
-    const [status, setStatus] = React.useState(null);
-    const [date, setDate] = React.useState(timestamp2Obj(null));
 
-    const renderDateInput = ({ ref }) => (
-        <TextField id="paper-date"
-                   size="small" fullWidth
-                   value={date ? date.year+'/'+date.month+'/'+date.day : ''}
-                   ref={ref}
-        />
-    )
-
-    return (
-        <TableFooter>
-            {
-                newRow ?
-                    <TableRow>
-                        <TableCell component="th" scope="row" className="py-0">
-                            <FormControl size="small" fullWidth>
-                                <Select id="publisher"
-                                        label={t("Dashboard.Paper.Publisher")}
-                                        labelId="publisher-label"
-                                        autoWidth
-                                        value={publisher}
-                                        onChange={e => setPublisher(e.target.value)}
-                                >
-                                    <ListSubheader>{t("Dashboard.Paper.Publisher")}:</ListSubheader>
-                                    {/*<MenuItem value=""></MenuItem>*/}
-                                </Select>
-                            </FormControl>
-                        </TableCell>
-                        <TableCell className="py-0">
-                            <FormControl size="small" fullWidth>
-                                <Select id="paper-status"
-                                        label={t("Dashboard.Paper.Status")}
-                                        labelId="paper-status-label"
-                                        autoWidth
-                                        value={status}
-                                        onChange={e=> setStatus(e.target.value)}
-                                >
-                                    {paperStatusList.map( i => {
-                                        return(
-                                            <MenuItem value={i}>{t("Lexicons.PaperStatus."+i)}</MenuItem>
-                                        )
-                                    })}
-                                </Select>
-                            </FormControl>
-                        </TableCell>
-                        <TableCell className="py-0">
-                            <DatePicker
-                                value={date}
-                                onChange={setDate}
-                                renderInput={renderDateInput}
-                                shouldHighlightWeekends
-                                locale={getLanguage()}
-                                calendarClassName="responsive-calendar"
-                                className="w-100"
-                            />
-                        </TableCell>
-                        <TableCell align="right" className="py-0">
-                            <Tooltip title={t("Action.Cancel")}>
-                                <IconButton onClick={() => setNewRow(false)}>
-                                    <CloseIcon/>
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title={t("Action.Save")}>
-                                <IconButton onClick={() => setNewRow(false)}>
-                                    <DoneIcon/>
-                                </IconButton>
-                            </Tooltip>
-                        </TableCell>
-                    </TableRow>
-                    :
-                    <TableRow>
-                        <TableCell colSpan={4} align="right" className="py-0">
-                            <Tooltip title={t("Action.Add")}>
-                                <IconButton onClick={()=>setNewRow(true)}>
-                                    <AddIcon/>
-                                </IconButton>
-                            </Tooltip>
-                        </TableCell>
-                    </TableRow>
-            }
-        </TableFooter>
-    )
-}
 
 function Row(props) {
     const t = useTranslation()
@@ -196,8 +113,137 @@ function Row(props) {
 }
 
 export default function EnhancedTable(props) {
-    const { publisher } = props;
+    const { publisher, paperId } = props;
     const t = useTranslation()
+    const statusSelectOptions = paperStatusList.map( item=>{
+        return {
+            value: item,
+            label: t("Lexicons.PaperStatus."+item)
+        }
+    })
+    function TableNewRow() {
+        const t = useTranslation()
+        const { enqueueSnackbar,closeSnackbar } = useSnackbar();
+        const [loading, setLoading] = React.useState(false);
+        const [newRow, setNewRow] = React.useState(false);
+        const [publisher, setPublisher] = React.useState({
+            paperId: paperId,
+            partyId: '',
+            status: '',
+            date: timestamp2Obj(null)
+        });
+        const [date, setDate] = React.useState(timestamp2Obj(null));
+
+        const handleNewStatus = (e)=>{
+            setPublisher(prevState=>({
+                ...prevState,
+                [e.target.name]: e.target.value
+            }))
+        }
+        const postPaperStatus = ()=>{
+            setLoading(true);
+            let packet = {
+                publisher: {
+                    ...publisher,
+                    date: obj2Timestamp(date)
+                }
+            }
+            console.log('packet',packet)
+            apiClient.post('api/paper/paperState', packet)
+                .then(res => {
+                    console.log("response:",res);
+                    setLoading(false)
+                    setNewRow(false)
+                    if (res.status === 200) {
+                        const action = key => (
+                            <Fragment>
+                                <IconButton color={"inherit"} onClick={() => { closeSnackbar(key) }}>
+                                    <CloseIcon/>
+                                </IconButton>
+                            </Fragment>
+                        );
+                        enqueueSnackbar(t("Dashboard.Paper.SuccessEditPaper"), {
+                            variant: 'success',
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                            },
+                            autoHideDuration: 6000,
+                            action
+                        })
+                    }
+                }).catch(error => {
+                console.error(error);
+                setLoading(false)
+            });
+        }
+        const renderDateInput = ({ ref }) => (
+            <TextField id="paper-date"
+                       size="small" fullWidth
+                       value={date ? date.year+'/'+date.month+'/'+date.day : ''}
+                       ref={ref}
+            />
+        )
+
+        return (
+            <TableFooter>
+                {
+                    newRow ?
+                        <TableRow>
+                            <TableCell component="th" scope="row" className="py-0">
+                                <SelectField id="paper-publisher" size="small" name="partyId"
+                                             options={props.pubs.data}
+                                             loaded={props.pubs.isReady.toString()}
+                                             value={publisher.partyId}
+                                             onChange={handleNewStatus}
+                                />
+                            </TableCell>
+                            <TableCell className="py-0">
+                                <SelectField id="paper-status" size="small" name="status"
+                                             options={statusSelectOptions}
+                                             value={publisher.status}
+                                             onChange={handleNewStatus}
+                                />
+                            </TableCell>
+                            <TableCell className="py-0">
+                                <DatePicker name="date" disabled
+                                    value={date}
+                                    onChange={setDate}
+                                    renderInput={renderDateInput}
+                                    shouldHighlightWeekends
+                                    locale={getLanguage()}
+                                    calendarClassName="responsive-calendar"
+                                    className="w-100"
+                                />
+                            </TableCell>
+                            <TableCell align="right" className="py-0">
+                                <Tooltip title={t("Action.Cancel")}>
+                                    <IconButton onClick={() => setNewRow(false)}>
+                                        <CloseIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title={t("Action.Save")}>
+                                    <IconButton onClick={postPaperStatus}>
+                                        {loading ? <CircularProgress size={24} /> : <DoneIcon/>}
+                                        {/*<DoneIcon/>*/}
+                                    </IconButton>
+                                </Tooltip>
+                            </TableCell>
+                        </TableRow>
+                        :
+                        <TableRow>
+                            <TableCell colSpan={4} align="right" className="py-0">
+                                <Tooltip title={t("Action.Add")}>
+                                    <IconButton onClick={()=>setNewRow(true)}>
+                                        <AddIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                            </TableCell>
+                        </TableRow>
+                }
+            </TableFooter>
+        )
+    }
 
     return (
         <Card variant={"outlined"} className="w-100">
