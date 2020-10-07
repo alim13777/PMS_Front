@@ -479,10 +479,10 @@
 
 
 
-import React, { Component } from 'react'
+import React from 'react'
 // import PropTypes from 'prop-types';
 // import clsx from 'clsx';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -510,7 +510,7 @@ import {useTranslation} from "react-multi-lang";
 // import AddIcon from "@material-ui/icons/Add";
 
 // const t = useTranslation()
-const user = JSON.parse(sessionStorage.getItem('user'));
+// const user = JSON.parse(sessionStorage.getItem('user'));
 const useToolbarStyles = makeStyles((theme) => ({
     title: {
         margin: "14px",
@@ -607,8 +607,8 @@ const TableRow = ({ row, delRow }) =>
     <tr>
         <TableCell>{row.lastName}</TableCell>
         <TableCell>{row.firstName}</TableCell>
-        <TableCell align="right">{row.email}</TableCell>
-        <TableCell padding="none">
+        <TableCell>{row.email}</TableCell>
+        <TableCell padding="none" align={"right"}>
             <Tooltip title="Delete">
                 <IconButton aria-label="delete" onClick={()=>delRow(row.partyId)}>
                     <DeleteIcon/>
