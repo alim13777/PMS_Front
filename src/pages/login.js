@@ -18,6 +18,7 @@ import apiClient from "../services/api";
 import Alert from '@material-ui/lab/Alert';
 import {useTranslation} from "react-multi-lang";
 import SignInFrame from "../components/signInSideFrame";
+import ButtonAdv from "../components/buttonAdv";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -60,7 +61,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Login(props) {
     const t = useTranslation()
     const classes = useStyles();
-    // const [user, setUser] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
+// const [user, setUser] = React.useState('');
     const [email, setEmail] = React.useState(
         localStorage.getItem('email')?localStorage.getItem('email') : ""
     );
@@ -73,6 +75,7 @@ export default function Login(props) {
     const [unknownError, setUnknownError] = React.useState(false);
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true)
         setAuthError(false);
         setUnknownError(false);
         apiClient.get('/sanctum/csrf-cookie')
@@ -81,6 +84,7 @@ export default function Login(props) {
                     email: email,
                     password: password
                 }).then(response => {
+                    setLoading(false)
                     // console.log("response data:",response.data);
                     if (response.status === 200) {
                         // console.log("json2:",JSON.stringify(response.data));
@@ -93,6 +97,7 @@ export default function Login(props) {
                         // setToHome(true);
                     }
                 }).catch(error => {
+                    setLoading(false)
                     if (error.response && error.response.status === 422) {
                         setAuthError(true);
                     } else {
@@ -133,15 +138,13 @@ export default function Login(props) {
                 {/*    control={<Checkbox value="remember" color="primary" onChange={e => setRememberMe(e.target.checked )} />}*/}
                 {/*    label={t("Login.Remember")}*/}
                 {/*/>*/}
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
+                <ButtonAdv type="submit" variant="contained" color="primary"
+                           fullWidth className={classes.submit}
+                           disabled={loading}
+                           loading={loading.toString()}
                 >
                     {t("Login.LoginButton")}
-                </Button>
+                </ButtonAdv>
                 <Grid container>
                     <Grid item xs>
                         {/*<Link href="#" variant="body2">*/}
