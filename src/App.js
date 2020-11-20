@@ -59,17 +59,24 @@ function RTL(props) {
     );
 }
 setTranslations({fa, en})
-setDefaultLanguage('fa')
+setDefaultLanguage('en')
 
 const originTheme = createMuiTheme({});
 
 const App = () => {
+    React.useEffect(()=>{
+        if(getLanguage()==='fa'){
+            document.getElementsByTagName("body")[0].setAttribute("dir","rtl")
+        }else{
+            document.getElementsByTagName("body")[0].setAttribute("dir","ltr")
+        }
+    },[])
     const [themeLocale, setThemeLocale] = React.useState(
         getLanguage()==='fa'? faIR : enUS
     )
     const [theme,setTheme] = React.useState(
 {
-            direction: 'rtl',
+            direction: getLanguage()==='fa'?'rtl':'ltr',
             typography: {
                 fontFamily: 'Vazir, Arial',
             },
@@ -166,7 +173,8 @@ const App = () => {
                     {/*<div className="container mt-5 pt-5">*/}
                         <Switch>
                             <Route path='/' exact render={props => (
-                                <Home {...props} loggedIn={loggedIn} logout={logout} changeLanguage={changeLanguage}/>
+                                // <Home {...props} loggedIn={loggedIn} logout={logout} changeLanguage={changeLanguage}/>
+                                <Redirect to='/login' />
                             )} />
                             <Route path='/login' render={props => (
                                 (loggedIn)

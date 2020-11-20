@@ -17,6 +17,7 @@ import Copyright from '../components/copyright'
 import apiClient from "../services/api";
 import Alert from '@material-ui/lab/Alert';
 import {useTranslation} from "react-multi-lang";
+import SignInFrame from "../components/signInSideFrame";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -106,75 +107,60 @@ export default function Login(props) {
     // }
 
     return (
-        <Grid container component="main" className={classes.root}>
-            <CssBaseline />
-            <Grid item xs={false} sm={4} md={7} className={classes.image} />
-            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-                <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        <PageLogo />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        {t("Login.Title")}
-                    </Typography>
-                    <form className={classes.form} noValidate onSubmit={handleSubmit} autoComplete="on">
-                        <TextField id="email"
-                                   type="email"
-                                   name="email"
-                                   autoComplete="email"
-                                   variant="outlined" margin="normal"
-                                   required fullWidth autoFocus
-                                   label={t("Login.Email")}
-                                   value={email}
-                                   onChange={e => setEmail(e.target.value)}
-                        />
-                        <TextField id="password"
-                                   type="password"
-                                   name="password"
-                                   variant="outlined" margin="normal"
-                                   autoComplete="current-password"
-                                   required fullWidth
-                                   label={t("Login.Password")}
-                                   value={password}
-                                   onChange={e => setPassword(e.target.value)}
-                        />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" onChange={e => setRememberMe(e.target.checked )} />}
-                            label={t("Login.Remember")}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
-                            {t("Login.LoginButton")}
-                        </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    {t("Login.ResetPassword")}
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <Link href="/signUp" variant="body2">
-                                    {t("Login.SignUp")}
-                                </Link>
-                            </Grid>
-                        </Grid>
+        <SignInFrame title={t("Login.Title")}>
+            <form className={classes.form} noValidate onSubmit={handleSubmit} autoComplete="on">
+                <TextField id="email"
+                           type="email"
+                           name="email"
+                           autoComplete="email"
+                           variant="outlined" margin="normal"
+                           required fullWidth autoFocus
+                           label={t("Login.Email")}
+                           value={email}
+                           onChange={e => setEmail(e.target.value)}
+                />
+                <TextField id="password"
+                           type="password"
+                           name="password"
+                           variant="outlined" margin="normal"
+                           autoComplete="current-password"
+                           required fullWidth
+                           label={t("Login.Password")}
+                           value={password}
+                           onChange={e => setPassword(e.target.value)}
+                />
+                {/*<FormControlLabel*/}
+                {/*    control={<Checkbox value="remember" color="primary" onChange={e => setRememberMe(e.target.checked )} />}*/}
+                {/*    label={t("Login.Remember")}*/}
+                {/*/>*/}
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                >
+                    {t("Login.LoginButton")}
+                </Button>
+                <Grid container>
+                    <Grid item xs>
+                        {/*<Link href="#" variant="body2">*/}
+                        {/*    {t("Login.ResetPassword")}*/}
+                        {/*</Link>*/}
+                    </Grid>
+                    <Grid item>
+                        <Link href="/signUp" variant="body2">
+                            {t("Login.SignUp")}
+                        </Link>
+                    </Grid>
+                </Grid>
 
-                    </form>
+            </form>
 
-                    <Box mt={3} className={classes.alerts}>
-                        {authError ? <Alert severity="error">{t("Login.AuthError")}</Alert> : null}
-                        {unknownError ? <Alert severity="error">{t("Login.UnknownError")}</Alert> : null}
-                    </Box>
-                    <Box mt={3} p={5} pb={0}>
-                        <Copyright />
-                    </Box>
-                </div>
-            </Grid>
-        </Grid>
+            <Box mt={3} className={classes.alerts}>
+                {authError ? <Alert severity="error">{t("Login.AuthError")}</Alert> : null}
+                {unknownError ? <Alert severity="error">{t("Login.UnknownError")}</Alert> : null}
+            </Box>
+        </SignInFrame>
     );
 }
