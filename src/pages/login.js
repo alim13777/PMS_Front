@@ -108,11 +108,11 @@ export default function Login(props) {
 
     return (
         <SignInFrame title={t("Login.Title")}>
-            <form className={classes.form} noValidate onSubmit={handleSubmit} autoComplete="on">
+            <form className={classes.form} onSubmit={handleSubmit} autoComplete="off">
+                <input type="hidden" name="username"/>
                 <TextField id="email"
                            type="email"
                            name="email"
-                           autoComplete="email"
                            variant="outlined" margin="normal"
                            required fullWidth autoFocus
                            label={t("Login.Email")}
