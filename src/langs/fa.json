@@ -43,7 +43,8 @@
       "SearchAuthors": "جستجو با نام یا ایمیل",
       "History": "سوابق ارسال مقاله",
       "SuccessAddPaper": "تعریف مقاله با موفقیت انجام شد.",
-      "ShowPaperLink": "مشاهده مقاله"
+      "ShowPaperLink": "مشاهده مقاله",
+      "SuccessEditPaper": "ویرایش مقاله با موفقیت انجام شد."
     },
     "PapersList": {
       "Title": "لیست مقالات"

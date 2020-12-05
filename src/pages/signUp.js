@@ -84,12 +84,10 @@ export default function SignInSide(probs) {
     return (
         <SignInFrame title={t("SignUp.Title")}>
             {!success?
-                <form className="w-100" noValidate onSubmit={handleSubmit}>
+                <form className="w-100" noValidate onSubmit={handleSubmit} autoComplete="on">
                     <Grid container spacing={3}>
                         <Grid item xs={12} >
-                            <TextField id="email"
-                                       name="email"
-                                       autoComplete="email"
+                            <TextField id="email" name="email"
                                        variant="outlined" margin="none"
                                        required fullWidth autoFocus
                                        label={t("Login.Email")}
@@ -97,9 +95,8 @@ export default function SignInSide(probs) {
                             />
                         </Grid>
                         <Grid item xs={6} >
-                            <TextField id="name"
+                            <TextField id="name" name="name"
                                        type="text"
-                                       name="name"
                                        variant="outlined" margin="none"
                                        required fullWidth
                                        label={t("User.Name")}
@@ -117,7 +114,7 @@ export default function SignInSide(probs) {
                             />
                         </Grid>
                         <Grid item xs={6} >
-                            <TextField id="password"
+                            <TextField id="password" autoComplete="new-password"
                                        type="password"
                                        name="password"
                                        variant="outlined" margin="none"

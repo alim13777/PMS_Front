@@ -22,16 +22,16 @@ import ProfilePage from "./pages/profile";
 // Import fonts
 import Vazir from './fonts/Vazir-FD-WOL.woff';
 // Import translations:
-import { setTranslations, setDefaultLanguage } from 'react-multi-lang'
+import {setTranslations, setDefaultLanguage, setLanguage} from 'react-multi-lang'
 import fa from './langs/fa.json'
 import en from './langs/en.json'
 import './App.css';
-import {faIR} from "@material-ui/core/locale";
+import {enUS, faIR} from "@material-ui/core/locale";
 import VerifyRegister from "./pages/verifyRegister";
 import {SnackbarProvider} from "notistack";
+import {getLanguage} from "react-multi-lang/lib";
 
-setTranslations({fa, en})
-setDefaultLanguage('fa')
+
 
 const fontVazir = {
     fontFamily: 'Vazir',
@@ -47,43 +47,7 @@ const fontVazir = {
     //     'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF',
 };
 
-const theme = createMuiTheme({
-    direction: 'rtl',
-    typography: {
-        fontFamily: 'Vazir, Arial',
-    },
-    overrides: {
-        MuiCssBaseline: {
-            '@global': {
-                '@font-face': [fontVazir],
-            },
-        },
-        MuiTableCell: {
-            head: {
-                fontWeight: 700
-            }
-        }
-    },
-    'hr': {
-        borderWidth: "1px",
 
-    }
-},faIR);
-
-theme.overrides = {
-    ...theme.overrides,
-    MuiTableRow: {
-        root:{
-            "&$selected": {
-                backgroundColor: lighten(theme.palette.info.light, 0.85),
-            },
-            "&$selected:hover": {
-                backgroundColor: lighten(theme.palette.info.light, 0.65),
-            },
-        }
-
-    }
-}
 
 // Configure JSS
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
@@ -94,8 +58,80 @@ function RTL(props) {
         </StylesProvider>
     );
 }
+setTranslations({fa, en})
+setDefaultLanguage('en')
+
+const originTheme = createMuiTheme({});
 
 const App = () => {
+    React.useEffect(()=>{
+        if(getLanguage()==='fa'){
+            document.getElementsByTagName("body")[0].setAttribute("dir","rtl")
+        }else{
+            document.getElementsByTagName("body")[0].setAttribute("dir","ltr")
+        }
+    },[])
+    const [themeLocale, setThemeLocale] = React.useState(
+        getLanguage()==='fa'? faIR : enUS
+    )
+    const [theme,setTheme] = React.useState(
+{
+            direction: getLanguage()==='fa'?'rtl':'ltr',
+            typography: {
+                fontFamily: 'Vazir, Arial',
+            },
+            overrides: {
+                MuiCssBaseline: {
+                    '@global': {
+                        '@font-face': [fontVazir],
+                    },
+                },
+                MuiTableCell: {
+                    root:{
+                        textAlign: "start"
+                    },
+                    head: {
+                        fontWeight: 700
+                    }
+                },
+                MuiTableRow: {
+                    root:{
+                        "&$selected": {
+                            backgroundColor: "rgb(231, 243, 253)",
+                        },
+                        "&$selected:hover": {
+                            backgroundColor: "rgb(200, 229, 251)",
+                        },
+                    }
+
+                }
+            },
+            'hr': {
+                borderWidth: "1px",
+
+            }
+        }
+    );
+
+    const changeLanguage = (lang)=>{
+        if(lang==='fa'){
+            setLanguage('fa')
+            document.getElementsByTagName("body")[0].setAttribute("dir","rtl")
+            setThemeLocale(faIR)
+            setTheme(prevState => ({
+                ...prevState,
+                direction: 'rtl'
+            }))
+        }else{
+            setLanguage('en')
+            document.getElementsByTagName("body")[0].setAttribute("dir","lrt")
+            setThemeLocale(enUS)
+            setTheme(prevState => ({
+                ...prevState,
+                direction: 'ltr'
+            }))
+        }
+    };
     const [loggedIn, setLoggedIn] = React.useState(
         sessionStorage.getItem('loggedIn') === 'true' || false
     );
@@ -130,14 +166,15 @@ const App = () => {
 
     return (
         <Router>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={createMuiTheme(theme,themeLocale)}>
                 <RTL>
                     <SnackbarProvider maxSnack={3}>
 
                     {/*<div className="container mt-5 pt-5">*/}
                         <Switch>
                             <Route path='/' exact render={props => (
-                                <Home {...props} loggedIn={loggedIn} logout={logout} />
+                                // <Home {...props} loggedIn={loggedIn} logout={logout} changeLanguage={changeLanguage}/>
+                                <Redirect to='/login' />
                             )} />
                             <Route path='/login' render={props => (
                                 (loggedIn)

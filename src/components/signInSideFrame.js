@@ -2,14 +2,12 @@ import React from 'react';
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import Avatar from "@material-ui/core/Avatar";
-import PageLogo from "@material-ui/icons/Person";
 import Typography from "@material-ui/core/Typography";
-
-import Box from "@material-ui/core/Box";
 import Copyright from "./copyright";
 import {makeStyles} from "@material-ui/core/styles";
 import Background from "../images/signInSide.jpg";
+import Logo from "../images/logo.jpg";
+import {useTranslation} from "react-multi-lang";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,18 +22,20 @@ const useStyles = makeStyles((theme) => ({
         backgroundPosition: 'center',
     },
     paper: {
-        margin: theme.spacing(8, 4),
+        margin: theme.spacing(4, 4),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
     },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
+    footer: {
+        position: "absolute",
+        bottom: "0",
+        padding: theme.spacing(2)
+    }
 }));
 
 export default function SignInSideFrame (props) {
+    const t = useTranslation()
     const classes = useStyles();
     const {title} = props;
     return(
@@ -44,18 +44,19 @@ export default function SignInSideFrame (props) {
             <Grid item xs={false} sm={4} md={7} className={classes.image} />
             <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                 <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        <PageLogo />
-                    </Avatar>
-                    <Typography component="h1" variant="h5" className="mb-4">
+                    <img src={Logo} width="60px"/>
+                    <Typography component="h1" variant="h5" className="mt-3">
+                        {t("Home.Title")}
+                    </Typography>
+                    <Typography component="h1" variant="h6" className="mt-3 mb-4">
                         {title}
                     </Typography>
 
                     {props.children}
 
-                    <Box className={"text-center"} mt={1} p={5} pb={0}>
+                    <div className={classes.footer}>
                         <Copyright />
-                    </Box>
+                    </div>
                 </div>
             </Grid>
         </Grid>

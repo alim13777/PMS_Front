@@ -86,12 +86,6 @@ const PaperPage = (props) => {
         }).catch((err)=>{
             console.warn("journal err..",err)
         })
-        apiClient.get('api/party/person?firstName=م' ).then((res)=>{
-            console.log("person",res)
-        }).catch((err)=>{
-            console.warn("person err..",err)
-        })
-
     },[])
 
     const addAuthors = (newAuthors) => {
@@ -134,33 +128,6 @@ const PaperPage = (props) => {
         }
         console.log("post paper:",packet)
 
-        // setTimeout(() => {
-        //     setLoading(false);
-        //     const action = key => (
-        //         <Fragment>
-        //             <Link to={{
-        //                 pathname: "/dashboard/paper",
-        //                 state: {paper: 1}
-        //             }}>
-        //                 <Typography variant={"body2"} color={"textSecondary"}>{t("Dashboard.Paper.ShowPaperLink")}</Typography>
-        //             </Link>
-        //             <IconButton color={"inherit"} onClick={() => { closeSnackbar(key) }}>
-        //                 <CloseIcon/>
-        //             </IconButton>
-        //         </Fragment>
-        //     );
-        //     enqueueSnackbar(t("Dashboard.Paper.SuccessAddPaper"), {
-        //         variant: 'success',
-        //         anchorOrigin: {
-        //             vertical: 'bottom',
-        //             horizontal: 'center',
-        //         },
-        //         autoHideDuration: 6000,
-        //         action
-        //     })
-        //     // setOpen(true);
-        // }, 2000);
-
         apiClient.post('api/paper', packet)
             .then(response => {
                 console.log("response:",response);
@@ -170,7 +137,7 @@ const PaperPage = (props) => {
                         <Fragment>
                             <Link to={{
                                 pathname: "/dashboard/paper",
-                                state: {paper: 1}
+                                state: {paperId: response.data.paperId}
                             }}>
                                 <Typography variant={"body2"} color={"textSecondary"}>{t("Dashboard.Paper.ShowPaperLink")}</Typography>
                             </Link>

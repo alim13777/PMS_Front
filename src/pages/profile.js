@@ -1,7 +1,7 @@
 import Header from "../components/dashHeader";
 import Container from "@material-ui/core/Container";
 import Footer from "../components/dashFooter";
-import React from "react";
+import React, {Fragment, useEffect} from "react";
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
@@ -24,6 +24,9 @@ import Button from "@material-ui/core/Button";
 import DateField from "../components/datepicker";
 import {obj2Timestamp} from "../services/tools";
 import PassField from "../components/passwordField";
+import apiClient from "../services/api";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -56,6 +59,9 @@ export default function ProfilePage(props) {
     const classes = useStyles();
     const t = useTranslation()
     const [tabValue, setTabValue] = React.useState("edit");
+    const [personForm, setPersonForm] = React.useState({
+        prefix: "", gender: "", firstName: "", lastName: "", degree: "", birthDate: "",
+    });
     const [firstName, setFirstName] = React.useState(user.firstName);
     const [lastName, setLastName] = React.useState(user.lastName);
     const [gender, setGender] = React.useState(null);
@@ -65,6 +71,12 @@ export default function ProfilePage(props) {
     const handleChangeTab = (event, newValue) => {
         setTabValue(newValue);
     };
+    function handleChangePerson(e) {
+        setPersonForm(prevState => ({
+            ...prevState,
+            [e.target.name]: e.target.value
+        }))
+    }
     const prefixSelectOptions = prefixList(getLanguage()).map( item=>{
         return {
             value: item,
@@ -84,44 +96,79 @@ export default function ProfilePage(props) {
         }
     })
 
+    useEffect(()=>{
+        apiClient.get('api/party/person/'+user.partyId)
+            .then(res => {
+                setPersonForm(res.data[0])
+                console.log("get person response:",res.data);
+            }).catch(err => {
+                console.error(err);
+            });
+    },[])
+    
+
+
     const TabPanel_Edit = ()=>{
+        function putPersonCharacteristic () {
+            let packet = {
+                person: {
+                    partyId: personForm.partyId,
+                    firstName: personForm.firstName,
+                    lastName: personForm.lastName,
+                    prefix: personForm.prefix,
+                    gender: personForm.gender,
+                    degree: personForm.degree,
+                    ...(birthDate && {birthDate: obj2Timestamp(birthDate)}),
+                }
+            };
+            // if(birthDate){
+            //     packet.person.birthDate = obj2Timestamp(birthDate);
+            // }
+            console.log("putPersonCharacteristic packet:",packet)
+            apiClient.put('api/party/person',packet)
+                .then(res => {
+                    console.log("put person response:",res);
+                }).catch(err => {
+                    console.error(err);
+                });
+        }
         return(
             <TabPanel value="edit">
                 <Typography className="card-title" component={"h6"}>{t('Profile.Edit')}</Typography>
                 <Grid container spacing={3}>
                     <Grid item sm={12} md={6}>
-                        <SelectField id="user-prefix"
+                        <SelectField id="user-prefix" name="prefix"
                                      label={t("User.Prefix")}
                                      variant="outlined"
                                      options={prefixSelectOptions}
-                                     value={prefix}
-                                     onChange={e=> setPrefix(e.target.value)}
+                                     value={personForm.prefix}
+                                     onChange={handleChangePerson}
                         />
                     </Grid>
                     <Grid item sm={12} md={6}>
-                        <SelectField id="user-gender"
+                        <SelectField id="user-gender" name="gender"
                                      label={t("User.Gender")}
                                      variant="outlined"
                                      options={genderSelectOptions}
-                                     value={gender}
-                                     onChange={e=> setGender(e.target.value)}
+                                     value={personForm.gender}
+                                     onChange={handleChangePerson}
                         />
                     </Grid>
 
                     <Grid item sm={12} md={6}>
-                        <TextField id="user-firstName"
+                        <TextField id="user-firstName" name="firstName"
                                    label={t("User.Name")}
                                    fullWidth variant="outlined"
-                                   value={firstName}
-                                   onChange={e => setFirstName(e.target.value)}
+                                   value={personForm.firstName}
+                                   onChange={handleChangePerson}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <TextField id="user-lastName"
+                        <TextField id="user-lastName" name="lastName"
                                    label={t("User.Surname")}
                                    fullWidth variant="outlined"
-                                   value={lastName}
-                                   onChange={e => setLastName(e.target.value)}
+                                   value={personForm.lastName}
+                                   onChange={handleChangePerson}
                         />
                     </Grid>
 
@@ -134,18 +181,18 @@ export default function ProfilePage(props) {
                         />
                     </Grid>
                     <Grid item sm={12} md={6}>
-                        <SelectField id="user-degree"
+                        <SelectField id="user-degree" name="degree"
                                      label={t("User.Degree")}
                                      variant="outlined"
                                      options={degreeSelectOptions}
-                                     value={degree}
-                                     onChange={e=> setDegree(e.target.value)}
+                                     value={personForm.degree}
+                                     onChange={handleChangePerson}
                         />
                     </Grid>
                     <Grid item xs={12} className="pt-0">
                         <hr/>
                         <Box className="d-flex flex-row-reverse">
-                            <Button type="button" variant="contained" color="primary" className="width-medium" onClick={putPerson}>
+                            <Button type="button" variant="contained" color="primary" className="width-medium" onClick={putPersonCharacteristic}>
                                 {t("Action.Edit")}
                             </Button>
                         </Box>
@@ -216,19 +263,6 @@ export default function ProfilePage(props) {
 
             </TabPanel>
         )
-    }
-
-    function putPerson() {
-        let packet = {
-            partyId: user.partyId,
-            firstName: firstName,
-            lastName: lastName,
-            prefix: prefix,
-            gender: gender,
-            degree: degree,
-            birthDate: obj2Timestamp(birthDate)
-        }
-        console.log('putPerson',packet)
     }
 
     return (

@@ -13,7 +13,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TablePagination from "@material-ui/core/TablePagination";
-import { makeStyles } from '@material-ui/core/styles';
+import {lighten, makeStyles} from '@material-ui/core/styles';
 import TableHead from '@material-ui/core/TableHead';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Typography from '@material-ui/core/Typography';
@@ -39,18 +39,6 @@ const useRowStyles = makeStyles({
         padding: "16px"
     }
 });
-
-function createData(paperId, title, type, publishers) {
-    return {
-        paper: {
-            paperId, title, type, description: "", keywords: "", localId: paperId
-        },
-        authors: [user],
-        publishers
-    };
-}
-
-
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -150,33 +138,64 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function StatusBadge({status}) {
-    const t = useTranslation()
-    return (
-        <span className={"badge badge-pill badge-normal "
-        + (status==='accepted'?"badge-success":"")
-        + (status==='rejected'?"badge-danger":"")
-        + (status==='underReview'?"badge-primary":"")
-        + (status==='submitted'?"badge-primary":"")
-        + (status==='underEdit'?"badge-warning":"")
-        + (status==='readySubmit'?"badge-warning":"")
-        + (status==='submitting'?"badge-warning":"")
-        + (status==='canceled'?"badge-secondary":"")
-        }>
-            {t('Lexicons.PaperStatus.'+status)}
-        </span>
-    )
-}
+// function StatusBadge({status}) {
+//     const t = useTranslation()
+//     return (
+//         <span className={"badge badge-pill badge-normal "
+//         + (status==='accepted'?"badge-success":"")
+//         + (status==='rejected'?"badge-danger":"")
+//         + (status==='underReview'?"badge-primary":"")
+//         + (status==='submitted'?"badge-primary":"")
+//         + (status==='underEdit'?"badge-warning":"")
+//         + (status==='readySubmit'?"badge-warning":"")
+//         + (status==='submitting'?"badge-warning":"")
+//         + (status==='canceled'?"badge-secondary":"")
+//         }>
+//             {t('Lexicons.PaperStatus.'+status)}
+//         </span>
+//     )
+// }
+
+const rowStatusStyles = makeStyles((theme) => ({
+    success: {
+        backgroundColor: lighten(theme.palette.success.main, 0.75),
+    },
+    danger: {
+        backgroundColor: lighten(theme.palette.error.main, 0.9),
+    },
+    warning: {
+        backgroundColor: lighten(theme.palette.warning.main, 0.9),
+    },
+    primary: {
+        backgroundColor: lighten(theme.palette.info.main, 0.8),
+    },
+    secondary: {
+        backgroundColor: lighten(theme.palette.grey.A200, 0.9),
+        "& td":{
+            color: "gray"
+        }
+    },
+    other: {
+    }
+}));
 
 function Row(props) {
     const t = useTranslation()
     const { row } = props;
     const [open, setOpen] = React.useState(false);
+    const status = row.publisher[0].status;
     const classes = useRowStyles();
-
+    const statusClasses = rowStatusStyles();
+    const classStatus =
+        (status==='accepted') ? 'success' :
+            (status==='rejected') ? 'danger' :
+                (status==='underReview'||status==='submitted') ? 'primary' :
+                    (status==='underEdit'||status==='readySubmit'||status==='submitting') ? 'warning' :
+                        (status==='canceled') ? 'secondary' :
+                            'other'
     return (
         <React.Fragment>
-            <TableRow className={classes.root}>
+            <TableRow className={[classes.root, statusClasses[classStatus]].join(' ')}>
                 <TableCell>
                     <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -190,13 +209,14 @@ function Row(props) {
                 </TableCell>
                 <TableCell>{t('Lexicons.PaperType.'+row.paper.type)}</TableCell>
                 <TableCell>
-                    <StatusBadge status={row.publishers[0].status}/>
+                    {/*<StatusBadge status={row.publisher[0].status}/>*/}
+                    {t('Lexicons.PaperStatus.'+status)}
                 </TableCell>
                 <TableCell padding="none">
                     <Tooltip title={t("Action.Edit")}>
                         <Link to={{
                             pathname: "/dashboard/paper",
-                            state: {paper: row}
+                            state: {paperId: row.paper.paperId}
                         }}>
                             <IconButton>
                                 <EditIcon/>
@@ -205,7 +225,7 @@ function Row(props) {
                     </Tooltip>
                 </TableCell>
             </TableRow>
-            <TableRow>
+            <TableRow className={statusClasses[classStatus]}>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box margin={1}>
@@ -221,7 +241,7 @@ function Row(props) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {row.publishers.map((historyRow) => (
+                                    {row.publisher.map((historyRow) => (
                                         <TableRow key={historyRow.partyId}>
                                             <TableCell component="th" scope="row">
                                                 {historyRow.name}
@@ -244,82 +264,14 @@ const PapersListPage = (props) => {
     const classes = useStyles();
     const t = useTranslation()
     const [rows, setRows] = React.useState([]);
-    // useEffect(async () => {
-    //     const papers = await apiClient.get('/sanctum/csrf-cookie')
-    //         .then(async response => {
-    //             return await apiClient.get('api/paper/' + user.partyId)
-    //                 .then(response => {
-    //                     console.log("response:", response)
-    //                     if (response.status === 200) {
-    //                         return [
-    //                             createData('01', 'Wind turbine torque oscillation reduction using soft switching multiple model predictive control based on the gap metric and Kalman filter estimator', 'foreignJour', [
-    //                                 { publisherId: '10001', publisherName: 'IEEE Industrial Electronic', status: 'accepted', date: 1518741276400 },
-    //                                 { publisherId: '10002', publisherName: 'IEEE Sensors', status: 'rejected', date: 1418741276400 },
-    //                                 { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
-    //                             ]),
-    //                             createData('02', 'Wi-Fi RSS-based Indoor Localization Using Reduced Features Second Order Discriminant Function', 'foreignConf', [
-    //                                 { publisherId: '10002', publisherName: 'IEEE Sensors', status: 'readySubmit', date: 1418741276400 },
-    //                                 { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
-    //                             ]),
-    //                             createData('06', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
-    //                                 { publisherId: '10003', publisherName: 'Measurements', status: 'submitted', date: 1218741236400 },
-    //                             ]),
-    //                             createData('03', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
-    //                                 { publisherId: '10003', publisherName: 'Measurements', status: 'rejected', date: 1218741236400 },
-    //                             ]),
-    //                             createData('04', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
-    //                                 { publisherId: '10003', publisherName: 'Measurements', status: 'writing', date: 1218741236400 },
-    //                             ]),
-    //                             createData('05', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
-    //                                 { publisherId: '20003', publisherName: 'کنترل تربیت مدرس', status: 'canceled', date: 1218741236400 },
-    //                             ])
-    //                         ]//response.data;
-    //                     }
-    //                 }).catch(error => {
-    //                     console.log("error:", error)
-    //                 });
-    //         });
-    //     setRows(papers);
-    // }, []);
     async function getPapers(){
         const res = await apiClient.get('api/paper/party' )//+ user.partyId
-        console.log("res:", res)
-        return [
-            createData('01', 'Wind turbine torque oscillation reduction using soft switching multiple model predictive control based on the gap metric and Kalman filter estimator', 'foreignJour', [
-                { partyId: '10001', name: 'IEEE Industrial Electronic', status: 'accepted', date: 1518741276400 },
-                { partyId: '10002', name: 'IEEE Sensors', status: 'rejected', date: 1418741276400 },
-                { partyId: '10003', name: 'Measurements', status: 'rejected', date: 1218741236400 },
-            ]),
-            createData('02', 'Wi-Fi RSS-based Indoor Localization Using Reduced Features Second Order Discriminant Function', 'foreignConf', [
-                { partyId: '10002', name: 'IEEE Sensors', status: 'readySubmit', date: 1418741276400 },
-                { partyId: '10003', name: 'Measurements', status: 'rejected', date: 1218741236400 },
-            ]),
-            createData('06', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
-                { partyId: '10003', name: 'Measurements', status: 'submitted', date: 1218741236400 },
-            ]),
-            createData('03', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
-                { partyId: '10003', name: 'Measurements', status: 'rejected', date: 1218741236400 },
-            ]),
-            createData('04', 'Augmented State Approach for Simultaneous Estimation of Sensor Biases in Attitude Determination System', 'foreignJour', [
-                { partyId: '10003', name: 'Measurements', status: 'writing', date: 1218741236400 },
-            ]),
-            createData('05', ' استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی  استفاده از الگوریتم‌ یادگیری ژرف برای پیش‌بینی تشنج‌های صرعی', 'domesticJour', [
-                { partyId: '20003', name: 'کنترل تربیت مدرس', status: 'canceled', date: 1218741236400 },
-            ])
-        ]//res.data;
+        return res.data
     }
 
     useEffect(() => {
         async function fetchData() {
             setRows(await getPapers())
-            // await apiClient.get('/sanctum/csrf-cookie')
-            //     .then(async () => {
-            //         try{
-            //             setRows(await getPapers())
-            //         }catch (e) {
-            //             console.log("error:", e)
-            //         }
-            //     });
         }
         fetchData()
     }, []);

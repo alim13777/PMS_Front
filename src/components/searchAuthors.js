@@ -224,8 +224,7 @@ export default function EnhancedTable(props) {
 
     const [keyword, setKeyword] = React.useState('');
     const searchPerson = ()=>{
-        apiClient.get('api/party/person?keyword='+keyword ).then((res)=>{
-            console.log("search results:",res)
+        apiClient.get('api/party/person/search?text='+keyword ).then((res)=>{
             setRows(res.data)
         }).catch((err)=>{
             console.warn("search person err..",err)

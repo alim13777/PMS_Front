@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from "@material-ui/core/Container";
 import {useTranslation} from "react-multi-lang";
@@ -21,6 +21,13 @@ import SearchAuthors from "../components/searchAuthors";
 import ManageAuthors from "../components/manageAuthors";
 import PaperHistory from "../components/paperHistory";
 import Box from "@material-ui/core/Box";
+import apiClient from "../services/api";
+import {Link} from "react-router-dom";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+import {useSnackbar} from "notistack";
+import ButtonAdv from "../components/buttonAdv";
 
 // const user = JSON.parse(sessionStorage.getItem('user'));
 
@@ -42,16 +49,57 @@ const useStyles = makeStyles((theme) => ({
 // }
 
 const PaperPage = (props) => {
-    // const classes = useStyles();
-    const [paper, setPaper] = React.useState(props.location.state.paper);
-    console.log("paper:", paper)
     const t = useTranslation()
-    const [value, setValue] = React.useState("1");
-    const [authors, setAuthors] = React.useState(paper.authors);
-    const [paperLocalId, setPaperLocalId] = React.useState(paper.paper.localId);
-    const [paperType, setPaperType] = React.useState(paper.paper.type);
-    const [paperTitle, setPaperTitle] = React.useState(paper.paper.title);
-    const [paperDesc, setPaperDesc] = React.useState(paper.paper.description);
+    const { enqueueSnackbar,closeSnackbar } = useSnackbar();
+    const [loading, setLoading] = React.useState(false);
+    // const classes = useStyles();
+    const paperId = props.location.state.paperId;
+    const [paper, setPaper] = React.useState({});
+    // console.log("paper:", paper)
+    const [value, setValue] = React.useState("1"); //Tab Value
+    const [authors, setAuthors] = React.useState([]);
+    const [publishers, setPublishers] = React.useState([]);
+    const [paperLocalId, setPaperLocalId] = React.useState('');
+    const [paperType, setPaperType] = React.useState('');
+    const [paperTitle, setPaperTitle] = React.useState('');
+    const [paperDesc, setPaperDesc] = React.useState('');
+    const [paperKeys, setPaperKeys] = React.useState('');
+    const [pubs, setPubs] = React.useState({isReady:false,data:[]});
+
+    useEffect(()=>{
+        apiClient.get('api/paper/'+paperId).then((res)=>{
+            console.log("get paper",res)
+            setPaper({
+                title: res.data[0].paper.title,
+                localId: res.data[0].paper.localId
+            })
+            setPaperLocalId(res.data[0].paper.localId)
+            setPaperType(res.data[0].paper.type)
+            setPaperTitle(res.data[0].paper.title)
+            setPaperDesc(res.data[0].paper.description)
+            setPaperKeys(res.data[0].paper.keywords)
+            setAuthors(res.data[0].authors)
+            setPublishers(res.data[0].publisher)
+            // setLoadFlag(true)
+            // setRows(res.data.slice(0,5))
+        }).catch((err)=>{
+            console.log("get paper error",err)
+            // setLoadFlag(true)
+        })
+        apiClient.get('api/party/journal' ).then((res)=>{
+            setPubs({
+                isReady: true,
+                data: res.data.map(item=>{
+                    return {
+                        value: item.partyId,
+                        label: item.name
+                    }
+                })
+            })
+        }).catch((err)=>{
+            console.warn("journal err..",err)
+        })
+    },[])
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -67,21 +115,48 @@ const PaperPage = (props) => {
     }
 
     const postPaper = ()=> {
+        setLoading(true)
         let packet = {
             paper: {
+                paperId: paperId,
                 title: paperTitle,
                 type: paperType,
                 description: paperDesc,
-                localId: paperLocalId
-            },
-            // publisher: {
-            //     publisher: paperPublisher,
-            //     status: paperStatus,
-            //     date: date
-            // },
-            // authors: authors
+                localId: paperLocalId,
+                keywords: paperKeys
+            }
         }
         console.log('packet:',packet)
+        apiClient.put('api/paper', packet)
+            .then(res => {
+                console.log("response:",res);
+                setLoading(false)
+                if (res.status === 200) {
+                    setPaper({
+                        title: paperTitle,
+                        localId: paperLocalId
+                    })
+                    const action = key => (
+                        <Fragment>
+                            <IconButton color={"inherit"} onClick={() => { closeSnackbar(key) }}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </Fragment>
+                    );
+                    enqueueSnackbar(t("Dashboard.Paper.SuccessEditPaper"), {
+                        variant: 'success',
+                        anchorOrigin: {
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        },
+                        autoHideDuration: 6000,
+                        action
+                    })
+                }
+            }).catch(error => {
+            console.error(error);
+            setLoading(false)
+        });
     }
 
     return (
@@ -93,11 +168,11 @@ const PaperPage = (props) => {
                     <Card variant={"outlined"} className="m-4 p-3 bg-info-light">
                         <div className="row mb-2">
                             <div className="col-lg-2 col-md-3 col-sm-12">{t("Dashboard.Paper.PaperCode")}:</div>
-                            <div className="col font-weight-bold">{paper.paper.localId}</div>
+                            <div className="col font-weight-bold">{paper.localId}</div>
                         </div>
                         <div className="row">
                             <div className="col-lg-2 col-md-3 col-sm-12">{t("Dashboard.Paper.PaperTitle")}:</div>
-                            <div className="col font-weight-bold">{paper.paper.title}</div>
+                            <div className="col font-weight-bold">{paper.title}</div>
                         </div>
                     </Card>
                     <TabContext value={value}>
@@ -112,7 +187,7 @@ const PaperPage = (props) => {
                             <Tab label={t('Dashboard.Paper.Authors')} value="3" />
                         </Tabs >
                         <TabPanel value="1">
-                            <PaperHistory paper={props.location.state.paper}/>
+                            <PaperHistory publisher={publishers} pubs={pubs} paperId={paperId}/>
                         </TabPanel>
                         <TabPanel value="2">
                             <form noValidate autoComplete="off">
@@ -168,9 +243,9 @@ const PaperPage = (props) => {
                                     <Grid item xs={12}>
                                         <hr/>
                                         <Box className="d-flex flex-row-reverse">
-                                            <Button type="button" variant="contained" color="primary" className="width-medium" onClick={postPaper}>
+                                            <ButtonAdv type="button" variant="contained" color="primary" className="width-medium" loading={loading.toString()} onClick={postPaper}>
                                                 {t("Action.Edit")}
-                                            </Button>
+                                            </ButtonAdv>
                                         </Box>
                                     </Grid>
 

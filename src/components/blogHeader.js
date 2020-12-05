@@ -4,14 +4,14 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
+import {Link} from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { NavLink } from 'react-router-dom';
 import Container from "@material-ui/core/Container";
 import PropTypes from 'prop-types';
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import UserMenu from "./userMenu"
-import {getLanguage, setLanguage, useTranslation} from "react-multi-lang";
+import {getLanguage, useTranslation} from "react-multi-lang";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -31,8 +31,14 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1, 3),
     },
     appBarLink: {
-        margin: theme.spacing(1, 1.5),
-        textDecoration: "none"
+        margin: theme.spacing(0, 1.5),
+        padding: theme.spacing(0.1, 0),
+        color: "cadetblue",
+        '&:hover' :{
+            color: "black",
+            borderBottom:"1px solid black"
+        },
+        textDecoration: "none!important"
     }
 }));
 
@@ -65,26 +71,6 @@ ElevationScroll.propTypes = {
 export default function Header(props) {
     const classes = useStyles();
     const t = useTranslation()
-    // const [loggedIn, setLoggedIn] = React.useState(
-    //     sessionStorage.getItem('loggedIn') === 'true' || false
-    // );
-    // const login = () => {
-    //     setLoggedIn(true);
-    //     sessionStorage.setItem('loggedIn', true);
-    // };
-    // const logout = () => {
-    //     apiClient.post('/logout').then(response => {
-    //         debugger;
-    //         if (response.status === 204) {
-    //             setLoggedIn(false);
-    //             sessionStorage.setItem('loggedIn', false);
-    //         }
-    //     })
-    // };
-
-    // const authLink = props.loggedIn
-    //     ? <UserMenu/> //<button onClick={props.logout} className="nav-link btn btn-link">Logout</button>
-    //     : <NavLink to='/login' className="nav-link">Login</NavLink>;
 
     const userLogin = props.loggedIn
         ? <UserMenu  {...props}/>
@@ -96,11 +82,9 @@ export default function Header(props) {
 
     const handleLang = () => {
         if(getLanguage()==='en'){
-            setLanguage('fa')
-            document.getElementsByTagName("body")[0].setAttribute("dir","rtl")
+            props.changeLanguage('fa')
         }else{
-            setLanguage('en')
-            document.getElementsByTagName("body")[0].setAttribute("dir","lrt")
+            props.changeLanguage('en')
         }
     };
 
@@ -115,20 +99,20 @@ export default function Header(props) {
                             {t('Header.Company')}
                         </Typography>
                         <nav className={classes.toolbarMenu}>
-                            <Link variant="button" color="textPrimary" href="/" className={classes.appBarLink}>
+                            <Link to="/" className={classes.appBarLink}>
                                 {t('Header.Home')}&nbsp;
                             </Link>
-                            <Link variant="button" color="textPrimary"  className={classes.appBarLink}>
+                            <Link to="/" disabled className={classes.appBarLink}>
                                 {t('Header.Prices')}
                             </Link>
                             {props.loggedIn
-                                ? <Link variant="button" color="textPrimary" href="/dashboard" className={classes.appBarLink}>
+                                ? <Link variant="button" color="textPrimary" to="/dashboard" className={classes.appBarLink}>
                                     {t('Header.Dashboard')}
                                   </Link>
                                 : null}
                         </nav>
                         <nav className={classes.toolbarLang}>
-                            <Link variant={"button"} color={"textPrimary"} onClick={handleLang} href={"#"}>
+                            <Link onClick={handleLang} to={"#"} className={classes.appBarLink}>
                                 {getLanguage()==='en'?"فا":"En"}
                             </Link>
                         </nav>
