@@ -1,4 +1,7 @@
 import React from 'react';
+import axios from 'axios';
+import {BASE_URL} from "../services/api";
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
@@ -9,7 +12,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Background from '../images/signInSide.jpg';
 import {useTranslation} from "react-multi-lang";
-import apiClient from "../services/api";
 import ButtonAdv from "../components/buttonAdv";
 import Alert from "@material-ui/lab/Alert";
 import SignInFrame from "../components/signInSideFrame";
@@ -66,19 +68,46 @@ export default function SignInSide(probs) {
             "password": password,
             "password_confirmation": password2,
             "account": "free",
-            "language": getLanguage()
+            "language": getLanguage(),
         };
-        apiClient.post('api/register', packet
-        ).then(res => {
-            console.log("response:",res);
-            setLoading(false)
-            if (res.status === 200) {
-                setSuccess(true)
-            }
-        }).catch(err => {
-            console.error(err);
-            setLoading(false)
-        });
+        async function postData(url = '', data = {}) {
+            // Default options are marked with *
+            const response = await fetch(BASE_URL+url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    'Content-Type': 'application/json'
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            });
+            return response; // parses JSON response into native JavaScript objects
+        }
+        postData('/api/register', packet)
+            .then(res => {
+                // console.log(res); // JSON data parsed by `data.json()` call
+                setLoading(false)
+                if (res.status === 200) {
+                    setSuccess(true)
+                }
+            });
+        // axios.post('api/register', packet, {
+        //         baseURL: BASE_URL,
+        //     }
+        // ).then(res => {
+        //     console.log("response:",res);
+        //     setLoading(false)
+        //     if (res.status === 200) {
+        //         setSuccess(true)
+        //     }
+        // }).catch(err => {
+        //     console.error(err);
+        //     setLoading(false)
+        // });
     }
 
     return (
@@ -156,10 +185,25 @@ export default function SignInSide(probs) {
 
             <Box className="w-100">
                 {success ?
-                    <Alert severity="success" classes={{message:"w-100"}}>{t("SignUp.SuccessSignUp")}<br/>
-                        {/*<Typography align={"center"} className={classes.link2Login}><Link href={"/login"}>{t("Login.Title")}</Link></Typography>*/}
-                        <Typography align={"center"} className={classes.link2Login}><Button href={"/login"} variant={"outlined"} color={"inherit"}>{t("Login.Title")}</Button></Typography>
-                    </Alert> : null
+                    // <Box className="alert alert-success" p={2}>
+                    <Alert severity="success" icon={false} classes={{message:"w-100"}}>
+                        <Box p={4}>
+                            <Box>
+                                <Typography align={"center"} style={{color:"#aedeae"}}>
+                                    <CheckCircleOutlineIcon style={{ fontSize: 80 }}/>
+                                </Typography>
+                            </Box>
+                            <Box m={2}>
+                                <Typography align={"center"} variant={"h6"}>{t("SignUp.SuccessSignUpTitle",{name:firstName})}</Typography>
+                            </Box>
+                            <Box>
+                                <Typography align={"center"} variant={"body1"}>{t("SignUp.SuccessSignUpText")}</Typography>
+                            </Box>
+                        </Box>
+
+                        {/*{t("SignUp.SuccessSignUp")}<br/>*/}
+                        {/*<Typography align={"center"} className={classes.link2Login}><Button href={"/login"} variant={"outlined"} color={"inherit"}>{t("Login.Title")}</Button></Typography>*/}
+                    </Alert>: null
                 }
                 {/*{unknownError ? <Alert severity="error">{t("Login.UnknownError")}</Alert> : null}*/}
             </Box>

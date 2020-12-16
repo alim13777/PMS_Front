@@ -83,7 +83,8 @@
     "SignUpButton": "Sign up",
     "RepeatPass": "Repeat Password",
     "BackToLogin": "I have an account! Back to login",
-    "SuccessSignUp": "Account created successfully."
+    "SuccessSignUpTitle": "Thanks for signing up, {name}",
+    "SuccessSignUpText": "Check your mail to verify your account."
   },
   "User": {
     "Menu": {
