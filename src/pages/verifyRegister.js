@@ -1,35 +1,50 @@
 import React, {useEffect} from 'react';
 import SignInFrame from "../components/signInSideFrame";
-import apiClient from "../services/api";
+import apiClient, {BASE_URL} from "../services/api";
+import {useParams} from "react-router-dom";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Box from "@material-ui/core/Box";
+import Typography from "@material-ui/core/Typography";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import Alert from "@material-ui/lab/Alert";
+import Button from "@material-ui/core/Button";
+import {useTranslation} from "react-multi-lang";
 
 export default function VerifyRegister(props) {
-
+    const t = useTranslation()
+    const {userId} = useParams();
+    const [waiting, setWaiting] = React.useState(true);
     useEffect(() => {
-        // fetch('http://localhost:8000/api/email/verify')
-        //     .then(response => response.json())
-        //     .then(res => {
-        //         console.log("verify res",res)
-        //     })
-        //     .catch((err) => {
-        //         console.log("verify err",err)
-        //     });
-        // async function fetchData() {
-        // apiClient.get('/sanctum/csrf-cookie')
-        //     .then(response => {
-                 apiClient.get('/api/email/verify',{params:{userId:1}})
-                    .then(res=>{
-                        console.log("verify res")
-                    }).catch(err=>{
-                        console.log("verify err")
-                    });
-            // });
-        // }
-        // fetchData()
+        apiClient.get('/api/email/verify?userId='+userId)
+            .then(res=>{
+                setWaiting(false)
+            }).catch(err=>{
+            console.log("Email verification error",err)
+        });
     }, []);
 
     return(
         <SignInFrame title={""}>
-            verify
+            {waiting?
+                <Box p={5}>
+                    <CircularProgress/>
+                </Box>:
+                <Alert severity="success" icon={false} classes={{message:"w-100"}}>
+                    <Box p={4}>
+                        <Box>
+                            <Typography align={"center"} style={{color:"#aedeae"}}>
+                                <CheckCircleOutlineIcon style={{ fontSize: 80 }}/>
+                            </Typography>
+                        </Box>
+                        <Box m={4}>
+                            <Typography align={"center"} variant={"body1"}>{t("SignUp.SuccessVerifyText")}</Typography>
+                        </Box>
+                        <Box>
+                            <Typography align={"center"}><Button href={"/login"} variant={"outlined"} color={"inherit"}>{t("Login.Title")}</Button></Typography>
+                        </Box>
+                    </Box>
+                </Alert>
+            }
         </SignInFrame>
     )
 }
