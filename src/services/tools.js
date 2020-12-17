@@ -5,12 +5,21 @@ const timestamp2Str = function (timestamp,locale) {
     return new persianDate(timestamp).toLocale(locale).format('YYYY/MM/DD');
 }
 const timestamp2Obj = function (timestamp,locale) {
-    const date = new persianDate(timestamp).toLocale(locale)
-    return {
-        day: date.dates(),
-        month: date.month(),
-        year: date.year()
-    };
+    if(locale==='fa'){
+        const date = new persianDate(timestamp).toLocale(locale)
+        return {
+            day: date.dates(),
+            month: date.month(),
+            year: date.year()
+        };
+    }else{
+        const date = timestamp?new Date(timestamp):new Date();
+        return {
+            day: date.getDate(),
+            month: date.getMonth(),
+            year: date.getFullYear()
+        };
+    }
 }
 
 const obj2Timestamp = function (obj) {
