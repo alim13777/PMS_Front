@@ -21,6 +21,7 @@ import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from '@material-ui/icons/Search';
 import {useTranslation} from "react-multi-lang";
 import apiClient from "../services/api";
+import TextField from "@material-ui/core/TextField";
 
 
 function createData(partyId, firstName, lastName, email) {
@@ -248,11 +249,9 @@ export default function EnhancedTable(props) {
                         {numSelected} {t("Action.Selected")}
                     </Typography>
                 ) : (
-                    <InputBase
-                        fullWidth
-                        placeholder={t("Dashboard.Paper.SearchAuthors")}
-                        value={keyword}
-                        onChange={(e)=>{setKeyword(e.target.value)}}
+                    <InputBase fullWidth placeholder={t("Dashboard.Paper.SearchAuthors")}
+                               defaultValue={keyword}
+                               onBlur={(e)=>setKeyword(e.target.value)}
                     />
                 )}
 

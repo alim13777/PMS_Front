@@ -84,7 +84,8 @@
     "RepeatPass": "Repeat Password",
     "BackToLogin": "I have an account! Back to login",
     "SuccessSignUpTitle": "Thanks for signing up, {name}",
-    "SuccessSignUpText": "Check your mail to verify your account."
+    "SuccessSignUpText": "Your account has been successfully created. Check your email to verify your email address and complete your registration.",
+    "SuccessVerifyText": "Your account has been successfully activated."
   },
   "User": {
     "Menu": {

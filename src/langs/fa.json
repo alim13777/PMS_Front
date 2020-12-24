@@ -83,8 +83,9 @@
     "SignUpButton": "ثبت نام",
     "RepeatPass": "تکرار کلمه عبور",
     "BackToLogin": "قبلا ثبت نام کرده ام!",
-    "SuccessSignUpTitle": "Thanks for signing up, {name}",
-    "SuccessSignUpText": "حساب کاربری با موفقیت ایجاد و لینک فعال سازی به ایمیل شما ارسال شد."
+    "SuccessSignUpTitle": "تبریک, {name}",
+    "SuccessSignUpText": "حساب کاربری با موفقیت ایجاد و لینک فعال سازی به ایمیل شما ارسال شد.",
+    "SuccessVerifyText": "حساب کاربری شما با موفقیت فعال شد."
   },
   "User": {
     "Menu": {
