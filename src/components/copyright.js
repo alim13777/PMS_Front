@@ -5,8 +5,11 @@ import {getLanguage, useTranslation} from "react-multi-lang";
 
 function Copyright() {
     const t = useTranslation()
+    const rootStyle = {
+        marginTop: 'auto'
+    }
     return (
-        <Typography component={'span'} variant="body2" color="textSecondary">
+        <Typography component={'span'} variant="body2" color="textSecondary" style={rootStyle}>
             {t("Copyright.Title")+' © '}
             <Link color="inherit" href="/">
                 {t("Header.Company")}
