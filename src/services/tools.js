@@ -44,9 +44,24 @@ const detectLang = function (text) {
     }
 }
 
+const checkRequired = function (formValues, fields, setValidation) {
+    let isValid = true
+    let validationBuffer = {}
+    for(let i in fields){
+        const id = fields[i]
+        if(!formValues[id]){
+            isValid = false
+            validationBuffer[id] = {error: true}
+        }
+    }
+    setValidation(validationBuffer)
+    return isValid
+}
+
 export {
     timestamp2Str,
     timestamp2Obj,
     obj2Timestamp,
-    detectLang
+    detectLang,
+    checkRequired
 }

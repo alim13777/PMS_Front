@@ -22,7 +22,7 @@ import {getLanguage} from "react-multi-lang/lib";
 import SelectField from "../components/select";
 import Button from "@material-ui/core/Button";
 import DateField from "../components/datepicker";
-import {obj2Timestamp} from "../services/tools";
+import {checkRequired, obj2Timestamp} from "../services/tools";
 import PassField from "../components/passwordField";
 import apiClient from "../services/api";
 import IconButton from "@material-ui/core/IconButton";
@@ -33,6 +33,14 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import FrameDashboard from "../components/frames/frameDashboard";
+import InputText from "../components/formControls/inputText";
+import InputSelect from "../components/formControls/inputSelect";
+import InputDate from "../components/formControls/inputDate";
+import InputPassword from "../components/formControls/inputPassword";
+import Divider from "@material-ui/core/Divider";
+import ButtonPro from "../components/formControls/buttonPro";
+import {useSnackbar} from "notistack";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -61,38 +69,67 @@ function username (){
     return user.firstName + " " + user.lastName
 }
 
+
+
+
 export default function ProfilePage(props) {
     const classes = useStyles();
     const t = useTranslation()
     const [tabValue, setTabValue] = React.useState("edit");
-    const [personForm, setPersonForm] = React.useState({
-        prefix: "", gender: "", firstName: "", lastName: "", degree: "", birthDate: null,
-    });
-    const [firstName, setFirstName] = React.useState(user.firstName);
-    const [lastName, setLastName] = React.useState(user.lastName);
-    const [gender, setGender] = React.useState(null);
-    const [prefix, setPrefix] = React.useState(null);
-    const [degree, setDegree] = React.useState(null);
-    const [birthDate, setBirthDate] = React.useState(null);
-
-    // const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
-    const handleDateChange = (date) => {
-        // setSelectedDate(date);
-        setPersonForm(prevState => ({
-            ...prevState,
-            birthDate: date
-        }))
-    };
 
     const handleChangeTab = (event, newValue) => {
         setTabValue(newValue);
     };
-    function handleChangePerson(e) {
-        setPersonForm(prevState => ({
-            ...prevState,
-            [e.target.name]: e.target.value
-        }))
-    }
+
+    return (
+        <FrameDashboard {...props}>
+            <TabContext value={tabValue}>
+                <div className="row mt-4">
+                    <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
+                        <Card>
+                            <CardMedia
+                                className={classes.media}
+                                image={Tableau}
+                            />
+                            <CardContent className="text-center pt-0">
+                                <Avatar className={classes.avatar} src="/broken-image.jpg" />
+                                <Typography align={"center"}>{username()}</Typography>
+                                <Tabs onChange={handleChangeTab}
+                                      value={tabValue}
+                                      orientation="vertical"
+                                      indicatorColor="primary"
+                                      textColor="primary"
+                                      className="border-bottom border-top mt-3"
+                                      aria-label="profile tabs">
+                                    <Tab classes={{wrapper: classes.tabItem}} label={t('Profile.Edit')} value="edit" />
+                                    <Tab classes={{wrapper: classes.tabItem}} label={t('Profile.ChangePass')} value="pass" />
+                                    <Tab classes={{wrapper: classes.tabItem}} label={t('Profile.Upgrade')} value="upgrade" />
+                                </Tabs >
+                            </CardContent>
+                        </Card>
+                    </div>
+                    <div className="col">
+                        <Card>
+                            <TabPanel_Edit/>
+                            <TabPanel_Pass/>
+                            <TabPanel_Upgrade/>
+                        </Card>
+                    </div>
+                </div>
+            </TabContext>
+        </FrameDashboard>
+    )
+}
+
+
+function TabPanel_Edit() {
+    const t = useTranslation()
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
+    const [loading, setLoading] = React.useState(false)
+    const [validation, setValidation] = React.useState({})
+    const [personForm, setPersonForm] = React.useState({
+        prefix: "", gender: "", firstName: "", lastName: "", degree: "", birthDate: null,
+    });
     const prefixSelectOptions = prefixList(getLanguage()).map( item=>{
         return {
             value: item,
@@ -113,237 +150,153 @@ export default function ProfilePage(props) {
     })
 
     useEffect(()=>{
-        apiClient.get('api/party/person/'+user.partyId)
-            .then(res => {
-                setPersonForm(res.data[0])
-                console.log("get person response:",res.data);
-            }).catch(err => {
-                console.error(err);
-            });
+        apiClient.get('api/party/person/'+user.partyId).then(res => {
+            setPersonForm(res.data[0])
+        }).catch(err => {
+            console.error(err);
+        });
     },[])
 
-
-
-    const TabPanel_Edit = ()=>{
-        function putPersonCharacteristic () {
-            let packet = {
-                person: {
-                    partyId: personForm.partyId,
-                    firstName: personForm.firstName,
-                    lastName: personForm.lastName,
-                    prefix: personForm.prefix,
-                    gender: personForm.gender,
-                    degree: personForm.degree,
-                    // ...(birthDate && {birthDate: obj2Timestamp(birthDate)}),
-                    // ...(selectedDate && {birthDate: selectedDate}),
-                    birthDate: personForm.birthDate.valueOf(),
-                }
-            };
-            // if(birthDate){
-            //     packet.person.birthDate = obj2Timestamp(birthDate);
-            // }
-            console.log("putPersonCharacteristic packet:",packet)
-            apiClient.put('api/party/person',packet)
-                .then(res => {
-                    console.log("put person response:",res);
-                }).catch(err => {
-                    console.error(err);
-                });
+    function putPersonCharacteristic () {
+        if(!checkRequired(personForm,["gender","firstName","lastName"],setValidation)){
+            enqueueSnackbar(t("Action.RequiredFieldsError"), {
+                variant: 'error',
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                },
+                autoHideDuration: 6000,
+            })
+            return false
         }
-        return(
-            <TabPanel value="edit">
-                <Typography className="card-title" component={"h6"}>{t('Profile.Edit')}</Typography>
-                <Grid container spacing={3}>
-                    <Grid item sm={12} md={6}>
-                        <SelectField id="user-prefix" name="prefix"
-                                     label={t("User.Prefix")}
-                                     variant="outlined"
-                                     options={prefixSelectOptions}
-                                     value={personForm.prefix}
-                                     onChange={handleChangePerson}
-                        />
-                    </Grid>
-                    <Grid item sm={12} md={6}>
-                        <SelectField id="user-gender" name="gender"
-                                     label={t("User.Gender")}
-                                     variant="outlined"
-                                     options={genderSelectOptions}
-                                     value={personForm.gender}
-                                     onChange={handleChangePerson}
-                                     required
-                        />
-                    </Grid>
+        setLoading(true)
+        let packet = {
+            person: personForm
+        };
+        apiClient.put('api/party/person',packet).then(res => {
+            setLoading(false)
+            enqueueSnackbar(t("Profile.SuccessEditProfile"), {
+                variant: 'success',
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                },
+                autoHideDuration: 6000,
+            })
+        }).catch(err => {
+            setLoading(false)
+            enqueueSnackbar(err.toString(), {
+                variant: 'error',
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                },
+                autoHideDuration: 6000,
+            })
+        });
+    }
 
-                    <Grid item sm={12} md={6}>
-                        <TextField id="user-firstName" name="firstName"
-                                   label={t("User.Name")}
-                                   fullWidth variant="outlined"
-                                   value={personForm.firstName}
-                                   onChange={handleChangePerson}
-                                   required
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <TextField id="user-lastName" name="lastName"
-                                   label={t("User.Surname")}
-                                   fullWidth variant="outlined"
-                                   value={personForm.lastName}
-                                   onChange={handleChangePerson}
-                                   required
-                        />
-                    </Grid>
-
-                    <Grid item sm={12} md={6}>
-                        {/*<DateField id="user-birthDate"*/}
-                        {/*           label={t("User.BirthDate")}*/}
-                        {/*           variant="outlined"*/}
-                        {/*           value={birthDate}*/}
-                        {/*           onChange={setBirthDate}*/}
-                        {/*/>*/}
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <KeyboardDatePicker
-                            // disableToolbar
-                            inputVariant="outlined"
-                            fullWidth
-                            // variant="inline"
-                            format="dd/MM/yyyy"
-                            // margin="normal"
-                            id="date-picker-inline"
-                            label={t("User.BirthDate")}
-                            value={personForm.birthDate}
-                            onChange={handleDateChange}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change date',
-                            }}
-                        />
-                        </MuiPickersUtilsProvider>
-                    </Grid>
-                    <Grid item sm={12} md={6}>
-                        <SelectField id="user-degree" name="degree"
-                                     label={t("User.Degree")}
-                                     variant="outlined"
-                                     options={degreeSelectOptions}
-                                     value={personForm.degree}
-                                     onChange={handleChangePerson}
-                        />
-                    </Grid>
-                    <Grid item xs={12} className="pt-0">
-                        <hr/>
-                        <Box className="d-flex flex-row-reverse">
-                            <Button type="button" variant="contained" color="primary" className="width-medium" onClick={putPersonCharacteristic}>
-                                {t("Action.Edit")}
-                            </Button>
-                        </Box>
-                    </Grid>
+    return(
+        <TabPanel value="edit">
+            <Typography className="card-title" component={"h6"}>{t('Profile.Edit')}</Typography>
+            <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                    <InputSelect name="prefix"
+                                 label={t("User.Prefix")}
+                                 options={prefixSelectOptions}
+                                 formValues={personForm}
+                                 setFormValues={setPersonForm}
+                    />
                 </Grid>
-            </TabPanel>
-        )
-    }
-
-    const TabPanel_Pass = ()=> {
-        const [oldPass, setOldPass] = React.useState(null);
-        const [newPass, setNewPass] = React.useState(null);
-        const [newPass2, setNewPass2] = React.useState(null);
-        function putPassword() {
-            let packet = {
-                partyId: user.partyId,
-                oldPass: oldPass,
-                newPass: newPass,
-                repeatedNewPass: newPass2,
-            }
-            console.log('putPassword',packet)
-        }
-        return (
-            <TabPanel value="pass">
-                <Typography className="card-title" component={"h6"}>{t('Profile.ChangePass')}</Typography>
-                <Grid container spacing={3}>
-                    <Grid item xs={12} md={6}>
-                        <PassField id="user-oldPass"
-                                   label={t("Profile.OldPass")}
-                                   value={oldPass}
-                                   onChange={e => setOldPass(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <PassField id="user-newPass"
-                                   label={t("Profile.NewPass")}
-                                   value={newPass}
-                                   onChange={e => setNewPass(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <PassField id="user-newPass2"
-                                   label={t("Profile.RepeatNewPass")}
-                                   value={newPass2}
-                                   onChange={e => setNewPass2(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid item xs={12} className="pt-0">
-                        <hr/>
-                        <Box className="d-flex flex-row-reverse">
-                            <Button type="button" variant="contained" color="primary" className="width-medium" onClick={putPassword}>
-                                {t("Action.Edit")}
-                            </Button>
-                        </Box>
-                    </Grid>
+                <Grid item xs={12} md={6}>
+                    <InputSelect name="gender"
+                                 label={t("User.Gender")}
+                                 options={genderSelectOptions}
+                                 formValues={personForm}
+                                 setFormValues={setPersonForm}
+                                 required
+                                 validation={validation}
+                                 setValidation={setValidation}
+                    />
                 </Grid>
-            </TabPanel>
-        )
-    }
 
-    const TabPanel_Upgrade = ()=> {
-        return (
-            <TabPanel value="upgrade">
-                <Typography className="card-title" component={"h6"}>{t('Profile.Upgrade')}</Typography>
+                <Grid item xs={12} md={6}>
+                    <InputText name="firstName"
+                               label={t("User.Name")}
+                               formValues={personForm}
+                               setFormValues={setPersonForm}
+                               required
+                               validation={validation}
+                               setValidation={setValidation}
+                    />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <InputText name="lastName"
+                               label={t("User.Surname")}
+                               formValues={personForm}
+                               setFormValues={setPersonForm}
+                               required
+                               validation={validation}
+                               setValidation={setValidation}
+                    />
+                </Grid>
 
-            </TabPanel>
-        )
-    }
+                <Grid item xs={12} md={6}>
+                    <InputDate name="birthDate"
+                               label={t("User.BirthDate")}
+                               formValues={personForm}
+                               setFormValues={setPersonForm}
+                    />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <InputSelect name="degree"
+                                 label={t("User.Degree")}
+                                 options={degreeSelectOptions}
+                                 formValues={personForm}
+                                 setFormValues={setPersonForm}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <Divider/>
+                </Grid>
+                <Grid item xs={12}>
+                    <Box className="d-flex flex-row-reverse">
+                        <ButtonPro loading={loading} onClick={putPersonCharacteristic}>{t("Action.Edit")}</ButtonPro>
+                    </Box>
+                </Grid>
+            </Grid>
+        </TabPanel>
+    )
+}
 
+const TabPanel_Pass = ()=> {
+    const t = useTranslation()
+    // const [oldPass, setOldPass] = React.useState(null);
+    // const [newPass, setNewPass] = React.useState(null);
+    // const [newPass2, setNewPass2] = React.useState(null);
+    // function putPassword() {
+    //     let packet = {
+    //         partyId: user.partyId,
+    //         oldPass: oldPass,
+    //         newPass: newPass,
+    //         repeatedNewPass: newPass2,
+    //     }
+    //     console.log('putPassword',packet)
+    // }
     return (
-        <div className={"frame-dashboard"}>
-            <Header {...props}/>
-            <Container>
-                <TabContext value={tabValue}>
-                    <div className="row mt-4">
-                        <div className="col-sm-12 col-md-4 col-lg-3">
-                            <Card>
-                                <CardMedia
-                                    className={classes.media}
-                                    image={Tableau}
-                                />
-                                <CardContent className="text-center pt-0">
-                                    <Avatar className={classes.avatar} src="/broken-image.jpg" />
-                                    <Typography align={"center"}>{username()}</Typography>
-                                    <Tabs onChange={handleChangeTab}
-                                          value={tabValue}
-                                          orientation="vertical"
-                                          indicatorColor="primary"
-                                          textColor="primary"
-                                          className="border-bottom border-top mt-3"
-                                          aria-label="profile tabs">
-                                        <Tab classes={{wrapper: classes.tabItem}} label={t('Profile.Edit')} value="edit" />
-                                        <Tab classes={{wrapper: classes.tabItem}} label={t('Profile.ChangePass')} value="pass" />
-                                        <Tab classes={{wrapper: classes.tabItem}} label={t('Profile.Upgrade')} value="upgrade" />
-                                    </Tabs >
-                                </CardContent>
-                            </Card>
-                        </div>
-                        <div className="col">
-                            <Card>
-                                <TabPanel_Edit/>
-                                <TabPanel_Pass/>
-                                <TabPanel_Upgrade/>
-                            </Card>
-                        </div>
-                    </div>
-                </TabContext>
-                {/*<RecentPapers/>*/}
-            </Container>
-            <Footer/>
-        </div>
+        <TabPanel value="pass">
+            <Typography className="card-title" component={"h6"}>{t('Profile.ChangePass')}</Typography>
+            <Typography variant="caption">Coming soon...</Typography>
+        </TabPanel>
+    )
+}
+
+function TabPanel_Upgrade() {
+    const t = useTranslation()
+    return (
+        <TabPanel value="upgrade">
+            <Typography className="card-title" component={"h6"}>{t('Profile.Upgrade')}</Typography>
+            <Typography variant="caption">Coming soon...</Typography>
+        </TabPanel>
     )
 }

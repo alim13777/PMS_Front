@@ -56,7 +56,8 @@
     "Upgrade" : "Upgrade account",
     "NewPass": "New Password",
     "RepeatNewPass": "RepeatNew Password",
-    "OldPass": "Old Password"
+    "OldPass": "Old Password",
+    "SuccessEditProfile": "Profile edited successfully."
   },
   "Action": {
     "Add": "Add",
@@ -65,7 +66,8 @@
     "Selected": "selected",
     "Cancel": "Cancel",
     "Save": "Save",
-    "LoadingData": "Loading data..."
+    "LoadingData": "Loading data...",
+    "RequiredFieldsError": "Fill all required fields!"
   },
   "Login": {
     "Title": "Login",
