@@ -3,9 +3,9 @@ import {getLanguage} from "react-multi-lang/lib";
 
 const timestamp2Str = function (timestamp,locale) {
     if(locale==='fa'){
-        return new persianDate(timestamp*1000).toLocale(locale).format('YYYY/MM/DD');
+        return new persianDate(timestamp).toLocale(locale).format('YYYY/MM/DD');
     }else{
-        return new Date(timestamp*1000).toLocaleDateString();
+        return new Date(timestamp).toLocaleDateString();
     }
 
 }
