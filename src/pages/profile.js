@@ -27,6 +27,12 @@ import PassField from "../components/passwordField";
 import apiClient from "../services/api";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import {
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -60,7 +66,7 @@ export default function ProfilePage(props) {
     const t = useTranslation()
     const [tabValue, setTabValue] = React.useState("edit");
     const [personForm, setPersonForm] = React.useState({
-        prefix: "", gender: "", firstName: "", lastName: "", degree: "", birthDate: "",
+        prefix: "", gender: "", firstName: "", lastName: "", degree: "", birthDate: null,
     });
     const [firstName, setFirstName] = React.useState(user.firstName);
     const [lastName, setLastName] = React.useState(user.lastName);
@@ -68,6 +74,16 @@ export default function ProfilePage(props) {
     const [prefix, setPrefix] = React.useState(null);
     const [degree, setDegree] = React.useState(null);
     const [birthDate, setBirthDate] = React.useState(null);
+
+    // const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
+    const handleDateChange = (date) => {
+        // setSelectedDate(date);
+        setPersonForm(prevState => ({
+            ...prevState,
+            birthDate: date
+        }))
+    };
+
     const handleChangeTab = (event, newValue) => {
         setTabValue(newValue);
     };
@@ -105,7 +121,7 @@ export default function ProfilePage(props) {
                 console.error(err);
             });
     },[])
-    
+
 
 
     const TabPanel_Edit = ()=>{
@@ -118,7 +134,9 @@ export default function ProfilePage(props) {
                     prefix: personForm.prefix,
                     gender: personForm.gender,
                     degree: personForm.degree,
-                    ...(birthDate && {birthDate: obj2Timestamp(birthDate)}),
+                    // ...(birthDate && {birthDate: obj2Timestamp(birthDate)}),
+                    // ...(selectedDate && {birthDate: selectedDate}),
+                    birthDate: personForm.birthDate.valueOf(),
                 }
             };
             // if(birthDate){
@@ -152,6 +170,7 @@ export default function ProfilePage(props) {
                                      options={genderSelectOptions}
                                      value={personForm.gender}
                                      onChange={handleChangePerson}
+                                     required
                         />
                     </Grid>
 
@@ -161,6 +180,7 @@ export default function ProfilePage(props) {
                                    fullWidth variant="outlined"
                                    value={personForm.firstName}
                                    onChange={handleChangePerson}
+                                   required
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -169,16 +189,34 @@ export default function ProfilePage(props) {
                                    fullWidth variant="outlined"
                                    value={personForm.lastName}
                                    onChange={handleChangePerson}
+                                   required
                         />
                     </Grid>
 
                     <Grid item sm={12} md={6}>
-                        <DateField id="user-birthDate"
-                                   label={t("User.BirthDate")}
-                                   variant="outlined"
-                                   value={birthDate}
-                                   onChange={setBirthDate}
+                        {/*<DateField id="user-birthDate"*/}
+                        {/*           label={t("User.BirthDate")}*/}
+                        {/*           variant="outlined"*/}
+                        {/*           value={birthDate}*/}
+                        {/*           onChange={setBirthDate}*/}
+                        {/*/>*/}
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                            // disableToolbar
+                            inputVariant="outlined"
+                            fullWidth
+                            // variant="inline"
+                            format="dd/MM/yyyy"
+                            // margin="normal"
+                            id="date-picker-inline"
+                            label={t("User.BirthDate")}
+                            value={personForm.birthDate}
+                            onChange={handleDateChange}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
                         />
+                        </MuiPickersUtilsProvider>
                     </Grid>
                     <Grid item sm={12} md={6}>
                         <SelectField id="user-degree" name="degree"

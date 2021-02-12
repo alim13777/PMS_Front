@@ -2,7 +2,12 @@ import persianDate from 'persian-date/dist/persian-date'
 import {getLanguage} from "react-multi-lang/lib";
 
 const timestamp2Str = function (timestamp,locale) {
-    return new persianDate(timestamp).toLocale(locale).format('YYYY/MM/DD');
+    if(locale==='fa'){
+        return new persianDate(timestamp).toLocale(locale).format('YYYY/MM/DD');
+    }else{
+        return new Date(timestamp).toLocaleDateString();
+    }
+
 }
 const timestamp2Obj = function (timestamp,locale) {
     if(locale==='fa'){
