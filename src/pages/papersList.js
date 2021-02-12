@@ -183,7 +183,7 @@ function Row(props) {
     const t = useTranslation()
     const { row } = props;
     const [open, setOpen] = React.useState(false);
-    const status = row.publisher[0].status;
+    const status = row.publisher[0]?.status;
     const classes = useRowStyles();
     const statusClasses = rowStatusStyles();
     const classStatus =

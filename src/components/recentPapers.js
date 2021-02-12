@@ -41,7 +41,7 @@ const rowStatusStyles = makeStyles((theme) => ({
 function DataRow(props) {
     const { row } = props;
     const t = useTranslation()
-    const status = row.publisher[0].status;
+    const status = row.publisher[0]?.status;
     const classes = rowStatusStyles();
     const classStatus =
         (status==='accepted') ? 'success' :
@@ -60,7 +60,7 @@ function DataRow(props) {
             </TableCell>
             <TableCell>{t('Lexicons.PaperType.'+row.paper.type)}</TableCell>
             <TableCell>{t('Lexicons.PaperStatus.'+status)}</TableCell>
-            <TableCell>{timestamp2Str(row.publisher[0].date)}</TableCell>
+            <TableCell>{timestamp2Str(row.publisher[0]?.date)}</TableCell>
         </TableRow>
 
     );
