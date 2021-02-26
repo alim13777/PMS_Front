@@ -14,10 +14,8 @@ export default function VerifyRegister(props) {
     const t = useTranslation()
     const location=useLocation();
     const userId = location.pathname.split("/")[3];
-
-    debugger;
     const [waiting, setWaiting] = React.useState(true);
-    console.log("userId",userId)
+
     useEffect(() => {
         apiClient.get('/api/email/verify?userId='+userId)
             .then(res=>{
