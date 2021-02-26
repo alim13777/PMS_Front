@@ -4,7 +4,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 
 export default function InputSelect({name, label, formValues, setFormValues=()=>{}, validation={}, setValidation=()=>{},
                                         options, optionLabel="label", optionId="value",
-                                        inline=false, required=false, fullWidth=true}) {
+                                        inline=false, required=false, fullWidth=true, loading=false}) {
     const error = validation[name]?.error
     const handleChange = (e, newOption) => {
         const newValue = newOption ? newOption[optionId] : null
@@ -36,6 +36,7 @@ export default function InputSelect({name, label, formValues, setFormValues=()=>
                            error={error}
                 />
             }
+            loading={loading}
         />
     )
 }
