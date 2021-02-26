@@ -211,9 +211,7 @@ const PaperPage = (props) => {
                         />
                     </Grid>
 
-                    <Grid item xs={12}>
-
-                    </Grid>
+                    <Grid item xs={12}/>
 
                     <Grid item xs={4}>
                         <InputSelect name="paperPublisher"
@@ -249,15 +247,13 @@ const PaperPage = (props) => {
                         />
                     </Grid>
 
-                    <Grid item xs={12}>
-                        {/*<Typography variant={"h6"}>{t("Dashboard.Paper.Authors")}</Typography>*/}
-                    </Grid>
+                    <Grid item xs={12}/>
 
                     <Grid item xs={6}>
-                        <SearchAuthors addAuthors={addAuthors}/>
+                        <ManageAuthors authors={authors} setAuthors={setAuthors}/>
                     </Grid>
                     <Grid item xs={6}>
-                        <ManageAuthors authors={authors} setAuthors={setAuthors}/>
+                        <SearchAuthors addAuthors={addAuthors}/>
                     </Grid>
                     <Grid item xs={12}>
                         <hr/>
