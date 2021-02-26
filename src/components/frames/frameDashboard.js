@@ -7,7 +7,7 @@ export default function FrameDashboard(props) {
     return (
         <div className={"frame-dashboard"}>
             <Header {...props}/>
-            <Container>
+            <Container className="pt-4">
                 {props.children}
             </Container>
             <Footer/>

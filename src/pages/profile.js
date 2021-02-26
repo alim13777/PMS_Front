@@ -84,7 +84,7 @@ export default function ProfilePage(props) {
     return (
         <FrameDashboard {...props}>
             <TabContext value={tabValue}>
-                <div className="row mt-4">
+                <div className="row">
                     <div className="col-sm-12 col-md-4 col-lg-3 mb-3">
                         <Card>
                             <CardMedia
