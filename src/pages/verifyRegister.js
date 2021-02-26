@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import SignInFrame from "../components/signInSideFrame";
 import apiClient, {BASE_URL} from "../services/api";
-import {useParams} from "react-router-dom";
+import {useParams,matchPath,useLocation} from "react-router-dom";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
@@ -12,8 +12,12 @@ import {useTranslation} from "react-multi-lang";
 
 export default function VerifyRegister(props) {
     const t = useTranslation()
-    const {userId} = useParams();
+    const location=useLocation();
+    const userId = location.pathname.split("/")[3];
+
+    debugger;
     const [waiting, setWaiting] = React.useState(true);
+    console.log("userId",userId)
     useEffect(() => {
         apiClient.get('/api/email/verify?userId='+userId)
             .then(res=>{
@@ -21,7 +25,7 @@ export default function VerifyRegister(props) {
             }).catch(err=>{
             console.log("Email verification error",err)
         });
-    }, []);
+    }, [userId]);
 
     return(
         <SignInFrame title={""}>
