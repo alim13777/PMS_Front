@@ -208,7 +208,7 @@ export default function EnhancedTable(props) {
         const [loading, setLoading] = React.useState(false);
         const [newRow, setNewRow] = React.useState(false);
         const [validation, setValidation] = React.useState({})
-        const [paperForm, setPaperForm] = React.useState({});
+        const [paperForm, setPaperForm] = React.useState({startDate: new Date()});
         // const [publisher, setPublisher] = React.useState({
         //     paperId: paperId,
         //     partyId: '',
