@@ -187,7 +187,7 @@ const PaperPage = (props) => {
                             <Tab label={t('Dashboard.Paper.Authors')} value="3" />
                         </Tabs >
                         <TabPanel value="1">
-                            <PaperHistory publisher={publishers} pubs={pubs} paperId={paperId}/>
+                            <PaperHistory publisher={publishers} setPublishers={setPublishers} pubs={pubs} paperId={paperId}/>
                         </TabPanel>
                         <TabPanel value="2">
                             <form noValidate autoComplete="off">

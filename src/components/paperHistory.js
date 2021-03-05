@@ -32,37 +32,56 @@ import Grid from "@material-ui/core/Grid";
 import InputDate from "./formControls/inputDate";
 
 export default function EnhancedTable(props) {
-    const { publisher, paperId } = props;
+    const { publisher, setPublishers, paperId } = props;
     const t = useTranslation()
+    const [pubs, setPubs] = React.useState({isReady:false,data:[]});
     const statusSelectOptions = paperStatusList.map( item=>{
         return {
             value: item,
             label: t("Lexicons.PaperStatus."+item)
         }
     })
+    useEffect(()=>{
+        apiClient.get('api/party/journal' ).then((res)=>{
+            setPubs({
+                isReady: true,
+                data: res.data.map(item=>{
+                    return {
+                        value: item.partyId,
+                        label: item.name
+                    }
+                })
+            })
+        }).catch((err)=>{
+            console.warn("journal err..",err)
+        })
+    },[])
     function Row(props) {
         const t = useTranslation()
         const {row} = props;
         const [open, setOpen] = React.useState(false);
-        const [status, setStatus] = React.useState(row.status);
-        const [date, setDate] = React.useState(timestamp2Obj(row.date));
+        // const [status, setStatus] = React.useState(row.status);
+        // const [date, setDate] = React.useState(timestamp2Obj(row.date));
         const [loading, setLoading] = React.useState(false);
         const {enqueueSnackbar,closeSnackbar } = useSnackbar();
+        const [validation, setValidation] = React.useState({})
+        const [paperForm, setPaperForm] = React.useState({});
 
-        const renderDateInput = ({ ref }) => (
-            <TextField id="paper-date"
-                       size="small" fullWidth
-                       value={date ? date.year+'/'+date.month+'/'+date.day : ''}
-                       ref={ref}
-            />
-        )
+        // const renderDateInput = ({ ref }) => (
+        //     <TextField id="paper-date"
+        //                size="small" fullWidth
+        //                value={date ? date.year+'/'+date.month+'/'+date.day : ''}
+        //                ref={ref}
+        //     />
+        // )
         const postPaperStatus = ()=>{
             setLoading(true);
             let packet = {
                 publisher: {
                     partyId: row.partyId,
                     paperId: paperId,
-                    status: status,
+                    ...paperForm,
+                    // status: paperForm.status//status,
                     //date: obj2Timestamp(date)
                 }
             }
@@ -88,6 +107,11 @@ export default function EnhancedTable(props) {
                             autoHideDuration: 6000,
                             action
                         })
+                        const index = publisher.findIndex(i=>i.partyId===row.partyId)
+                        let newData = Object.assign([],publisher)
+                        newData[index] = Object.assign({},newData[index],paperForm)
+                        setPublishers(newData)
+                        setOpen(false)
                     }
                 }).catch(err => {
                     console.error(err);
@@ -101,36 +125,55 @@ export default function EnhancedTable(props) {
                         {row.name}
                     </TableCell>
                     <TableCell className="py-0">
-                        {open
-                            ?<FormControl size="small" fullWidth>
-                                <Select id="paper-status"
-                                        label={t("Dashboard.Paper.Status")}
-                                        labelId="paper-status-label"
-                                        autoWidth
-                                        value={status}
-                                        onChange={e=> setStatus(e.target.value)}
-                                >
-                                    {paperStatusList.map( i => {
-                                        return(
-                                            <MenuItem value={i}>{t("Lexicons.PaperStatus."+i)}</MenuItem>
-                                        )
-                                    })}
-                                </Select>
-                            </FormControl>
+                        {open ? (
+                            <InputSelect name="status"
+                                         options={statusSelectOptions}
+                                         formValues={paperForm}
+                                         setFormValues={setPaperForm}
+                                         validation={validation}
+                                         setValidation={setValidation}
+                                         required
+                                         inline
+                            />
+                        )
+                            // <FormControl size="small" fullWidth>
+                            //     <Select id="paper-status"
+                            //             label={t("Dashboard.Paper.Status")}
+                            //             labelId="paper-status-label"
+                            //             autoWidth
+                            //             value={status}
+                            //             onChange={e=> setStatus(e.target.value)}
+                            //     >
+                            //         {paperStatusList.map( i => {
+                            //             return(
+                            //                 <MenuItem value={i}>{t("Lexicons.PaperStatus."+i)}</MenuItem>
+                            //             )
+                            //         })}
+                            //     </Select>
+                            // </FormControl>
                             :t("Lexicons.PaperStatus."+row.status)
                         }
                     </TableCell>
                     <TableCell className="py-0">
-                        {open
-                            ?<DatePicker
-                                value={date}
-                                onChange={setDate}
-                                renderInput={renderDateInput}
-                                shouldHighlightWeekends
-                                locale={getLanguage()}
-                                calendarClassName="responsive-calendar"
-                                className="w-100"
+                        {open ? (
+                            <InputDate name="date"
+                                       formValues={paperForm}
+                                       setFormValues={setPaperForm}
+                                       validation={validation}
+                                       setValidation={setValidation}
+                                       required
+                                       inline
                             />
+                        )
+                            // <DatePicker
+                            //     value={date}
+                            //     onChange={setDate}
+                            //     renderInput={renderDateInput}
+                            //     shouldHighlightWeekends
+                            //     locale={getLanguage()}
+                            //     calendarClassName="responsive-calendar"
+                            //     className="w-100"
+                            // />
                             :timestamp2Str(row.date)
                         }
                     </TableCell>
@@ -213,6 +256,9 @@ export default function EnhancedTable(props) {
                             autoHideDuration: 6000,
                             action
                         })
+                        setPublishers(publisher.concat({
+                            ...paperForm, name: pubs.find(i=>i.value===paperForm.partyId).label
+                        }))
                     }
                 }).catch(error => {
                 console.error(error);
@@ -234,8 +280,8 @@ export default function EnhancedTable(props) {
                         <TableRow>
                             <TableCell component="th" scope="row" className="py-0">
                                 <InputSelect name="partyId"
-                                             options={props.pubs.data}
-                                             loading={!props.pubs.isReady}
+                                             options={pubs.data}
+                                             loading={!pubs.isReady}
                                              formValues={paperForm}
                                              setFormValues={setPaperForm}
                                              validation={validation}
@@ -267,7 +313,7 @@ export default function EnhancedTable(props) {
                                 {/*/>*/}
                             </TableCell>
                             <TableCell className="py-0">
-                                <InputDate name="date"
+                                <InputDate name="startDate"
                                            formValues={paperForm}
                                            setFormValues={setPaperForm}
                                            validation={validation}
