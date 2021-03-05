@@ -156,7 +156,7 @@ export default function EnhancedTable(props) {
                     </TableCell>
                     <TableCell className="py-0">
                         {open ? (
-                            <InputDate name="date"
+                            <InputDate name="startDate"
                                        formValues={paperForm}
                                        setFormValues={setPaperForm}
                                        validation={validation}
@@ -257,7 +257,9 @@ export default function EnhancedTable(props) {
                             action
                         })
                         setPublishers(publisher.concat({
-                            ...paperForm, name: pubs.find(i=>i.value===paperForm.partyId).label
+                            ...paperForm,
+                            name: pubs.data.find(i=>i.value===paperForm.partyId).label,
+                            date: paperForm.startDate
                         }))
                     }
                 }).catch(error => {
