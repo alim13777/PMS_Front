@@ -259,7 +259,7 @@ export default function EnhancedTable(props) {
                         setPublishers(publisher.concat({
                             ...paperForm,
                             name: pubs.data.find(i=>i.value===paperForm.partyId).label,
-                            date: paperForm.startDate
+                            startDate: paperForm.startDate
                         }))
                     }
                 }).catch(error => {

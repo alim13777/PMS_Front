@@ -109,7 +109,7 @@ const PaperPage = (props) => {
             publisher: {
                 partyId: paperForm.paperPublisher,
                 status: paperForm.paperStatus,
-                date: paperForm.paperDate
+                startDate: paperForm.paperDate
             },
             authors: authors.map(i=> {
                 return {
