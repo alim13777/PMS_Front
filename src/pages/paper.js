@@ -67,7 +67,7 @@ const PaperPage = (props) => {
     const [pubs, setPubs] = React.useState({isReady:false,data:[]});
 
     useEffect(()=>{
-        apiClient.get('api/paper/'+paperId).then((res)=>{
+        apiClient.get('api/paper/'+paperId+'?history=true').then((res)=>{
             console.log("get paper",res)
             setPaper({
                 title: res.data[0].paper.title,
